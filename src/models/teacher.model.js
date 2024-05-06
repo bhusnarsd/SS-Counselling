@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const mongoose = require('mongoose');
 // const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
@@ -24,45 +23,14 @@ const teacherShema = mongoose.Schema(
       required: true,
     },
     email: {
-        type: String,
-        unique: true,
+      type: String,
+      unique: true,
     },
     address: {
-        type: String,
+      type: String,
     },
     pinCode: {
-        type: Number,
-    },
-    reservationDetails: {
-        type: String,
-    },
-    marks: {
-        type: Number,
-    },
-    qualification: {
-        type: String,
-    },
-    yearOfPassing: {
-        type: Number,
-    },
-    persentage: {
-        type: String,
-    },
-    univercityName: {
-        type: String,
-    },
-    subject: {
-        type: String,
-    },
-    collegeName: {
-        type: String,
-    },
-    profssionalQualification: {
-        type: String,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
+      type: Number,
     },
   },
   {
