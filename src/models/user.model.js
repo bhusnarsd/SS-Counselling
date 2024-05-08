@@ -37,16 +37,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: [
-        'user',
-        'admin',
-        'superadmin',
-        'district_officer',
-        'division_officer',
-        'state_officer',
-        'block_officer',
-        'sansthan',
-      ],
+      enum: ['user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer'],
       default: 'user',
     },
     isEmailVerified: {

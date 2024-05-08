@@ -6,9 +6,7 @@ const createUser = {
     username: Joi.string().required(),
     password: Joi.string().required().custom(password),
     name: Joi.string().required(),
-    role: Joi.string()
-      .required()
-      .valid('user', 'admin', 'superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    role: Joi.string().required().valid('user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer'),
     asssignedTo: Joi.string(),
   }),
 };

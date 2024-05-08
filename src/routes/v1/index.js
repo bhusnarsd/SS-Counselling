@@ -6,6 +6,7 @@ const config = require('../../config/config');
 const schoolRoute = require('./school.route');
 const sansthanRoute = require('./sansthan.route');
 const teacherRoute = require('./teacher.route');
+const studentRoute = require('./student.route');
 
 const router = express.Router();
 
@@ -29,6 +30,10 @@ const defaultRoutes = [
   {
     path: '/teacher',
     route: teacherRoute,
+  },
+  {
+    path: '/student',
+    route: studentRoute,
   },
 ];
 
