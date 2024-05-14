@@ -12,6 +12,9 @@ router
   .get(auth('superadmin', 'block_officer'), validate(userValidation.getUsers), userController.getUsers);
 
 router
+  .route('/create-trianer')
+  .post(auth('superadmin', 'block_officer'), validate(userValidation.createTainer), userController.createTrainer);
+router
   .route('/:userId')
   .get(auth('superadmin', 'block_officer'), validate(userValidation.getUser), userController.getUser)
   .patch(

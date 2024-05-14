@@ -4,10 +4,23 @@ const { password, objectId } = require('./custom.validation');
 const createUser = {
   body: Joi.object().keys({
     username: Joi.string().required(),
+    mobNumber: Joi.number().allow('', null),
     password: Joi.string().required().custom(password),
-    name: Joi.string().required(),
-    role: Joi.string().required().valid('user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer'),
-    asssignedTo: Joi.string(),
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    role: Joi.string().required().valid('user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer', 'school'),
+    asssignedTo: Joi.string().allow('', null),
+  }),
+};
+
+const createTainer = {
+  body: Joi.object().keys({
+    password: Joi.string().required().custom(password),
+    mobNumber: Joi.number().allow('', null),
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    role: Joi.string().required().valid('user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer', 'school'),
+    asssignedTo: Joi.string().allow('', null),
   }),
 };
 
@@ -35,7 +48,9 @@ const updateUser = {
     .keys({
       username: Joi.string(),
       password: Joi.string().custom(password),
-      name: Joi.string(),
+      mobNumber: Joi.number().allow('', null),
+      firstName: Joi.string(),
+      lastName: Joi.string(),
       asssignedTo: Joi.string(),
     })
     .min(1),
@@ -49,6 +64,7 @@ const deleteUser = {
 
 module.exports = {
   createUser,
+  createTainer,
   getUsers,
   getUser,
   updateUser,

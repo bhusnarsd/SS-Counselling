@@ -1,52 +1,23 @@
 const express = require('express');
-const csv = require('csv-parser');
-const fs = require('fs');
 const multer = require('multer');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const { schoolValidation } = require('../../validations');
 const { schoolController } = require('../../controllers');
-const { School } = require('../../models');
 
 const router = express.Router();
 
-// Set up multer for file upload
-const upload = multer({ dest: 'uploads/' });
-
-// POST endpoint for uploading CSV file
-router.post('/upload', upload.single('file'), async (req, res) => {
-  try {
-    // Check if file is provided
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    // Read the uploaded file
-    const results = [];
-    fs.createReadStream(req.file.path)
-      .pipe(csv())
-      .on('data', (data) => results.push(data))
-      .on('end', async () => {
-        // Process each row in the CSV file
-        for (const row of results) {
-          // Extract data from CSV row and create a new School object
-
-          // Create a new school document and save it to the database
-          await School.create(row);
-        }
-
-        // Delete the uploaded file after processing
-        fs.unlinkSync(req.file.path);
-
-        res.status(200).json({ message: 'CSV file uploaded successfully' });
-      });
-  } catch (error) {
-    console.error('Error uploading CSV file:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
 });
+const uploads = multer({ storage });
 
-module.exports = router;
+router.route('/bulkupload').post(uploads.single('file'), schoolController.bulkUploadFile);
 
 router
   .route('/')
@@ -60,80 +31,12 @@ router
     validate(schoolValidation.getSchools),
     schoolController.getSchools
   );
-router
-  .route('/school-stats')
-  .get(auth('district_officer', 'division_officer', 'state_officer', 'block_officer'), schoolController.getSchoolsStats);
 
-router.get(
-  '/mangment-wise/teacher/student-count',
-  auth('superadmin', 'state_officer'),
-  schoolController.getManagWiseTeacherStudent
+router.route('/get-block').get(
+  auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+  // validate(schoolValidation.getBlock),
+  schoolController.getBlockList
 );
-
-router
-  .route('/school-stats/dashboard')
-  .get(auth('district_officer', 'division_officer', 'state_officer', 'block_officer'), schoolController.getSchoolsStatsAll);
-
-router
-  .route('/school-stats/division-wise')
-  .post(
-    auth('district_officer', 'division_officer', 'state_officer', 'block_officer'),
-    schoolController.getSchoolDivisionWise
-  );
-
-router
-  .route('/school-stats/district-wise')
-  .post(
-    auth('district_officer', 'division_officer', 'state_officer', 'block_officer'),
-    schoolController.getSchoolDistrictWise
-  );
-
-router
-  .route('/school-stats/block-wise')
-  .post(auth('district_officer', 'division_officer', 'state_officer', 'block_officer'), schoolController.getSchoolBlockWise);
-
-router
-  .route('/student-class/wise-stats')
-  .get(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-    schoolController.getStudentClassWiseCount
-  );
-
-// router
-// .route('/teacher-counts/role-wise')
-// .get(auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'), schoolController.getTotalStudentTeacher);
-
-router.route('/school-count/district-wise').get(auth('state_officer'), schoolController.getSchoolCountDistrict);
-
-router.route('/school-count/block-wise/abcd').get(auth('district_officer'), schoolController.getSchoolCountByBlock); //
-
-router
-  .route('/filter/by-division/count-block-school')
-  .post(validate(schoolValidation.getStatsByDivision), schoolController.getDivisionWiseStat);
-
-router.route('/filter/by-division/count-block-school/district-wise').post(schoolController.getDivisionStatsDistrictWise);
-
-router.route('/filter/by-division/count-block-school/block-wise').post(schoolController.getDivisionStatsBlockWise);
-
-router
-  .route('/get-division')
-  .get(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-    schoolController.getDivisionList
-  );
-router
-  .route('/get-district')
-  .get(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-    schoolController.getDistrictList
-  );
-router
-  .route('/get-block')
-  .post(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-    validate(schoolValidation.getBlock),
-    schoolController.getBlockList
-  );
 router
   .route('/get-schools')
   .post(
@@ -141,10 +44,6 @@ router
     schoolController.getSchoolList
   );
 
-router.route('/get-schools-by-udisecodes').post(
-  // auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-  schoolController.getSchoolByudiseArray
-);
 router
   .route('/:scode')
   .get(
@@ -170,7 +69,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /schools/upload:
+ * /schools/bulkupload:
  *   post:
  *     summary: Upload CSV file for bulk school data creation.
  *     tags: [School]

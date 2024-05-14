@@ -1,10 +1,21 @@
 const express = require('express');
+const multer = require('multer');
 const auth = require('../../middlewares/auth');
-// const validate = require('../../middlewares/validate');
-// const { teacherValidation } = require('../../validations');
 const { studentController } = require('../../controllers');
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+const uploads = multer({ storage });
+
+router.route('/bulkupload').post(uploads.single('file'), studentController.bulkUploadFile);
 
 router
   .route('/')
@@ -21,6 +32,31 @@ module.exports = router;
  * tags:
  *   name: Student
  *   description: APIs for managing sansthan data
+ */
+
+/**
+ * @swagger
+ * /student/bulkupload:
+ *   post:
+ *     summary: Upload CSV file for bulk school data creation.
+ *     tags: [Student]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       '200':
+ *         description: CSV file uploaded successfully.
+ *       '400':
+ *         description: Bad request. No file uploaded.
+ *       '500':
+ *         description: Internal server error.
  */
 
 /**

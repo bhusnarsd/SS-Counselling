@@ -8,10 +8,6 @@ const teacherShema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    caste: {
-      type: String,
-      trim: true,
-    },
     gender: {
       type: String,
     },
@@ -25,12 +21,6 @@ const teacherShema = mongoose.Schema(
     email: {
       type: String,
       unique: true,
-    },
-    address: {
-      type: String,
-    },
-    pinCode: {
-      type: Number,
     },
   },
   {

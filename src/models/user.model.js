@@ -6,15 +6,20 @@ const { toJSON, paginate } = require('./plugins');
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
-      required: true,
       trim: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
+    },
+    mobNumber: {
+      type: Number,
     },
     username: {
       type: String,
-      required: true,
-      unique: true,
+      // required: true,
       trim: true,
       // lowercase: true,
       // validate(value) {
@@ -37,12 +42,8 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer'],
+      enum: ['user', 'admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'],
       default: 'user',
-    },
-    isEmailVerified: {
-      type: Boolean,
-      default: false,
     },
     asssignedTo: {
       type: String,

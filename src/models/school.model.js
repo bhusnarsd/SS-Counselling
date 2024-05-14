@@ -2,9 +2,12 @@ const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
 const schoolSchema = mongoose.Schema({
+  schoolId: {
+    type: String,
+    index: true,
+  },
   name: {
     type: String,
-    required: true,
     index: 'text',
   },
   contact_number: {
@@ -15,7 +18,6 @@ const schoolSchema = mongoose.Schema({
   },
   udisecode: {
     type: String,
-    unique: true,
   },
   district: {
     type: String,
