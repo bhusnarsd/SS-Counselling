@@ -24,13 +24,13 @@ const bulkUpload = async (schoolArray, csvFilePath = null) => {
           return `SCH${randomNumber}`;
         }
         const schoolId = generateSchoolId();
-        let record = new School({...school, schoolId});
+        let record = new School({ ...school, schoolId });
         record = await record.save();
         if (record) {
           records.push(school);
           await User.create({
             firstName: school.firstname,
-            lastName:  school.lastname,
+            lastName: school.lastname,
             mobNumber: school.mobNumber,
             username: schoolId,
             password: 'admin@123',
@@ -62,17 +62,17 @@ function generateSchoolId() {
  * @returns {Promise<User>}
  */
 const createSchool = async (reqBody) => {
-  const schoolId = generateSchoolId()
+  const schoolId = generateSchoolId();
   const data = {
     firtstName: reqBody.firstName,
     lastName: reqBody.lastName,
     username: schoolId,
     password: 'admin@123',
     role: 'school',
-     asssignedTo,
+    asssignedTo,
   };
   await userService.createUser(data);
-  return School.create({...reqBody, schoolId});
+  return School.create({ ...reqBody, schoolId });
 };
 
 /**
@@ -133,8 +133,6 @@ const updateSchoolByScode = async (scode, updateBody) => {
   await result.save();
   return result;
 };
-
-
 
 module.exports = {
   createSchool,

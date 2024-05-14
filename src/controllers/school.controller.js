@@ -51,7 +51,6 @@ const getSchool = catchAsync(async (req, res) => {
   res.send(school);
 });
 
-
 const getDistrictList = catchAsync(async (req, res) => {
   const districtList = await schoolService.getDistrictList();
   res.send(districtList);
@@ -62,12 +61,10 @@ const getBlockList = catchAsync(async (req, res) => {
   res.send(districtList);
 });
 
-
 const getSchoolList = catchAsync(async (req, res) => {
   const result = await schoolService.getSchoolList(req.body.block);
   res.send(result);
 });
-
 
 const updateSchool = catchAsync(async (req, res) => {
   const school = await schoolService.updateSchoolByScode(req.params.scode, req.body);
