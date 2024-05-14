@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { School, User } = require('../models');
 const ApiError = require('../utils/ApiError');
+const userService = require('./user.service');
 
 const bulkUpload = async (schoolArray, csvFilePath = null) => {
   let modifiedSchoolsArray = schoolArray;
@@ -19,6 +20,7 @@ const bulkUpload = async (schoolArray, csvFilePath = null) => {
       if (schoolFound) {
         dups.push(school);
       } else {
+        // eslint-disable-next-line no-inner-declarations
         function generateSchoolId() {
           const randomNumber = Math.floor(Math.random() * 900000) + 100000;
           return `SCH${randomNumber}`;
@@ -69,7 +71,7 @@ const createSchool = async (reqBody) => {
     username: schoolId,
     password: 'admin@123',
     role: 'school',
-    asssignedTo,
+    // asssignedTo,
   };
   await userService.createUser(data);
   return School.create({ ...reqBody, schoolId });
