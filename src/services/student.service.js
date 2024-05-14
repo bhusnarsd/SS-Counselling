@@ -1,7 +1,6 @@
 const httpStatus = require('http-status');
 const { Student, User } = require('../models');
 const ApiError = require('../utils/ApiError');
-const { userService } = require('./user.service');
 
 const bulkUpload = async (studentArray, csvFilePath = null) => {
   let modifiedStudentsArray = studentArray;
@@ -75,7 +74,8 @@ const createStudent = async (reqBody) => {
     role: 'student',
     // asssignedTo,
   };
-  await userService.createUser(data);
+  const record = new Student(data);
+  await record.save();
   return Student.create({ ...reqBody, studentId });
 };
 
