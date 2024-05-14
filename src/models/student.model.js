@@ -10,7 +10,6 @@ const studentShema = mongoose.Schema(
     },
     studentId: {
       type: String,
-      index: true,
     },
     lastName: {
       type: String,
