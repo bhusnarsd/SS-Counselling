@@ -16,7 +16,7 @@ const bulkUpload = async (studentArray, csvFilePath = null) => {
 
   await Promise.all(
     modifiedStudentsArray.students.map(async (student) => {
-      const schoolFound = await Student.findOne({ mobNumber: student.mobNumber });
+      const schoolFound = await Student.findOne({ mobNumber: student.mobNumber, firstName: student.firstName });
       if (schoolFound) {
         dups.push(student);
       } else {
@@ -33,7 +33,7 @@ const bulkUpload = async (studentArray, csvFilePath = null) => {
 
           // Create the student user
           await User.create({
-            firstName: student.firstname,
+            firstName: student.firstName,
             lastName: student.lastname,
             mobNumber: student.mobNumber,
             username: studentId,
@@ -68,7 +68,7 @@ function generateStudentId() {
 const createStudent = async (reqBody) => {
   const studentId = generateStudentId();
   await User.create({
-    firstName: reqBody.firstname,
+    firstName: reqBody.firstName,
     lastName: reqBody.lastname,
     mobNumber: reqBody.mobNumber,
     username: studentId,
@@ -119,6 +119,19 @@ const updateStudentById = async (id, updateBody) => {
   await result.save();
   return result;
 };
+/**
+ * Delete user by id
+ * @param {ObjectId} schoolId
+ * @returns {Promise<School>}
+ */
+const deleteStudentById = async (studentID) => {
+  const student = await getStudentById(studentID);
+  if (!student) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
+  }
+  await student.remove();
+  return student;
+};
 
 module.exports = {
   bulkUpload,
@@ -127,4 +140,5 @@ module.exports = {
   getStudentById,
   updateStudentById,
   generateToken,
+  deleteStudentById,
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const httpStatus = require('http-status');
 const { School, User } = require('../models');
 const ApiError = require('../utils/ApiError');
@@ -96,8 +97,8 @@ const querySchool = async (filter, options) => {
  * @param {ObjectId} id
  * @returns {Promise<School>}
  */
-const getSchoolByScode = async (code) => {
-  return School.findOne({ code });
+const getSchoolById = async (schoolId) => {
+  return School.findById(schoolId);
 };
 
 /**
@@ -126,8 +127,8 @@ const getSchoolList = async (block) => {
  * @param {Object} updateBody
  * @returns {Promise<School>}
  */
-const updateSchoolByScode = async (scode, updateBody) => {
-  const result = await getSchoolByScode(scode);
+const updateSchoolByScode = async (schoolId, updateBody) => {
+  const result = await getSchoolById(schoolId);
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'SChool not found');
   }
@@ -136,11 +137,26 @@ const updateSchoolByScode = async (scode, updateBody) => {
   return result;
 };
 
+/**
+ * Delete user by id
+ * @param {ObjectId} schoolId
+ * @returns {Promise<School>}
+ */
+const deleteSchoolById = async (schoolId) => {
+  const school = await getSchoolById(schoolId);
+  if (!school) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'school not found');
+  }
+  await school.remove();
+  return school;
+};
 module.exports = {
   createSchool,
   querySchool,
   getSchoolList,
   getBlockList,
   bulkUpload,
+  getSchoolById,
   updateSchoolByScode,
+  deleteSchoolById,
 };
