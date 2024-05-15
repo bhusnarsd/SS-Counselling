@@ -45,10 +45,17 @@ const userSchema = mongoose.Schema(
       enum: ['user', 'admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'],
       default: 'user',
     },
-    asssignedTo: {
-      type: String,
-      trim: true,
-    },
+    assignedSchools: [
+      {
+        type: String,
+      },
+    ],
+    visits: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Visit',
+      },
+    ],
   },
   {
     timestamps: true,

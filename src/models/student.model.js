@@ -4,6 +4,9 @@ const { toJSON, paginate } = require('./plugins');
 
 const studentShema = mongoose.Schema(
   {
+    schoolId: {
+      type: String,
+    },
     firtstName: {
       type: String,
       trim: true,
@@ -27,8 +30,16 @@ const studentShema = mongoose.Schema(
     udiseCode: {
       type: String,
     },
-    class: {
+    standard: {
       type: String,
+    },
+    tenantId: {
+      type: Number,
+      default: 58,
+    },
+    packageId: {
+      type: Number,
+      default: 54,
     },
   },
   {

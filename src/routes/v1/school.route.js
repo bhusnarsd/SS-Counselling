@@ -22,25 +22,25 @@ router.route('/bulkupload').post(uploads.single('file'), schoolController.bulkUp
 router
   .route('/')
   .post(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    // auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
     validate(schoolValidation.createSchools),
     schoolController.createSchool
   )
   .get(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
     validate(schoolValidation.getSchools),
     schoolController.getSchools
   );
 
 router.route('/get-block').get(
-  auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+  auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
   // validate(schoolValidation.getBlock),
   schoolController.getBlockList
 );
 router
   .route('/get-schools')
   .post(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
     schoolController.getSchoolList
   );
 
