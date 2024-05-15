@@ -42,7 +42,7 @@ const getAllStudent = catchAsync(async (req, res) => {
 });
 
 const getStudentById = catchAsync(async (req, res) => {
-  const result = await studentService.getStudentById(req.params.id);
+  const result = await studentService.getStudentById(req.params.studentId);
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
   }
@@ -56,11 +56,11 @@ const generateToken = catchAsync(async (req, res) => {
 });
 
 const updateStudent = catchAsync(async (req, res) => {
-  const result = await studentService.updateStudentById(req.params.id, req.body);
+  const result = await studentService.updateStudentById(req.params.studentId, req.body);
   res.send(result);
 });
 
-const deleteSchoolById = catchAsync(async (req, res) => {
+const deleteStudentById = catchAsync(async (req, res) => {
   const student = await studentService.deleteStudentById(req.params.studentId);
   res.send(student);
 });
@@ -72,5 +72,5 @@ module.exports = {
   getStudentById,
   generateToken,
   updateStudent,
-  deleteSchoolById,
+  deleteStudentById,
 };

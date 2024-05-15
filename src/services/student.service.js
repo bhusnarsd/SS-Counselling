@@ -112,9 +112,13 @@ const getStudentById = async (id) => {
  */
 const updateStudentById = async (id, updateBody) => {
   const result = await getStudentById(id);
-  const user = await User.findOne({ username: result.username });
-  if (!result && !user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
+  // const user = await User.findOne({ username: result.studentId });
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
+  }
+  const user = await User.findOne({ username: result.studentId });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   Object.assign(user, updateBody);
   Object.assign(result, updateBody);
