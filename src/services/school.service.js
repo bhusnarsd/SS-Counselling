@@ -129,7 +129,7 @@ const getSchoolList = async (block) => {
  */
 const updateSchoolByScode = async (schoolId, updateBody) => {
   const result = await getSchoolById(schoolId);
-  const user = await User.findOne({ username: result.username });
+  const user = await User.findOne({ username: result.schoolId });
   if (!result && !user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'SChool not found');
   }

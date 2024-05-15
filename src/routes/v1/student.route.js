@@ -21,9 +21,10 @@ router.route('/').post(studentController.createStudent).get(studentController.ge
 
 router.route('/genrate-token').get(studentController.generateToken);
 router
-  .route('/:id')
-  .get(auth('superadmin', 'block_officer'), studentController.getStudentById)
-  .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
+  .route('/:studentId')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), studentController.getStudentById)
+  .patch(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), studentController.updateStudent)
+  .delete(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), studentController.deleteStudentById);
 module.exports = router;
 
 /**
