@@ -53,7 +53,8 @@ const userSchema = mongoose.Schema(
     visits: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Visit',
+        ref: 'User',
+        required: true,
       },
     ],
   },

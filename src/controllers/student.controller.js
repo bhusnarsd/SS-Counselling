@@ -60,6 +60,11 @@ const updateStudent = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const deleteSchoolById = catchAsync(async (req, res) => {
+  const student = await studentService.deleteStudentById(req.params.studentId);
+  res.send(student);
+});
+
 module.exports = {
   bulkUploadFile,
   createStudent,
@@ -67,4 +72,5 @@ module.exports = {
   getStudentById,
   generateToken,
   updateStudent,
+  deleteSchoolById,
 };

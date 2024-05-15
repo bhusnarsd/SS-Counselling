@@ -27,36 +27,35 @@ router
     schoolController.createSchool
   )
   .get(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
     validate(schoolValidation.getSchools),
     schoolController.getSchools
   );
 
 router.route('/get-block').get(
-  auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
+  auth('superadmin', 'block_officer', 'school'),
   // validate(schoolValidation.getBlock),
   schoolController.getBlockList
 );
-router
-  .route('/get-schools')
-  .post(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
-    schoolController.getSchoolList
-  );
+router.route('/get-schools').post(auth('superadmin', 'block_officer', 'school'), schoolController.getSchoolList);
 
 router
-  .route('/:scode')
+  .route('/:schoolId')
   .get(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
     validate(schoolValidation.getSchool),
     schoolController.getSchool
   )
   .patch(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
     validate(schoolValidation.updateSchools),
     schoolController.updateSchool
+  )
+  .delete(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+    validate(schoolValidation.deleteSchools),
+    schoolController.updateSchool
   );
-//   .delete(auth('superadmin'), validate(userValidation.deleteUser), userController.deleteUser);
 
 module.exports = router;
 

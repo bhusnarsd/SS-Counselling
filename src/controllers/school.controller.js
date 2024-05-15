@@ -26,25 +26,14 @@ const createSchool = catchAsync(async (req, res) => {
 });
 
 const getSchools = catchAsync(async (req, res) => {
-  let filter = {};
-  const { role } = req.user;
-  const assignedTo = req.user.asssignedTo;
-
-  if (role === 'district_officer') {
-    filter = { district: assignedTo };
-  } else if (role === 'block_officer') {
-    filter = { block: assignedTo };
-  } else if (role === 'state_officer') {
-    // No specific filtering needed for state officer
-  }
-
+  const filter = pick(req.query, ['name', 'schoolId']);
   const options = pick(req.query, ['sortBy', 'limit', 'page', 'reverse']);
   const result = await schoolService.querySchool(filter, options);
   res.send(result);
 });
 
 const getSchool = catchAsync(async (req, res) => {
-  const school = await schoolService.getSchoolByUdisecode(req.params.udisecode);
+  const school = await schoolService.getSchoolById(req.params.schoolId);
   if (!school) {
     throw new ApiError(httpStatus.NOT_FOUND, 'school not found');
   }
@@ -67,7 +56,12 @@ const getSchoolList = catchAsync(async (req, res) => {
 });
 
 const updateSchool = catchAsync(async (req, res) => {
-  const school = await schoolService.updateSchoolByScode(req.params.scode, req.body);
+  const school = await schoolService.updateSchoolByScode(req.params.schoolId, req.body);
+  res.send(school);
+});
+
+const deleteSchoolById = catchAsync(async (req, res) => {
+  const school = await schoolService.deleteSchoolById(req.params.schoolId);
   res.send(school);
 });
 module.exports = {
@@ -79,4 +73,5 @@ module.exports = {
   getDistrictList,
   getBlockList,
   updateSchool,
+  deleteSchoolById,
 };
