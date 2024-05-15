@@ -17,6 +17,7 @@ const paginate = (schema) => {
    * @param {string} [options.populate] - Populate data fields. Hierarchy of fields should be separated by (.). Multiple populating criteria should be separated by commas (,)
    * @param {number} [options.limit] - Maximum number of results per page (default = 10)
    * @param {number} [options.page] - Current page (default = 1)
+   * @param {boolean} [options.reverse] - Whether to reverse the order of the results (default = false)
    * @returns {Promise<QueryResult>}
    */
   schema.statics.paginate = async function (filter, options) {
@@ -55,6 +56,12 @@ const paginate = (schema) => {
     return Promise.all([countPromise, docsPromise]).then((values) => {
       const [totalResults, results] = values;
       const totalPages = Math.ceil(totalResults / limit);
+
+      // Reverse results if the reverse option is true
+      if (options.reverse) {
+        results.reverse();
+      }
+
       const result = {
         results,
         page,

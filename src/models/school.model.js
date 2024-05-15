@@ -25,6 +25,16 @@ const schoolSchema = mongoose.Schema({
   block: {
     type: String,
   },
+  schoolType: {
+    type: String,
+  },
+  locationType: {
+    type: String,
+  },
+  tenantId: {
+    type: Number,
+    default: 58,
+  },
 });
 
 // Add plugins
