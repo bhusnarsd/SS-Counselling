@@ -38,7 +38,7 @@ const getSchools = catchAsync(async (req, res) => {
     // No specific filtering needed for state officer
   }
 
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page', 'reverse']);
   const result = await schoolService.querySchool(filter, options);
   res.send(result);
 });

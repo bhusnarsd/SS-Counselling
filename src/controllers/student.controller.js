@@ -24,12 +24,19 @@ const createStudent = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(teacher);
 });
 
+// const getAllStudent = catchAsync(async (req, res) => {
+//   const filter = {
+//     ...pick(req.query, ['name']),
+//     // isVerified: true,
+//   };
+//   const options = pick(req.query, ['sortBy', 'limit', 'page']);
+//   const result = await studentService.queryStudent(filter, options);
+//   res.send(result);
+// });
+
 const getAllStudent = catchAsync(async (req, res) => {
-  const filter = {
-    ...pick(req.query, ['name']),
-    // isVerified: true,
-  };
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const filter = pick(req.query, ['name', 'schoolId']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page', 'reverse']);
   const result = await studentService.queryStudent(filter, options);
   res.send(result);
 });
@@ -42,6 +49,12 @@ const getStudentById = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const generateToken = catchAsync(async (req, res) => {
+  const { studentId } = req.query;
+  const token = await studentService.generateToken(studentId);
+  res.send(token);
+});
+
 const updateStudent = catchAsync(async (req, res) => {
   const result = await studentService.updateStudentById(req.params.id, req.body);
   res.send(result);
@@ -52,5 +65,6 @@ module.exports = {
   createStudent,
   getAllStudent,
   getStudentById,
+  generateToken,
   updateStudent,
 };

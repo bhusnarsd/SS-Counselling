@@ -1,29 +1,17 @@
 const express = require('express');
-const multer = require('multer');
-const auth = require('../../middlewares/auth');
-const { studentController } = require('../../controllers');
+// const auth = require('../../middlewares/auth');
+const { visitController } = require('../../controllers');
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads');
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const uploads = multer({ storage });
+router.route('/').post(visitController.createSchedule);
+// .get(studentvisitControllerController.getAllStudent);
 
-router.route('/bulkupload').post(uploads.single('file'), studentController.bulkUploadFile);
-
-router.route('/').post(studentController.createStudent).get(studentController.getAllStudent);
-
-router.route('/genrate-token').get(studentController.generateToken);
-router
-  .route('/:id')
-  .get(auth('superadmin', 'block_officer'), studentController.getStudentById)
-  .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
+// router.route('/genrate-token').get(studentController.generateToken);
+// router
+//   .route('/:id')
+//   .get(auth('superadmin', 'block_officer'), studentController.getStudentById)
+//   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
 module.exports = router;
 
 /**
@@ -35,32 +23,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /student/bulkupload:
- *   post:
- *     summary: Upload CSV file for bulk school data creation.
- *     tags: [Student]
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               file:
- *                 type: string
- *                 format: binary
- *     responses:
- *       '200':
- *         description: CSV file uploaded successfully.
- *       '400':
- *         description: Bad request. No file uploaded.
- *       '500':
- *         description: Internal server error.
- */
-
-/**
- * @swagger
- * /student:
+ * /visit:
  *   post:
  *     summary: Create a user
  *     description: Only admins can create other users.
@@ -72,14 +35,14 @@ module.exports = router;
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Teacher'
+ *             $ref: '#/components/schemas/Visit'
  *     responses:
  *       "201":
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Teacher'
+ *                $ref: '#/components/schemas/Visit'
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
@@ -217,19 +180,17 @@ module.exports = router;
  * @swagger
  * components:
  *   schemas:
- *     Teacher:
+ *     Visit:
  *       type: object
  *       properties:
- *         name:
+ *         visitDate:
+ *           type: date
+ *         schoolId:
  *           type: string
- *         gender:
+ *         trainer:
  *           type: string
- *         age:
- *           type: integer
- *         email:
- *           type: string
- *           format: email
  *       required:
- *         - name
- *         - email
+ *         - visitDate
+ *         - schoolId
+ *         - trainer
  */

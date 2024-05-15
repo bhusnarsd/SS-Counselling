@@ -1,3 +1,4 @@
+const Jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const { Student, User } = require('../models');
 const ApiError = require('../utils/ApiError');
@@ -66,17 +67,24 @@ function generateStudentId() {
  */
 const createStudent = async (reqBody) => {
   const studentId = generateStudentId();
-  const data = {
-    firtstName: reqBody.firstName,
-    lastName: reqBody.lastName,
+  await User.create({
+    firstName: reqBody.firstname,
+    lastName: reqBody.lastname,
+    mobNumber: reqBody.mobNumber,
     username: studentId,
-    password: 'student@123',
+    password: 'admin@123',
     role: 'student',
-    // asssignedTo,
-  };
-  const record = new Student(data);
-  await record.save();
+  });
   return Student.create({ ...reqBody, studentId });
+};
+
+const generateToken = async (studentId) => {
+  const user = await Student.find({ studentId });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'student not found');
+  }
+  const token = Jwt.sign({ unique_id: studentId }, 'keonjhar-prod@123');
+  return { token };
 };
 
 /**
@@ -118,4 +126,5 @@ module.exports = {
   queryStudent,
   getStudentById,
   updateStudentById,
+  generateToken,
 };
