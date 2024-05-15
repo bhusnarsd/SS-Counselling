@@ -9,11 +9,11 @@ BACKUP_FILE="../dbs"
 #!/bin/bash
 
 # Run mongodump command to create dump files
-mongodump --host localhost --port 27017 --db MHEDU_Server --out ../dbs
+mongodump --host localhost --port 27017 --db DMF --out ../dbs
 
 # Zip the contents of the MHEDU_Server directory
 cd ../dbs
-zip -r dump.zip MHEDU_Server/*
+zip -r dump.zip DMF/*
 
 
 

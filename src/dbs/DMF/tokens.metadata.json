@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"DMF.tokens"},{"v":2,"key":{"token":1},"name":"token_1","ns":"DMF.tokens","background":true}],"uuid":"29c19315dca44325a43ebdb126da35db"}
