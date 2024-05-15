@@ -112,10 +112,13 @@ const getStudentById = async (id) => {
  */
 const updateStudentById = async (id, updateBody) => {
   const result = await getStudentById(id);
-  if (!result) {
+  const user = await User.findOne({ username: result.username });
+  if (!result && !user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
   }
+  Object.assign(user, updateBody);
   Object.assign(result, updateBody);
+  user.save();
   await result.save();
   return result;
 };
@@ -129,6 +132,11 @@ const deleteStudentById = async (studentID) => {
   if (!student) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
   }
+  const user = await User.findOne({ username: student.studentId });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  await user.remove();
   await student.remove();
   return student;
 };

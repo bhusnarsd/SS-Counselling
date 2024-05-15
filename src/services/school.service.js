@@ -129,10 +129,13 @@ const getSchoolList = async (block) => {
  */
 const updateSchoolByScode = async (schoolId, updateBody) => {
   const result = await getSchoolById(schoolId);
-  if (!result) {
+  const user = await User.findOne({ username: result.username });
+  if (!result && !user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'SChool not found');
   }
   Object.assign(result, updateBody);
+  Object.assign(user, updateBody);
+  user.save();
   await result.save();
   return result;
 };
@@ -145,11 +148,18 @@ const updateSchoolByScode = async (schoolId, updateBody) => {
 const deleteSchoolById = async (schoolId) => {
   const school = await getSchoolById(schoolId);
   if (!school) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'school not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'School not found');
   }
+
+  const user = await User.findOne({ username: school.schoolId });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  await user.remove();
   await school.remove();
   return school;
 };
+
 module.exports = {
   createSchool,
   querySchool,
