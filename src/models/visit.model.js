@@ -9,8 +9,8 @@ const visitSchema = new mongoose.Schema(
       required: true,
     },
     schoolId: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'School',
     },
     visitDate: {
       type: Date,

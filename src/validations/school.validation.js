@@ -31,7 +31,7 @@ const getSchoolsDistrict = {
 
 const getSchool = {
   params: Joi.object().keys({
-    udisecode: Joi.string(),
+    schoolId: Joi.string(),
   }),
 };
 
@@ -56,21 +56,26 @@ const getStatsByDivision = {
 
 const updateSchools = {
   params: Joi.object().keys({
-    scode: Joi.string(),
+    schoolId: Joi.string(),
   }),
   body: Joi.object()
     .keys({
       // mid: Joi.number(),
-      name: Joi.string(),
       // code: Joi.string(),
+      name: Joi.string(),
       contact_number: Joi.string(),
       address: Joi.string(),
       udisecode: Joi.string(),
-      division: Joi.string(),
       district: Joi.string(),
       block: Joi.string(),
     })
     .min(1),
+};
+
+const deleteSchools = {
+  params: Joi.object().keys({
+    schoolId: Joi.string(),
+  }),
 };
 
 module.exports = {
@@ -82,4 +87,5 @@ module.exports = {
   getSchoolsDistrict,
   getStatsByDivision,
   updateSchools,
+  deleteSchools,
 };

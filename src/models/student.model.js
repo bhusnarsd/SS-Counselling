@@ -7,7 +7,7 @@ const studentShema = mongoose.Schema(
     schoolId: {
       type: String,
     },
-    firtstName: {
+    firstName: {
       type: String,
       trim: true,
     },
