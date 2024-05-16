@@ -5,7 +5,7 @@ const { assessmentController } = require('../../controllers');
 const router = express.Router();
 
 router
-  .route('/add')
+  .route('/')
   .post(assessmentController.createAssessment)
   .get( assessmentController.queryAssessment);
 router
@@ -26,31 +26,69 @@ module.exports = router;
 
 /**
  * @swagger
- * /teacher:
- *   post:
- *     summary: Create a user
- *     description: Only admins can create other users.
- *     tags: [Assessment]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Teacher'
- *     responses:
- *       "201":
- *         description: Created
+ * paths:
+ *   /assessment:
+ *     post:
+ *       summary: Create a new assessment
+ *       tags: 
+ *         - Assessment
+ *       requestBody:
+ *         required: true
  *         content:
  *           application/json:
  *             schema:
- *                $ref: '#/components/schemas/Teacher'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- *       "403":
- *         $ref: '#/components/responses/Forbidden'
+ *               type: object
+ *               properties:
+ *                 studentId:
+ *                   type: string
+ *                   description: The ID of the student.
+ *                 schoolId:
+ *                   type: string
+ *                   description: The ID of the school.
+ *                 score:
+ *                   type: object
+ *                   additionalProperties:
+ *                     type: number
+ *                   description: The scores of the assessment.
+ *                 status:
+ *                   type: string
+ *                   enum: [not-started, started, completed]
+ *                   description: The status of the assessment.
+ *                 isReportGenerated:
+ *                   type: boolean
+ *                   description: Indicates if the report is generated.
+ *                 reports:
+ *                   type: object
+ *                   properties:
+ *                     long:
+ *                       type: string
+ *                       description: The long report.
+ *                     short:
+ *                       type: string
+ *                       description: The short report.
+ *                     preview:
+ *                       type: string
+ *                       description: The preview of the report.
+ *                   required:
+ *                     - long
+ *                     - short
+ *                     - preview
+ *                   description: The report details.
+ *       responses:
+ *         '201':
+ *           description: Created
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Assessment'
+ *         '400':
+ *           description: Bad Request
+ *         '500':
+ *           description: Internal Server Error
+ *       security:
+ *         - bearerAuth: []
  */
+
 /**
  * @swagger
  * /teacher:

@@ -42,7 +42,7 @@ const defaultRoutes = [
     route: visitRoute,
   },
   {
-    path: 'assessment',
+    path: '/assessment',
     route: assessmentRoute,
   },
 ];
