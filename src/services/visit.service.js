@@ -21,8 +21,8 @@ const scheduleVisit = async (trainerId, schoolId, visitDate) => {
   return visit; // Return the saved visit
 };
 // Replace with the desired visit date
-
-// scheduleVisit(trainerId, schoolId, visitDate)
+// const visitDate = new Date();
+// scheduleVisit('6645d7a1914ef05230f1080a', '66432f8d8318cf2613625e64', visitDate)
 //   .then((result) => {
 //     console.log('Visit scheduled:', result);
 //   })
@@ -37,7 +37,7 @@ const getTrainerVisits = async (trainerId) => {
     },
     {
       $lookup: {
-        from: 'schools', // Assuming the name of the schools collection is "schools"
+        from: 'schools',
         localField: 'schoolId',
         foreignField: '_id',
         as: 'school',
@@ -57,10 +57,28 @@ const getTrainerVisits = async (trainerId) => {
   return visits;
 };
 
-// const trainerIds = '664450b063614b7566e8b6aa';
-// getTrainerVisits(trainerIds)
-//   .then((result) => {
-//     console.log('Trainer visits:', result);
+const getVisitsBySchoolId = async (schoolId) => {
+  const visits = await Visit.find({ schoolId });
+  if (!visits || visits.length === 0) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Visits not found');
+  }
+  const populatedVisits = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const visit of visits) {
+    // eslint-disable-next-line no-await-in-loop
+    const counselor = await User.findOne({ _id: visit.trainer }).select('firstName lastName mobNumber');
+    populatedVisits.push({ visit, counselor });
+  }
+
+  return populatedVisits;
+};
+
+// const schoolId = "6645f344e32c9a95de62cc0a";
+// getVisitsBySchoolId(schoolId)
+//   .then(async(result) => {
+
+//     console.log('Trainer visits:', result, find);
 //   })
 //   .catch((error) => {
 //     console.error('Error getting trainer visits:', error);
@@ -103,6 +121,7 @@ module.exports = {
   queryStudent,
   getStudentById,
   getTrainerVisits,
+  getVisitsBySchoolId,
   updateStudentById,
   scheduleVisit,
 };

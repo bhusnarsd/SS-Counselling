@@ -8,6 +8,7 @@ const sansthanRoute = require('./sansthan.route');
 const teacherRoute = require('./teacher.route');
 const studentRoute = require('./student.route');
 const visitRoute = require('./visit.route');
+const assessmentRoute = require('./assessment.route');
 
 const router = express.Router();
 
@@ -39,6 +40,10 @@ const defaultRoutes = [
   {
     path: '/visit',
     route: visitRoute,
+  },
+  {
+    path: 'assessment',
+    route: assessmentRoute,
   },
 ];
 

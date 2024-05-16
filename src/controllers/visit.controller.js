@@ -10,6 +10,17 @@ const createSchedule = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(visit);
 });
 
+const getTrainerVisits = catchAsync(async (req, res) => {
+  const { trainerId } = req.params;
+  const visit = await visitService.getTrainerVisits(trainerId);
+  res.status(httpStatus.CREATED).send(visit);
+});
+
+const getVisitsBySchoolId = catchAsync(async (req, res) => {
+  const { schoolId } = req.params;
+  const visit = await visitService.getVisitsBySchoolId(schoolId);
+  res.status(httpStatus.CREATED).send(visit);
+});
 // const updateTeacher = catchAsync(async (req, res) => {
 //   const result = await teacherService.updateTeacherById(req.params.id, req.body);
 //   res.send(result);
@@ -17,4 +28,6 @@ const createSchedule = catchAsync(async (req, res) => {
 
 module.exports = {
   createSchedule,
+  getTrainerVisits,
+  getVisitsBySchoolId,
 };

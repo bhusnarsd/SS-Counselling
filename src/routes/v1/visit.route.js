@@ -1,5 +1,5 @@
 const express = require('express');
-// const auth = require('../../middlewares/auth');
+const auth = require('../../middlewares/auth');
 const { visitController } = require('../../controllers');
 
 const router = express.Router();
@@ -9,9 +9,13 @@ router.route('/').post(visitController.createSchedule);
 // .get(studentvisitControllerController.getAllStudent);
 
 // router.route('/genrate-token').get(studentController.generateToken);
-// router
-//   .route('/:id')
-//   .get(auth('superadmin', 'block_officer'), studentController.getStudentById)
+router
+  .route('/:trainerId')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), visitController.getTrainerVisits);
+
+router
+  .route('/get-trainer-details/:schoolId')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), visitController.getVisitsBySchoolId);
 //   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
 module.exports = router;
 

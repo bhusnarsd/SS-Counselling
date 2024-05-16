@@ -5,3 +5,4 @@ module.exports.Sansthan = require('./sansthan.model');
 module.exports.Teacher = require('./teacher.model');
 module.exports.Student = require('./student.model');
 module.exports.Visit = require('./visit.model');
+module.exports.Assessment = require('./assessment.model');

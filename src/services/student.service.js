@@ -28,7 +28,9 @@ const bulkUpload = async (studentArray, csvFilePath = null) => {
           return `STUD${randomNumber}`;
         }
         const studentId = generateStudentIds();
-        let record = new Student({ ...student, studentId });
+        student.studentId = studentId;
+        student.password = 'admin@123';
+        let record = new Student(student);
         record = await record.save();
         if (record) {
           records.push(student);
@@ -77,7 +79,9 @@ const createStudent = async (reqBody) => {
     password: 'admin@123',
     role: 'student',
   });
-  return Student.create({ ...reqBody, studentId });
+  reqBody.studentId = studentId;
+  reqBody.password = 'admin@123';
+  return Student.create(reqBody);
 };
 
 const generateToken = async (studentId) => {
