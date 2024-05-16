@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { join } = require('path');
 const csv = require('csvtojson');
+const path = require('path');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
@@ -55,6 +56,26 @@ const generateToken = catchAsync(async (req, res) => {
   res.send(token);
 });
 
+const generateCSVOfStudent = catchAsync(async (req, res) => {
+  const data = await studentService.getStudentUserData();
+  await studentService.writeCSV(data);
+
+  const filePath = path.join(__dirname, '../students.csv'); // Ensure the path is correct
+
+  res.download(filePath, 'students.csv', (err) => {
+    if (err) {
+      res.status(500).send('Error sending file');
+    }
+    // else {
+    //   fs.unlink(filePath, (err) => {
+    //     if (err) {
+    //       console.error('Error deleting file:', err);
+    //     }
+    //   });
+    // }
+  });
+});
+
 const updateStudent = catchAsync(async (req, res) => {
   const result = await studentService.updateStudentById(req.params.studentId, req.body);
   res.send(result);
@@ -73,4 +94,5 @@ module.exports = {
   generateToken,
   updateStudent,
   deleteStudentById,
+  generateCSVOfStudent,
 };

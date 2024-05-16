@@ -1,5 +1,7 @@
 const Jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
+const { createObjectCsvWriter } = require('csv-writer');
+const path = require('path');
 const { Student, User } = require('../models');
 const ApiError = require('../utils/ApiError');
 
@@ -145,6 +147,46 @@ const deleteStudentById = async (studentID) => {
   return student;
 };
 
+async function getStudentUserData() {
+  const students = await Student.find({}, 'tenantId packageId firstName lastName gender mobNumber studentId standard');
+  const users = await User.find({ role: 'student' }, 'username password');
+
+  const userMap = new Map(users.map((user) => [user.username, user.password]));
+
+  const mergedData = students.map((student) => ({
+    tenantId: student.tenantId,
+    packageId: student.packageId,
+    firstName: student.firstName,
+    lastName: student.lastName,
+    gender: student.gender,
+    mobile: student.mobNumber,
+    uniqueId: student.studentId,
+    class: student.standard,
+    password: userMap.get(student.studentId),
+  }));
+
+  return mergedData;
+}
+
+async function writeCSV(data) {
+  const csvWriter = createObjectCsvWriter({
+    path: path.join(__dirname, '../students.csv'), // Ensure this path matches with the controller
+    header: [
+      { id: 'tenantId', title: 'Tenant ID' },
+      { id: 'packageId', title: 'Package ID' },
+      { id: 'firstName', title: 'First Name' },
+      { id: 'lastName', title: 'Last Name' },
+      { id: 'gender', title: 'Gender' },
+      { id: 'mobile', title: 'Mobile' },
+      { id: 'uniqueId', title: 'Unique ID' },
+      { id: 'class', title: 'Class' },
+      { id: 'password', title: 'Password' },
+    ],
+  });
+
+  await csvWriter.writeRecords(data);
+}
+
 module.exports = {
   bulkUpload,
   createStudent,
@@ -153,4 +195,6 @@ module.exports = {
   updateStudentById,
   generateToken,
   deleteStudentById,
+  getStudentUserData,
+  writeCSV,
 };
