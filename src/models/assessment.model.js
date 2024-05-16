@@ -21,6 +21,12 @@ const reportSchema = mongoose.Schema(
 
 const assessmentSchema = mongoose.Schema(
   {
+    studentId: {
+      type: String,
+    },
+    schoolId: {
+      type: String,
+    },
     score: {
       type: Map,
       of: Number,
@@ -28,7 +34,7 @@ const assessmentSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['not started', 'started', 'completed'],
+      enum: ['not-started', 'started', 'completed'],
       required: true,
     },
     isReportGenerated: {

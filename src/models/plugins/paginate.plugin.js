@@ -32,9 +32,14 @@ const paginate = (schema) => {
       sort = '-createdAt'; // Sort by createdAt field in descending order by default
     }
 
-    const limit = options.limit && parseInt(options.limit, 10) > 0 ? parseInt(options.limit, 10) : 10;
+    let limit = options.limit && parseInt(options.limit, 10) > 0 ? parseInt(options.limit, 10) : 10;
     const page = options.page && parseInt(options.page, 10) > 0 ? parseInt(options.page, 10) : 1;
     const skip = (page - 1) * limit;
+
+    // Set limit to null if not provided or less than or equal to zero
+    if (!options.limit || limit <= 0) {
+      limit = null;
+    }
 
     const countPromise = this.countDocuments(filter).exec();
     let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit);
@@ -54,7 +59,7 @@ const paginate = (schema) => {
 
     return Promise.all([countPromise, docsPromise]).then((values) => {
       const [totalResults, results] = values;
-      const totalPages = Math.ceil(totalResults / limit);
+      const totalPages = Math.ceil(totalResults / (limit || 1)); // Avoid division by zero when limit is null
 
       // Reverse results if the reverse option is true
       if (options.reverse) {
