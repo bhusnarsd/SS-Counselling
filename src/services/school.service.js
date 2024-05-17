@@ -139,7 +139,7 @@ const getSchoolStats = async () => {
 
 const getSchoolstatsBySchoolID = async (schoolId) => {
   const [schools, students, assessmentCount] = await Promise.all([
-    School.countDocuments({ _id: schoolId }),
+    School.countDocuments({ schoolId }),
     Student.countDocuments({ schoolId }),
     Assessment.countDocuments({ schoolId }),
   ]);

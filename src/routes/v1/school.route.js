@@ -40,7 +40,7 @@ router.route('/get-block').get(
 router.route('/get-schools').post(auth('superadmin', 'school'), schoolController.getSchoolList);
 router.route('/get-stats/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolStats);
 
-router.route('/get-stats/by-school').get(auth('superadmin', 'school'), schoolController.getSchoolstatsBySchoolID);
+router.route('/get-stats/by-school/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolstatsBySchoolID);
 
 router
   .route('/:schoolId')
