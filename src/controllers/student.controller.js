@@ -42,6 +42,13 @@ const getAllStudent = catchAsync(async (req, res) => {
   res.send(result);
 });
 
+const getAllStudentBySchooolId = catchAsync(async (req, res) => {
+  const filter = pick(req.query, ['firstName', 'lastName', 'schoolId']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page', 'reverse']);
+  const result = await studentService.queryStudent(filter, options);
+  res.send(result);
+});
+
 const getStudentById = catchAsync(async (req, res) => {
   const result = await studentService.getStudentById(req.params.studentId);
   if (!result) {
@@ -95,4 +102,5 @@ module.exports = {
   updateStudent,
   deleteStudentById,
   generateCSVOfStudent,
+  getAllStudentBySchooolId,
 };

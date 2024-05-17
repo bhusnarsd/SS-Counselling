@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 const httpStatus = require('http-status');
-const { School, User } = require('../models');
+const { School, User, Student, Assessment } = require('../models');
 const ApiError = require('../utils/ApiError');
 const userService = require('./user.service');
 
@@ -122,6 +122,40 @@ const getSchoolList = async (block) => {
 };
 
 /**
+ * Get DASHBOARD reporting
+ * @param {string} block
+ * @returns {Promise<School>}
+ */
+const getSchoolStats = async () => {
+  const [schools, students, assessmentCount, assessmentStartedCount] = await Promise.all([
+    School.countDocuments(),
+    Student.countDocuments(),
+    Assessment.countDocuments(),
+    Assessment.distinct('schoolId').then((result) => result.length),
+  ]);
+
+  return { schools, students, assessmentCount, assessmentStartedCount };
+};
+
+const getSchoolstatsBySchoolID = async (schoolId) => {
+  const [schools, students, assessmentCount] = await Promise.all([
+    School.countDocuments({ _id: schoolId }),
+    Student.countDocuments({ schoolId }),
+    Assessment.countDocuments({ schoolId }),
+  ]);
+  return { schools, students, assessmentCount };
+};
+
+// const trainerId = "SCH636454";
+// getSchoolstatsBySchoolID(trainerId)
+//   .then(async(result) => {
+
+//     console.log('Trainer visits:', result);
+//   })
+//   .catch((error) => {
+//     console.error('Error getting trainer visits:', error);
+//   });
+/**
  * Update school by id
  * @param {ObjectId} scode
  * @param {Object} updateBody
@@ -164,6 +198,8 @@ module.exports = {
   createSchool,
   querySchool,
   getSchoolList,
+  getSchoolStats,
+  getSchoolstatsBySchoolID,
   getBlockList,
   bulkUpload,
   getSchoolById,

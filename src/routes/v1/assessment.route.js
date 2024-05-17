@@ -4,10 +4,7 @@ const { assessmentController } = require('../../controllers');
 
 const router = express.Router();
 
-router
-  .route('/')
-  .post(assessmentController.createAssessment)
-  .get( assessmentController.queryAssessment);
+router.route('/').post(assessmentController.createAssessment).get(assessmentController.queryAssessment);
 router
   .route('/:id')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), assessmentController.getAssessmentById)
@@ -30,7 +27,7 @@ module.exports = router;
  *   /assessment:
  *     post:
  *       summary: Create a new assessment
- *       tags: 
+ *       tags:
  *         - Assessment
  *       requestBody:
  *         required: true

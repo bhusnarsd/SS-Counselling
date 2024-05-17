@@ -27,22 +27,25 @@ router
     schoolController.createSchool
   )
   .get(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer'),
     validate(schoolValidation.getSchools),
     schoolController.getSchools
   );
 
 router.route('/get-block').get(
-  auth('superadmin', 'block_officer', 'school'),
+  auth('superadmin', 'school'),
   // validate(schoolValidation.getBlock),
   schoolController.getBlockList
 );
-router.route('/get-schools').post(auth('superadmin', 'block_officer', 'school'), schoolController.getSchoolList);
+router.route('/get-schools').post(auth('superadmin', 'school'), schoolController.getSchoolList);
+router.route('/get-stats/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolStats);
+
+router.route('/get-stats/by-school').get(auth('superadmin', 'school'), schoolController.getSchoolstatsBySchoolID);
 
 router
   .route('/:schoolId')
   .get(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer'),
     validate(schoolValidation.getSchool),
     schoolController.getSchool
   )
@@ -54,7 +57,7 @@ router
   .delete(
     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
     validate(schoolValidation.deleteSchools),
-    schoolController.updateSchool
+    schoolController.deleteSchoolById
   );
 
 module.exports = router;
