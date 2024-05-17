@@ -8,14 +8,10 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<Assessment>}
  */
 const createAssessment = async (reqBody) => {
-  
-  console.log("data", reqBody)
   // Try to find an assessment for the given studentId
   let assessment = await Assessment.findOne({ studentId: reqBody.studentId });
-  console.log('assessment', assessment)
   const school = await Student.findOne({ studentId: reqBody.studentId }).select('schoolId');
   // If assessment found, update it with the new data
-  console.log(school);
   reqBody.SchoolId = school.SchoolId;
   if (assessment) {
     assessment = await Assessment.findOneAndUpdate(

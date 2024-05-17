@@ -22,9 +22,6 @@ const schoolSchema = mongoose.Schema({
   district: {
     type: String,
   },
-  block: {
-    type: String,
-  },
   schoolType: {
     type: String,
   },
