@@ -8,6 +8,8 @@ const createSchools = {
     udisecode: Joi.string(),
     district: Joi.string(),
     block: Joi.string(),
+    locationType: Joi.string().allow('', null),
+    schoolType: Joi.string().allow('', null),
   }),
 };
 
@@ -68,6 +70,8 @@ const updateSchools = {
       udisecode: Joi.string(),
       district: Joi.string(),
       block: Joi.string(),
+      locationType: Joi.string().allow('', null),
+      schoolType: Joi.string().allow('', null),
     })
     .min(1),
 };
