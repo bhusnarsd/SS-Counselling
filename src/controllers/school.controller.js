@@ -50,6 +50,17 @@ const getBlockList = catchAsync(async (req, res) => {
   res.send(districtList);
 });
 
+const getSchoolStats = catchAsync(async (req, res) => {
+  const stats = await schoolService.getSchoolStats();
+  res.send(stats);
+});
+
+const getSchoolstatsBySchoolID = catchAsync(async (req, res) => {
+  const { schoolId } = req.query;
+  const stats = await schoolService.getSchoolstatsBySchoolID(schoolId);
+  res.send(stats);
+});
+
 const getSchoolList = catchAsync(async (req, res) => {
   const result = await schoolService.getSchoolList(req.body.block);
   res.send(result);
@@ -71,6 +82,8 @@ module.exports = {
   getSchool,
   getSchoolList,
   getDistrictList,
+  getSchoolStats,
+  getSchoolstatsBySchoolID,
   getBlockList,
   updateSchool,
   deleteSchoolById,

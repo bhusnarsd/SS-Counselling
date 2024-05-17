@@ -27,9 +27,6 @@ const studentShema = mongoose.Schema(
     mobNumber: {
       type: Number,
     },
-    udiseCode: {
-      type: String,
-    },
     standard: {
       type: String,
     },

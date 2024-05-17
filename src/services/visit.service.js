@@ -39,7 +39,7 @@ const getTrainerVisits = async (trainerId) => {
       $lookup: {
         from: 'schools',
         localField: 'schoolId',
-        foreignField: '_id',
+        foreignField: 'schoolId',
         as: 'school',
       },
     },
@@ -74,11 +74,11 @@ const getVisitsBySchoolId = async (schoolId) => {
   return populatedVisits;
 };
 
-// const schoolId = "6645f344e32c9a95de62cc0a";
-// getVisitsBySchoolId(schoolId)
+// const trainerId = "6645ec9ac3deb1833d210467";
+// getTrainerVisits(trainerId)
 //   .then(async(result) => {
 
-//     console.log('Trainer visits:', result, find);
+//     console.log('Trainer visits:', result);
 //   })
 //   .catch((error) => {
 //     console.error('Error getting trainer visits:', error);
