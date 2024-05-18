@@ -1,5 +1,7 @@
 /* eslint-disable no-shadow */
 const httpStatus = require('http-status');
+const path = require('path');
+const { createObjectCsvWriter } = require('csv-writer');
 const { School, User, Student, Assessment } = require('../models');
 const ApiError = require('../utils/ApiError');
 const userService = require('./user.service');
@@ -194,6 +196,42 @@ const deleteSchoolById = async (schoolId) => {
   return school;
 };
 
+async function getSchoolData() {
+  const schools = await School.find({}, 'tenantId name schoolId district schoolType locationType');
+  // const users = await User.find({ role: 'school' }, 'username');
+
+  // const userMap = new Map(users.map((user) => [user.username]));
+
+  const mergedData = schools.map((school) => ({
+    tenantId: school.tenantId,
+    name: school.name,
+    schoolId: school.schoolId,
+    district: school.district,
+    schoolType: school.schoolType,
+    locationType: school.locationType,
+    // password: userMap.get(student.studentId),
+  }));
+
+  return mergedData;
+}
+
+async function writeCSV(data) {
+  const uploadPath = path.join(__dirname, '../uploads');
+  const csvWriter = createObjectCsvWriter({
+    path: path.join(uploadPath, 'school.csv'), // Ensure this path points to the uploads folder
+    header: [
+      { id: 'tenantId', title: 'Tenant ID' },
+      { id: 'name', title: 'School Name' },
+      { id: 'schoolId', title: 'School Code' },
+      { id: 'district', title: 'District' },
+      { id: 'schoolType', title: 'School Type' },
+      { id: 'locationType', title: 'Location Type' },
+    ],
+  });
+
+  await csvWriter.writeRecords(data);
+}
+
 module.exports = {
   createSchool,
   querySchool,
@@ -205,4 +243,6 @@ module.exports = {
   getSchoolById,
   updateSchoolByScode,
   deleteSchoolById,
+  getSchoolData,
+  writeCSV,
 };

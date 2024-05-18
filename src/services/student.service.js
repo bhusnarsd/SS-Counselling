@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const Jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const { createObjectCsvWriter } = require('csv-writer');
@@ -184,7 +185,7 @@ async function writeCSV(data) {
       { id: 'mobile', title: 'Mobile' },
       { id: 'uniqueId', title: 'Unique ID' },
       { id: 'class', title: 'Class' },
-      { id: 'password', title: 'Password' },
+      // { id: 'password', title: 'Password' },
     ],
   });
 
