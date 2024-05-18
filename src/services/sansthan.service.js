@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const httpStatus = require('http-status');
 const { Sansthan, User, School } = require('../models');
 const ApiError = require('../utils/ApiError');

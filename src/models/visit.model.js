@@ -16,6 +16,15 @@ const visitSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    time: {
+      type: String,
+    },
+    standard: {
+      type: String,
+    },
+    content: {
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -5,8 +5,8 @@ const catchAsync = require('../utils/catchAsync');
 const { visitService } = require('../services');
 
 const createSchedule = catchAsync(async (req, res) => {
-  const { trainer, schoolId, visitDate } = req.body;
-  const visit = await visitService.scheduleVisit(trainer, schoolId, visitDate);
+  const { trainer, schoolId, visitDate, time, standard } = req.body;
+  const visit = await visitService.scheduleVisit(trainer, schoolId, visitDate, time, standard);
   res.status(httpStatus.CREATED).send(visit);
 });
 

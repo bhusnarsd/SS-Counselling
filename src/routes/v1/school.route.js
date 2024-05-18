@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const uploads = multer({ storage });
 
 router.route('/bulkupload').post(uploads.single('file'), schoolController.bulkUploadFile);
-
+router.get('/export-schools', schoolController.generateCSVOfSchool);
 router
   .route('/')
   .post(
