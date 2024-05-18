@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
 const { join } = require('path');
+const path = require('path');
 const csv = require('csvtojson');
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
@@ -75,6 +76,21 @@ const deleteSchoolById = catchAsync(async (req, res) => {
   const school = await schoolService.deleteSchoolById(req.params.schoolId);
   res.send(school);
 });
+
+const generateCSVOfSchool = catchAsync(async (req, res) => {
+  const data = await schoolService.getSchoolData();
+  await schoolService.writeCSV(data);
+  const uploadPath = path.join(__dirname, '../uploads');
+
+  await schoolService.writeCSV(data, uploadPath);
+
+  const filePath = path.join(uploadPath, 'school.csv');
+  res.download(filePath, 'school.csv', (err) => {
+    if (err) {
+      res.status(500).send('Error sending file');
+    }
+  });
+});
 module.exports = {
   bulkUploadFile,
   createSchool,
@@ -85,6 +101,7 @@ module.exports = {
   getSchoolStats,
   getSchoolstatsBySchoolID,
   getBlockList,
+  generateCSVOfSchool,
   updateSchool,
   deleteSchoolById,
 };

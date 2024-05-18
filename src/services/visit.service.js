@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 const { Student, User, Visit } = require('../models');
 const ApiError = require('../utils/ApiError');
 
-const scheduleVisit = async (trainerId, schoolId, visitDate) => {
+const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
   const visit = new Visit({
     trainer: trainerId,
     schoolId,
     visitDate,
+    time,
+    standard,
   });
   await visit.save();
   // Update trainer's visits
@@ -50,6 +52,8 @@ const getTrainerVisits = async (trainerId) => {
       $project: {
         _id: 1,
         visitDate: 1,
+        time: 1,
+        standard: 1,
         school: '$school',
       },
     },
@@ -63,7 +67,6 @@ const getVisitsBySchoolId = async (schoolId) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Visits not found');
   }
   const populatedVisits = [];
-
   // eslint-disable-next-line no-restricted-syntax
   for (const visit of visits) {
     // eslint-disable-next-line no-await-in-loop

@@ -7,3 +7,4 @@ module.exports.studentController = require('./student.controller');
 module.exports.visitController = require('./visit.controller');
 module.exports.assessmentController = require('./assessment.controller');
 module.exports.synopsisController = require('./synopsis.controller');
+module.exports.statisticController = require('./statistic.controller');
