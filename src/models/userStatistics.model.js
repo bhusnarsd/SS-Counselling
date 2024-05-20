@@ -6,7 +6,7 @@ const statisticsSchema = new mongoose.Schema({
   },
   elementType: {
     String,
-    enum: ['careers', 'colleges', 'exams', 'scholarships'],
+    // enum: ['careers', 'colleges', 'exams', 'scholarships'],
   },
   userId: {
     String,
