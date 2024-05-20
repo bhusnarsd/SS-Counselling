@@ -1,5 +1,5 @@
 // const httpStatus = require('http-status');
-const { Statistic, Student } = require('../models');
+const { Statistic, Student, Assessment } = require('../models');
 // const ApiError = require('../utils/ApiError');
 
 /**
@@ -17,7 +17,7 @@ const getStatistics = async () => {
   const uniqueLoginCount = await Statistic.distinct('userId', { event: 'login' }).then((users) => users.length);
   const totalStudents = await Student.countDocuments(); // Replace with actual count if available
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
-
+  const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
   const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers' });
   const uniqueCareerClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'careers' }).then(
     (users) => users.length
@@ -44,6 +44,7 @@ const getStatistics = async () => {
   const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
 
   return {
+    assessmentCount,
     totalLoginCount,
     uniqueLoginCount,
     loginPercentage,
