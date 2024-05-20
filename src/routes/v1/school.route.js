@@ -42,7 +42,7 @@ router.route('/get-district').get(
   // validate(schoolValidation.getBlock),
   schoolController.getDistrictList
 );
-router.route('/get-district').get(
+router.route('/get-cluster').get(
   auth('superadmin', 'school'),
   // validate(schoolValidation.getBlock),
   schoolController.getClusterList
