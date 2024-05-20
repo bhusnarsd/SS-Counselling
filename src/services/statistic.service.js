@@ -19,7 +19,7 @@ const getStatistics = async () => {
     (users) => users.length
   );
   // Count the total number of students with userId starting with 'STUD'
-  const totalStudents = await Student.countDocuments({ userId: { $regex: '^STUD' } });
+  const totalStudents = await Student.countDocuments();
   // Calculate login percentage
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
   const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
