@@ -257,7 +257,7 @@ const deleteSchoolById = async (schoolId) => {
 };
 
 async function getSchoolData() {
-  const schools = await School.find({}, 'tenantId name schoolId district schoolType locationType');
+  const schools = await School.find({}, 'tenantId name schoolId district schoolType locationType').distinct('schoolId');
   // const users = await User.find({ role: 'school' }, 'username');
 
   // const userMap = new Map(users.map((user) => [user.username]));
