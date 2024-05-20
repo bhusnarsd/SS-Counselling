@@ -19,9 +19,17 @@ router.route('/bulkupload').post(uploads.single('file'), studentController.bulkU
 
 router.route('/').post(studentController.createStudent).get(studentController.getAllStudent);
 
-router.route('/get-by-school').get(studentController.getAllStudentBySchooolId);
-router.route('/genrate-token').get(studentController.generateToken);
-router.get('/export-students', studentController.generateCSVOfStudent);
+router
+  .route('/get-by-school')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), studentController.getAllStudentBySchooolId);
+router
+  .route('/genrate-token')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), studentController.generateToken);
+router.get(
+  '/export-students',
+  auth('admin', 'school', 'superadmin', 'student', 'trainer'),
+  studentController.generateCSVOfStudent
+);
 router
   .route('/:studentId')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), studentController.getStudentById)
