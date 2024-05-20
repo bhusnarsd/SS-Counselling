@@ -46,6 +46,11 @@ const getDistrictList = catchAsync(async (req, res) => {
   res.send(districtList);
 });
 
+const getClusterList = catchAsync(async (req, res) => {
+  const cluster = await schoolService.getClusterList();
+  res.send(cluster);
+});
+
 const getBlockList = catchAsync(async (req, res) => {
   const districtList = await schoolService.getBlockList();
   res.send(districtList);
@@ -98,6 +103,7 @@ module.exports = {
   getSchool,
   getSchoolList,
   getDistrictList,
+  getClusterList,
   getSchoolStats,
   getSchoolstatsBySchoolID,
   getBlockList,
