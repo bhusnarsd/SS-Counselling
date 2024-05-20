@@ -1,0 +1,19 @@
+config:
+  target: 'http://localhost:5000/v1' # Base URL of your API
+  phases:
+    - duration: 60 # Duration of the test in seconds
+      arrivalRate: 30 # Number of new users per second
+  defaults:
+    headers:
+      content-type: application/json
+scenarios:
+  - name: 'User Login'
+    flow:
+      - post:
+          url: '/auth/login'
+          json:
+            username: 'superadmin' # Replace with your test username
+            password: 'Super@123' # Replace with your test password
+          capture:
+            - json: '$.tokens' # Capture tokens if needed
+              as: 'authTokens'

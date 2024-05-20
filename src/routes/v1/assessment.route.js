@@ -4,7 +4,10 @@ const { assessmentController } = require('../../controllers');
 
 const router = express.Router();
 
-router.route('/').post(assessmentController.createAssessment).get(assessmentController.queryAssessment);
+router
+  .route('/')
+  .post(assessmentController.createAssessment)
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), assessmentController.queryAssessment);
 router
   .route('/:id')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), assessmentController.getAssessmentById)
