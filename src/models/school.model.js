@@ -22,6 +22,27 @@ const schoolSchema = mongoose.Schema({
   district: {
     type: String,
   },
+  districtCode: {
+    type: String,
+  },
+  cluster: {
+    type: String,
+  },
+  clusterCode: {
+    type: String,
+  },
+  block: {
+    type: String,
+  },
+  blockCode: {
+    type: String,
+  },
+  lowestClass: {
+    type: String,
+  },
+  highestClass: {
+    type: String,
+  },
   schoolType: {
     type: String,
   },
