@@ -8,7 +8,7 @@ const createUser = {
     password: Joi.string().required().custom(password),
     firstName: Joi.string(),
     lastName: Joi.string(),
-    role: Joi.string().required().valid('user', 'admin', 'superadmin', 'student', 'trainer', 'block_officer', 'school'),
+    role: Joi.string().required().valid('user', 'admin', 'superadmin', 'student', 'trainer', 'cluster', 'school'),
     asssignedTo: Joi.string().allow('', null),
   }),
 };
