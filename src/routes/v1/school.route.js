@@ -37,6 +37,17 @@ router.route('/get-block').get(
   // validate(schoolValidation.getBlock),
   schoolController.getBlockList
 );
+router.route('/get-district').get(
+  auth('superadmin', 'school'),
+  // validate(schoolValidation.getBlock),
+  schoolController.getDistrictList
+);
+router.route('/get-district').get(
+  auth('superadmin', 'school'),
+  // validate(schoolValidation.getBlock),
+  schoolController.getClusterList
+);
+
 router.route('/get-schools').post(auth('superadmin', 'school'), schoolController.getSchoolList);
 router.route('/get-stats/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolStats);
 

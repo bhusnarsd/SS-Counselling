@@ -109,8 +109,17 @@ const getSchoolById = async (schoolId) => {
  * @returns {Promise<School>}
  */
 const getBlockList = async () => {
-  const block = await School.find({}, { block: 1 }).distinct('block');
+  const block = await School.find({}, { block: 1, blockCode: 1 }).distinct('block', 'blockCode');
   return block;
+};
+const getClusterList = async () => {
+  const cluster = await School.find({}, { cluster: 1, clusterCode: 1 }).distinct('cluster', 'clusterCode');
+  return cluster;
+};
+
+const getDistrictList = async () => {
+  const district = await School.find({}, { district: 1, districtCode: 1 }).distinct('district', 'districtCode');
+  return district;
 };
 
 /**
@@ -148,7 +157,7 @@ const getSchoolstatsBySchoolID = async (schoolId) => {
   return { schools, students, assessmentCount };
 };
 
-// const trainerId = "SCH636454";
+// // const trainerId = "SCH636454";
 // getSchoolstatsBySchoolID(trainerId)
 //   .then(async(result) => {
 
@@ -245,4 +254,6 @@ module.exports = {
   deleteSchoolById,
   getSchoolData,
   writeCSV,
+  getClusterList,
+  getDistrictList,
 };
