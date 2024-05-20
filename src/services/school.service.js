@@ -109,17 +109,68 @@ const getSchoolById = async (schoolId) => {
  * @returns {Promise<School>}
  */
 const getBlockList = async () => {
-  const block = await School.find({}, { block: 1, blockCode: 1 }).distinct('block', 'blockCode');
-  return block;
+  const blocks = await School.aggregate([
+    {
+      $group: {
+        _id: {
+          block: '$block',
+          blockCode: '$blockCode',
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        block: '$_id.block',
+        blockCode: '$_id.blockCode',
+      },
+    },
+  ]);
+
+  return blocks;
 };
 const getClusterList = async () => {
-  const cluster = await School.find({}, { cluster: 1, clusterCode: 1 }).distinct('cluster', 'clusterCode');
-  return cluster;
+  const clusters = await School.aggregate([
+    {
+      $group: {
+        _id: {
+          cluster: '$cluster',
+          clusterCode: '$clusterCode',
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        cluster: '$_id.cluster',
+        clusterCode: '$_id.clusterCode',
+      },
+    },
+  ]);
+
+  return clusters;
 };
 
 const getDistrictList = async () => {
-  const district = await School.find({}, { district: 1, districtCode: 1 }).distinct('district', 'districtCode');
-  return district;
+  const districts = await School.aggregate([
+    {
+      $group: {
+        _id: {
+          district: '$district',
+          districtCode: '$districtCode',
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        district: '$_id.district',
+        districtCode: '$_id.districtCode',
+      },
+    },
+  ]);
+
+  return districts;
 };
 
 /**
