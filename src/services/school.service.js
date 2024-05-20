@@ -257,10 +257,13 @@ const deleteSchoolById = async (schoolId) => {
 };
 
 async function getSchoolData() {
-  const schools = await School.find({}, 'tenantId name schoolId district schoolType locationType').distinct('schoolId');
-  // const users = await User.find({ role: 'school' }, 'username');
+  const uniqueSchoolIds = await School.distinct('schoolId');
 
-  // const userMap = new Map(users.map((user) => [user.username]));
+  // Fetch the details of the schools with those unique schoolIds
+  const schools = await School.find(
+    { schoolId: { $in: uniqueSchoolIds } },
+    'tenantId name schoolId district schoolType locationType'
+  );
 
   const mergedData = schools.map((school) => ({
     tenantId: school.tenantId,
