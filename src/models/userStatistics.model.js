@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 
 const statisticsSchema = new mongoose.Schema({
   event: {
-    String,
+    type: String,
   },
   elementType: {
-    String,
+    type: String,
     // enum: ['careers', 'colleges', 'exams', 'scholarships'],
   },
   userId: {
-    String,
+    type: String,
   },
   timestamp: { type: Date, default: Date.now },
 });
