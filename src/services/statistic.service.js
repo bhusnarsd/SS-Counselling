@@ -13,9 +13,14 @@ const createStatitic = async (reqBody) => {
 };
 
 const getStatistics = async () => {
-  const totalLoginCount = await Statistic.countDocuments({ event: 'login' });
-  const uniqueLoginCount = await Statistic.distinct('userId', { event: 'login' }).then((users) => users.length);
-  const totalStudents = await Student.countDocuments(); // Replace with actual count if available
+  const totalLoginCount = await Statistic.countDocuments({ event: 'login', userId: { $regex: '^STUD' } });
+  // Get the distinct count of user IDs starting with 'STUD' that have login events
+  const uniqueLoginCount = await Statistic.distinct('userId', { event: 'login', userId: { $regex: '^STUD' } }).then(
+    (users) => users.length
+  );
+  // Count the total number of students with userId starting with 'STUD'
+  const totalStudents = await Student.countDocuments({ userId: { $regex: '^STUD' } });
+  // Calculate login percentage
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
   const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
   const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers' });
