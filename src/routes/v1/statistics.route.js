@@ -6,8 +6,8 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.createStatistic)
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.getStatistics);
+  .post(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.createStatistic)
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getStatistics);
 router
   .route('/get-by-school')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getSchoolStatistics);
