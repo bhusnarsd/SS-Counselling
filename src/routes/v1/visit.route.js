@@ -4,18 +4,20 @@ const { visitController } = require('../../controllers');
 
 const router = express.Router();
 
-router.route('/').post(auth('admin', 'school', 'superadmin', 'student', 'trainer'), visitController.createSchedule);
+router
+  .route('/')
+  .post(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.createSchedule);
 //   auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 // .get(studentvisitControllerController.getAllStudent);
 
 // router.route('/genrate-token').get(studentController.generateToken);
 router
   .route('/:trainerId')
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), visitController.getTrainerVisits);
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
 
 router
   .route('/get-trainer-details/:schoolId')
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), visitController.getVisitsBySchoolId);
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getVisitsBySchoolId);
 //   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
 module.exports = router;
 
