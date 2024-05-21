@@ -4,6 +4,20 @@ const { Student, User, Visit } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
+  // Check for duplicate visit
+  const existingVisit = await Visit.findOne({
+    trainer: mongoose.Types.ObjectId(trainerId),
+    schoolId,
+    visitDate,
+    time,
+    standard,
+  });
+
+  if (existingVisit) {
+    throw new ApiError(httpStatus.CONFLICT, 'Visit scheduled already found');
+  }
+
+  // Create new visit
   const visit = new Visit({
     trainer: trainerId,
     schoolId,
@@ -12,25 +26,38 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
     standard,
   });
   await visit.save();
+
   // Update trainer's visits
   const trainer = await User.findById(trainerId);
   if (!trainer) {
-    throw new Error('Trainer not found');
+    // throw new ApiError(httpStatus.CONFLICT, 'Visit scheduled already found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Trainer not found');
   }
   trainer.visits.push(visit._id);
   await trainer.save();
 
   return visit; // Return the saved visit
 };
-// Replace with the desired visit date
-// const visitDate = new Date();
-// scheduleVisit('6645d7a1914ef05230f1080a', '66432f8d8318cf2613625e64', visitDate)
-//   .then((result) => {
-//     console.log('Visit scheduled:', result);
-//   })
-//   .catch((error) => {
-//     console.error('Error scheduling visit:', error);
+
+// const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
+//   const visit = new Visit({
+//     trainer: trainerId,
+//     schoolId,
+//     visitDate,
+//     time,
+//     standard,
 //   });
+//   await visit.save();
+//   // Update trainer's visits
+//   const trainer = await User.findById(trainerId);
+//   if (!trainer) {
+//     throw new Error('Trainer not found');
+//   }
+//   trainer.visits.push(visit._id);
+//   await trainer.save();
+
+//   return visit; // Return the saved visit
+// };
 
 const getTrainerVisits = async (trainerId) => {
   const visits = await Visit.aggregate([
@@ -106,13 +133,28 @@ const getStudentById = async (id) => {
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
-  const visits = await Visit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId');
-  const schoolIds = [...new Set(visits.map((visit) => visit.schoolId))];
+  const visits = await Visit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId standard');
+  const schoolStandardPairs = visits.map((visit) => ({ schoolId: visit.schoolId, standard: visit.standard }));
   const studentCounts = await Student.aggregate([
-    { $match: { schoolId: { $in: schoolIds } } },
-    { $group: { _id: '$schoolId', studentCount: { $sum: 1 } } },
+    {
+      $match: {
+        $or: schoolStandardPairs.map((pair) => ({
+          schoolId: pair.schoolId,
+          standard: pair.standard,
+        })),
+      },
+    },
+    {
+      $group: {
+        _id: { schoolId: '$schoolId', standard: '$standard' },
+        studentCount: { $sum: 1 },
+      },
+    },
   ]);
-  const schoolCount = schoolIds.length;
+
+  // Step 3: Calculate the total number of unique schools
+  const schoolCount = [...new Set(schoolStandardPairs.map((pair) => pair.schoolId))].length;
+
   return {
     studentCounts,
     schoolCount,

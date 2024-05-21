@@ -8,9 +8,9 @@ router
   .route('/')
   .post(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.createStatistic)
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.getStatistics);
-// router
-//   .route('/:id')
-//   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), assessmentController.getAssessmentById)
+router
+  .route('/get-by-school')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.getSchoolStatistics);
 //   .patch(
 //     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 //     assessmentController.updateAssessmentById
