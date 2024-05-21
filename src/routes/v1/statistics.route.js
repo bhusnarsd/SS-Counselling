@@ -10,7 +10,7 @@ router
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.getStatistics);
 router
   .route('/get-by-school')
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer'), statisticController.getSchoolStatistics);
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getSchoolStatistics);
 //   .patch(
 //     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 //     assessmentController.updateAssessmentById

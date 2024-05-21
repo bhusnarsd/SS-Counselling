@@ -22,53 +22,57 @@ router
   .post(auth('admin', 'school', 'superadmin'), uploads.single('file'), schoolController.bulkUploadFile);
 router.get(
   '/export-schools',
-  auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+  auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer', 'department'),
   schoolController.generateCSVOfSchool
 );
 router
   .route('/')
-  .post(auth('superadmin', 'school'), validate(schoolValidation.createSchools), schoolController.createSchool)
+  .post(auth('superadmin', 'school', 'department'), validate(schoolValidation.createSchools), schoolController.createSchool)
   .get(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(schoolValidation.getSchools),
     schoolController.getSchools
   );
 
 router.route('/get-block').get(
-  auth('superadmin', 'school'),
+  auth('superadmin', 'school', 'department'),
   // validate(schoolValidation.getBlock),
   schoolController.getBlockList
 );
 router.route('/get-district').get(
-  auth('superadmin', 'school'),
+  auth('superadmin', 'school', 'department'),
   // validate(schoolValidation.getBlock),
   schoolController.getDistrictList
 );
 router.route('/get-cluster').get(
-  auth('superadmin', 'school'),
+  auth('superadmin', 'school', 'department'),
   // validate(schoolValidation.getBlock),
   schoolController.getClusterList
 );
 
-router.route('/get-schools').post(auth('superadmin', 'school'), schoolController.getSchoolList);
-router.route('/get-stats/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolStats);
+router.route('/get-schools').post(auth('superadmin', 'school', 'department'), schoolController.getSchoolList);
+router.route('/get-stats/dashboard').get(auth('superadmin', 'school', 'department'), schoolController.getSchoolStats);
 
-router.route('/get-stats/by-school/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolstatsBySchoolID);
-router.route('/get-school/by-schoolid/:schoolId').get(auth('superadmin', 'school'), schoolController.getSchoolBySchoolID);
+router
+  .route('/get-stats/by-school/dashboard')
+  .get(auth('superadmin', 'school', 'department'), schoolController.getSchoolstatsBySchoolID);
+router
+  .route('/get-school/by-schoolid/:schoolId')
+  .get(auth('superadmin', 'school', 'department'), schoolController.getSchoolBySchoolID);
 router
   .route('/:schoolId')
   .get(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(schoolValidation.getSchool),
     schoolController.getSchool
   )
   .patch(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(schoolValidation.updateSchools),
     schoolController.updateSchool
   )
   .delete(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(schoolValidation.deleteSchools),
     schoolController.deleteSchoolById
   );
