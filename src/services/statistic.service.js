@@ -8,6 +8,11 @@ const { Statistic, Student, Assessment } = require('../models');
  * @returns {Promise<Statistic>}
  */
 const createStatitic = async (reqBody) => {
+  const schoolId = await Student.findOne({ studentId: reqBody.userId });
+  if (schoolId) {
+    // eslint-disable-next-line no-param-reassign
+    reqBody.schoolId = schoolId;
+  }
   const statitic = await Statistic.create(reqBody);
   return statitic;
 };

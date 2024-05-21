@@ -7,12 +7,18 @@ const router = express.Router();
 router
   .route('/')
   .post(assessmentController.createAssessment)
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), assessmentController.queryAssessment);
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer', 'department'),
+    assessmentController.queryAssessment
+  );
 router
   .route('/:id')
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'), assessmentController.getAssessmentById)
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer', 'department'),
+    assessmentController.getAssessmentById
+  )
   .patch(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer', 'department'),
     assessmentController.updateAssessmentById
   );
 module.exports = router;
