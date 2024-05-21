@@ -1,19 +1,61 @@
+# config:
+#   target: 'http://localhost:5000/v1' # Base URL of your API
+#   phases:
+#     - duration: 60 # Duration of the test in seconds
+#       arrivalRate: 30 # Number of new users per second
+#   defaults:
+#     headers:
+#       content-type: application/json
+# scenarios:
+#   - name: 'User Login'
+#     flow:
+#       - post:
+#           url: '/auth/login'
+#           json:
+#             username: 'superadmin' # Replace with your test username
+#             password: 'Super@123' # Replace with your test password
+#           capture:
+#             - json: '$.tokens' # Capture tokens if needed
+#               as: 'authTokens'
+
+
+
+
 config:
-  target: 'http://localhost:5000/v1' # Base URL of your API
+  target: 'http://localhost:5000/v1' # Replace with your actual API base URL
   phases:
-    - duration: 60 # Duration of the test in seconds
-      arrivalRate: 30 # Number of new users per second
+    - duration: 300
+      arrivalRate: 10 # Adjust the arrival rate as needed
+  payload:
+    - path: 'refresh_tokens.json'
+      fields:
+        - refreshToken
+    - path: 'create_users.json'
+      fields:
+        - name
+        - username
+        - password
+        - role
+        - asssignedTo
   defaults:
     headers:
       content-type: application/json
+
 scenarios:
-  - name: 'User Login'
+  - name: Refresh Auth Tokens
     flow:
       - post:
-          url: '/auth/login'
+          url: '/auth/refresh-tokens'
           json:
-            username: 'superadmin' # Replace with your test username
-            password: 'Super@123' # Replace with your test password
-          capture:
-            - json: '$.tokens' # Capture tokens if needed
-              as: 'authTokens'
+            refreshToken: "{{ refreshToken }}"
+
+  - name: Create User
+    flow:
+      - post:
+          url: '/users'
+          json:
+            name: "{{ name }}"
+            username: "{{ username }}"
+            password: "{{ password }}"
+            role: "{{ role }}"
+            asssignedTo: "{{ asssignedTo }}"
