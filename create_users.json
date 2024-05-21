@@ -1,0 +1,17 @@
+[
+    {
+      "name": "fake name",
+      "username": "fake1@example.com",
+      "password": "password1",
+      "role": "user",
+      "asssignedTo": "Pune"
+    },
+    {
+      "name": "fake name2",
+      "username": "fake2@example.com",
+      "password": "password2",
+      "role": "admin",
+      "asssignedTo": "Mumbai"
+    }
+  ]
+  

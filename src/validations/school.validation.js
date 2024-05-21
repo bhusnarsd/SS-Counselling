@@ -78,6 +78,12 @@ const updateSchools = {
       block: Joi.string(),
       locationType: Joi.string().allow('', null),
       schoolType: Joi.string().allow('', null),
+      districtCode: Joi.string().allow('', null),
+      cluster: Joi.string().allow('', null),
+      clusterCode: Joi.string().allow('', null),
+      blockCode: Joi.string().allow('', null),
+      lowestClass: Joi.string().allow('', null),
+      highestClass: Joi.string().allow('', null),
     })
     .min(1),
 };

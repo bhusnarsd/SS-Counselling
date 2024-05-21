@@ -104,6 +104,35 @@ const queryStudent = async (filter, options) => {
 const getStudentById = async (id) => {
   return Student.findById(id);
 };
+
+const getSchoolIdsAndStudentCount = async (trainerId) => {
+  const visits = await Visit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId');
+  const schoolIds = [...new Set(visits.map((visit) => visit.schoolId))];
+  const studentCounts = await Student.aggregate([
+    { $match: { schoolId: { $in: schoolIds } } },
+    { $group: { _id: '$schoolId', studentCount: { $sum: 1 } } },
+  ]);
+  const schoolCount = schoolIds.length;
+  return {
+    studentCounts,
+    schoolCount,
+  };
+};
+
+// Example usage
+// const trainerId = '6645ec9ac3deb1833d210467'; // Replace with actual trainer ID
+// getSchoolIdsAndStudentCount(trainerId)
+//   .then((result) => {
+//     console.log('School IDs:', result.schoolIds);
+//     console.log('Student Counts:', result.studentCounts);
+//     console.log('Total School Count:', result.schoolCount);
+//   })
+//   .catch((error) => {
+//     console.error('Error:', error);
+//   });
+
+// module.exports = getSchoolIdsAndStudentCount;
+
 /**
  * Update user by id
  * @param {ObjectId} id
@@ -123,6 +152,7 @@ const updateStudentById = async (id, updateBody) => {
 module.exports = {
   queryStudent,
   getStudentById,
+  getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,
   updateStudentById,

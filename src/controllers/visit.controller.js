@@ -21,6 +21,12 @@ const getVisitsBySchoolId = catchAsync(async (req, res) => {
   const visit = await visitService.getVisitsBySchoolId(schoolId);
   res.status(httpStatus.CREATED).send(visit);
 });
+
+const getSchoolIdsAndStudentCount = catchAsync(async (req, res) => {
+  const { trainerId } = req.params;
+  const visit = await visitService.getSchoolIdsAndStudentCount(trainerId);
+  res.status(httpStatus.CREATED).send(visit);
+});
 // const updateTeacher = catchAsync(async (req, res) => {
 //   const result = await teacherService.updateTeacherById(req.params.id, req.body);
 //   res.send(result);
@@ -30,4 +36,5 @@ module.exports = {
   createSchedule,
   getTrainerVisits,
   getVisitsBySchoolId,
+  getSchoolIdsAndStudentCount,
 };
