@@ -17,15 +17,17 @@ const storage = multer.diskStorage({
 });
 const uploads = multer({ storage });
 
-router.route('/bulkupload').post(uploads.single('file'), schoolController.bulkUploadFile);
-router.get('/export-schools', schoolController.generateCSVOfSchool);
+router
+  .route('/bulkupload')
+  .post(auth('admin', 'school', 'superadmin'), uploads.single('file'), schoolController.bulkUploadFile);
+router.get(
+  '/export-schools',
+  auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
+  schoolController.generateCSVOfSchool
+);
 router
   .route('/')
-  .post(
-    // auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer', 'school'),
-    validate(schoolValidation.createSchools),
-    schoolController.createSchool
-  )
+  .post(auth('superadmin', 'school'), validate(schoolValidation.createSchools), schoolController.createSchool)
   .get(
     auth('admin', 'school', 'superadmin', 'student', 'trainer'),
     validate(schoolValidation.getSchools),

@@ -4,7 +4,7 @@ const { visitController } = require('../../controllers');
 
 const router = express.Router();
 
-router.route('/').post(visitController.createSchedule);
+router.route('/').post(auth('admin', 'school', 'superadmin', 'student', 'trainer'), visitController.createSchedule);
 //   auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 // .get(studentvisitControllerController.getAllStudent);
 
