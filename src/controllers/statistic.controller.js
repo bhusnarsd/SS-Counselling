@@ -10,11 +10,16 @@ const createStatistic = catchAsync(async (req, res) => {
 });
 
 const getStatistics = catchAsync(async (req, res) => {
-  const statistics = await statisticService.getStatistics(req.body);
+  const statistics = await statisticService.getStatistics();
   res.send(statistics);
 });
 
+const getSchoolStatistics = catchAsync(async (req, res) => {
+  const statistics = await statisticService.getSchoolStatistics(req.query.schoolId);
+  res.send(statistics);
+});
 module.exports = {
   createStatistic,
   getStatistics,
+  getSchoolStatistics,
 };
