@@ -54,7 +54,7 @@ router.route('/get-schools').post(auth('superadmin', 'school'), schoolController
 router.route('/get-stats/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolStats);
 
 router.route('/get-stats/by-school/dashboard').get(auth('superadmin', 'school'), schoolController.getSchoolstatsBySchoolID);
-
+router.route('/get-school/by-schoolid/:schoolId').get(auth('superadmin', 'school'), schoolController.getSchoolBySchoolID);
 router
   .route('/:schoolId')
   .get(

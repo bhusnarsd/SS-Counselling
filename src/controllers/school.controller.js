@@ -41,6 +41,14 @@ const getSchool = catchAsync(async (req, res) => {
   res.send(school);
 });
 
+const getSchoolBySchoolID = catchAsync(async (req, res) => {
+  const school = await schoolService.getSchoolByScoolId(req.params.schoolId);
+  if (!school) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'school not found');
+  }
+  res.send(school);
+});
+
 const getDistrictList = catchAsync(async (req, res) => {
   const districtList = await schoolService.getDistrictList();
   res.send(districtList);
@@ -110,4 +118,5 @@ module.exports = {
   generateCSVOfSchool,
   updateSchool,
   deleteSchoolById,
+  getSchoolBySchoolID,
 };
