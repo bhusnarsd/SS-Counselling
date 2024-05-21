@@ -104,6 +104,14 @@ const getSchoolById = async (schoolId) => {
 };
 
 /**
+ * Get user by id
+ * @param {ObjectId} id
+ * @returns {Promise<School>}
+ */
+const getSchoolByScoolId = async (schoolId) => {
+  return School.findOne({ schoolId });
+};
+/**
  * Get block names
  * @param {string}
  * @returns {Promise<School>}
@@ -309,5 +317,6 @@ module.exports = {
   getSchoolData,
   writeCSV,
   getClusterList,
+  getSchoolByScoolId,
   getDistrictList,
 };
