@@ -14,6 +14,9 @@ const statisticsSchema = new mongoose.Schema({
   schoolId: {
     type: String,
   },
+  standard: {
+    type: String,
+  },
   timestamp: { type: Date, default: Date.now },
 });
 

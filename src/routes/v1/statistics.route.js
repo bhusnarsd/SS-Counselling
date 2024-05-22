@@ -11,6 +11,10 @@ router
 router
   .route('/get-by-school')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getSchoolStatistics);
+
+router
+  .route('/get-by-filters')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getFilteredStatistics);
 //   .patch(
 //     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 //     assessmentController.updateAssessmentById
