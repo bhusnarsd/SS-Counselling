@@ -90,7 +90,7 @@ const createSchool = async (reqBody) => {
  * @returns {Promise<QueryResult>}
  */
 const querySchool = async (filter, options) => {
-  const school = await School.paginate(filter, options);
+  const school = await School.paginateWithStudentCount(filter, options);
   return school;
 };
 
