@@ -90,10 +90,13 @@ const getTrainerVisits = async (trainerId) => {
 };
 
 const getVisitsBySchoolId = async (schoolId) => {
-  const visits = await Visit.find({ schoolId });
+  // Find visits by schoolId and include createdAt and updatedAt fields
+  const visits = await Visit.find({ schoolId }).select('createdAt updatedAt trainer visitDate time standard content');
   if (!visits || visits.length === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Visits not found');
   }
+
+  // Populate visits with counselor information
   const populatedVisits = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const visit of visits) {
@@ -105,8 +108,9 @@ const getVisitsBySchoolId = async (schoolId) => {
   return populatedVisits;
 };
 
-// const trainerId = "6645ec9ac3deb1833d210467";
-// getTrainerVisits(trainerId)
+
+// const schoolId = "SCH944546";
+// getVisitsBySchoolId(schoolId)
 //   .then(async(result) => {
 
 //     console.log('Trainer visits:', result);
