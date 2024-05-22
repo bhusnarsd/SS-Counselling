@@ -32,30 +32,36 @@ const getStatistics = async () => {
   // Calculate login percentage
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
   const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
-  const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers' });
-  const uniqueCareerClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'careers' }).then(
-    (users) => users.length
-  );
-  const averageCareerClicked = totalCareerClicked / totalStudents;
 
-  const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges' });
-  const uniqueCollegeClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'colleges' }).then(
-    (users) => users.length
-  );
-  const averageCollegeClicked = totalCollegeClicked / totalStudents;
 
-  const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams' });
-  const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams' }).then(
-    (users) => users.length
-  );
-  const averageExamClicked = totalExamClicked / totalStudents;
+  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed' });
+  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started' });
+  const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
+  const pendingAssessmentCount = totalStudents - totalassement;
+  // const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers' });
+  // const uniqueCareerClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'careers' }).then(
+  //   (users) => users.length
+  // );
+  // const averageCareerClicked = totalCareerClicked / totalStudents;
 
-  const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships' });
-  const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'scholarships',
-  }).then((users) => users.length);
-  const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
+  // const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges' });
+  // const uniqueCollegeClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'colleges' }).then(
+  //   (users) => users.length
+  // );
+  // const averageCollegeClicked = totalCollegeClicked / totalStudents;
+
+  // const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams' });
+  // const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams' }).then(
+  //   (users) => users.length
+  // );
+  // const averageExamClicked = totalExamClicked / totalStudents;
+
+  // const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships' });
+  // const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'scholarships',
+  // }).then((users) => users.length);
+  // const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
 
   return {
     totalCounsellor,
@@ -65,18 +71,21 @@ const getStatistics = async () => {
     totalLoginCount,
     uniqueLoginCount,
     loginPercentage,
-    totalCareerClicked,
-    uniqueCareerClickCount,
-    averageCareerClicked,
-    totalCollegeClicked,
-    uniqueCollegeClickCount,
-    averageCollegeClicked,
-    totalExamClicked,
-    uniqueExamClickCount,
-    averageExamClicked,
-    totalScholarshipClicked,
-    uniqueScholarshipClickCount,
-    averageScholarshipClicked,
+    assessmentCompeletedCount,
+    assessmentStartedCountCount,
+    pendingAssessmentCount,
+    // totalCareerClicked,
+    // uniqueCareerClickCount,
+    // averageCareerClicked,
+    // totalCollegeClicked,
+    // uniqueCollegeClickCount,
+    // averageCollegeClicked,
+    // totalExamClicked,
+    // uniqueExamClickCount,
+    // averageExamClicked,
+    // totalScholarshipClicked,
+    // uniqueScholarshipClickCount,
+    // averageScholarshipClicked,
   };
 };
 
@@ -94,66 +103,70 @@ const getSchoolStatistics = async (schoolId) => {
   const visitsCount = await Visit.countDocuments({ schoolId });
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
 
-  const assessmentCount = await Assessment.countDocuments({ status: 'completed', schoolId });
+  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed', schoolId });
+  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started', schoolId });
+  const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
+  const pendingAssessmentCount = totalStudents - totalassement;
+  // const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers', schoolId });
 
-  const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers', schoolId });
+  // const uniqueCareerClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'careers',
+  //   schoolId,
+  // }).then((users) => users.length);
 
-  const uniqueCareerClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'careers',
-    schoolId,
-  }).then((users) => users.length);
+  // const averageCareerClicked = totalCareerClicked / totalStudents;
 
-  const averageCareerClicked = totalCareerClicked / totalStudents;
+  // const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges', schoolId });
 
-  const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges', schoolId });
+  // const uniqueCollegeClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'colleges',
+  //   schoolId,
+  // }).then((users) => users.length);
 
-  const uniqueCollegeClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'colleges',
-    schoolId,
-  }).then((users) => users.length);
+  // const averageCollegeClicked = totalCollegeClicked / totalStudents;
 
-  const averageCollegeClicked = totalCollegeClicked / totalStudents;
+  // const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams', schoolId });
 
-  const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams', schoolId });
+  // const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams', schoolId }).then(
+  //   (users) => users.length
+  // );
 
-  const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams', schoolId }).then(
-    (users) => users.length
-  );
+  // const averageExamClicked = totalExamClicked / totalStudents;
 
-  const averageExamClicked = totalExamClicked / totalStudents;
+  // const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships', schoolId });
 
-  const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships', schoolId });
+  // const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'scholarships',
+  //   schoolId,
+  // }).then((users) => users.length);
 
-  const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'scholarships',
-    schoolId,
-  }).then((users) => users.length);
-
-  const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
+  // const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
 
   return {
     totalStudents,
     visitsCount,
     totalCounsellor,
-    assessmentCount,
+    assessmentCompeletedCount,
+    assessmentStartedCountCount,
+    pendingAssessmentCount,
     totalLoginCount,
     uniqueLoginCount,
     loginPercentage,
-    totalCareerClicked,
-    uniqueCareerClickCount,
-    averageCareerClicked,
-    totalCollegeClicked,
-    uniqueCollegeClickCount,
-    averageCollegeClicked,
-    totalExamClicked,
-    uniqueExamClickCount,
-    averageExamClicked,
-    totalScholarshipClicked,
-    uniqueScholarshipClickCount,
-    averageScholarshipClicked,
+    // totalCareerClicked,
+    // uniqueCareerClickCount,
+    // averageCareerClicked,
+    // totalCollegeClicked,
+    // uniqueCollegeClickCount,
+    // averageCollegeClicked,
+    // totalExamClicked,
+    // uniqueExamClickCount,
+    // averageExamClicked,
+    // totalScholarshipClicked,
+    // uniqueScholarshipClickCount,
+    // averageScholarshipClicked,
   };
 };
 
@@ -165,75 +178,81 @@ const getFilteredStatistics = async ({ standard, schoolId }) => {
 
   if (standard) {
     filter.standard = standard;
-    delete filter.schoolId;
-  } else if (schoolId) {
-    filter.schoolId = schoolId;
-    delete filter.standard;
   }
 
-  const totalStudents = await Student.countDocuments(filter);
+  if (schoolId) {
+    filter.schoolId = schoolId;
+  }
+
+  const totalStudents = await Student.countDocuments({ schoolId, standard: standard || { $exists: true } });
   const totalCounsellor = await User.countDocuments({ role: 'trainer' });
-  const visitsCount = await Visit.countDocuments();
+  const visitsCount = await Visit.countDocuments({ schoolId });
 
   const totalLoginCount = await Statistic.countDocuments(filter);
 
   const uniqueLoginCount = await Statistic.distinct('userId', filter).then((users) => users.length);
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
 
-  const assessmentCount = await Assessment.countDocuments({ status: 'completed', ...filter });
+  // const assessmentCount = await Assessment.countDocuments({ status: 'completed', ...filter });
+  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed', ...filter });
+  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started', ...filter });
+  const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
+  const pendingAssessmentCount = totalStudents - totalassement;
+  // const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers', ...filter });
+  // const uniqueCareerClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'careers',
+  //   ...filter,
+  // }).then((users) => users.length);
+  // const averageCareerClicked = totalCareerClicked / totalStudents;
 
-  const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers', ...filter });
-  const uniqueCareerClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'careers',
-    ...filter,
-  }).then((users) => users.length);
-  const averageCareerClicked = totalCareerClicked / totalStudents;
+  // const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges', ...filter });
+  // const uniqueCollegeClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'colleges',
+  //   ...filter,
+  // }).then((users) => users.length);
+  // const averageCollegeClicked = totalCollegeClicked / totalStudents;
 
-  const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges', ...filter });
-  const uniqueCollegeClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'colleges',
-    ...filter,
-  }).then((users) => users.length);
-  const averageCollegeClicked = totalCollegeClicked / totalStudents;
+  // const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams', ...filter });
+  // const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams', ...filter }).then(
+  //   (users) => users.length
+  // );
+  // const averageExamClicked = totalExamClicked / totalStudents;
 
-  const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams', ...filter });
-  const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams', ...filter }).then(
-    (users) => users.length
-  );
-  const averageExamClicked = totalExamClicked / totalStudents;
-
-  const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships', ...filter });
-  const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
-    event: 'click',
-    elementType: 'scholarships',
-    ...filter,
-  }).then((users) => users.length);
-  const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
+  // const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships', ...filter });
+  // const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
+  //   event: 'click',
+  //   elementType: 'scholarships',
+  //   ...filter,
+  // }).then((users) => users.length);
+  // const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
 
   return {
     totalCounsellor,
     visitsCount,
     totalStudents,
-    assessmentCount,
+    assessmentCompeletedCount,
+    assessmentStartedCountCount,
+    pendingAssessmentCount,
     totalLoginCount,
     uniqueLoginCount,
     loginPercentage,
-    totalCareerClicked,
-    uniqueCareerClickCount,
-    averageCareerClicked,
-    totalCollegeClicked,
-    uniqueCollegeClickCount,
-    averageCollegeClicked,
-    totalExamClicked,
-    uniqueExamClickCount,
-    averageExamClicked,
-    totalScholarshipClicked,
-    uniqueScholarshipClickCount,
-    averageScholarshipClicked,
+    // totalCareerClicked,
+    // uniqueCareerClickCount,
+    // averageCareerClicked,
+    // totalCollegeClicked,
+    // uniqueCollegeClickCount,
+    // averageCollegeClicked,
+    // totalExamClicked,
+    // uniqueExamClickCount,
+    // averageExamClicked,
+    // totalScholarshipClicked,
+    // uniqueScholarshipClickCount,
+    // averageScholarshipClicked,
   };
 };
+
 // const schoolId = 'SCH660028'
 // getFilteredStatistics({schoolId})
 //   .then(async(result) => {
