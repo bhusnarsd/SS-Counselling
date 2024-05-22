@@ -29,7 +29,7 @@ router
   .route('/')
   .post(auth('superadmin', 'school', 'department'), validate(schoolValidation.createSchools), schoolController.createSchool)
   .get(
-    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+    // auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(schoolValidation.getSchools),
     schoolController.getSchools
   );

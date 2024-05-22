@@ -18,8 +18,15 @@ const getSchoolStatistics = catchAsync(async (req, res) => {
   const statistics = await statisticService.getSchoolStatistics(req.query.schoolId);
   res.send(statistics);
 });
+
+const getFilteredStatistics = catchAsync(async (req, res) => {
+  const { schoolId, standard } = req.query;
+  const statistics = await statisticService.getFilteredStatistics({ schoolId, standard });
+  res.send(statistics);
+});
 module.exports = {
   createStatistic,
   getStatistics,
   getSchoolStatistics,
+  getFilteredStatistics,
 };
