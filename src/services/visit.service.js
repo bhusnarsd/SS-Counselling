@@ -90,27 +90,24 @@ const getTrainerVisits = async (trainerId) => {
 };
 
 const getVisitsBySchoolId = async (schoolId) => {
-  // Find visits by schoolId and include createdAt and updatedAt fields
-  const visits = await Visit.find({ schoolId }).select('createdAt updatedAt trainer visitDate time standard content');
+  const visits = await Visit.find({ schoolId });
   if (!visits || visits.length === 0) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Visits not found');
   }
-
-  // Populate visits with counselor information
   const populatedVisits = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const visit of visits) {
+    const { createdAt } = visit;
     // eslint-disable-next-line no-await-in-loop
     const counselor = await User.findOne({ _id: visit.trainer }).select('firstName lastName mobNumber');
-    populatedVisits.push({ visit, counselor });
+    populatedVisits.push({ visit, counselor, createdAt });
   }
 
   return populatedVisits;
 };
 
-
-// const schoolId = "SCH944546";
-// getVisitsBySchoolId(schoolId)
+// const trainerId = "6645ec9ac3deb1833d210467";
+// getTrainerVisits(trainerId)
 //   .then(async(result) => {
 
 //     console.log('Trainer visits:', result);
