@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const mongoose = require('mongoose');
-const { Student, User, Visit } = require('../models');
+const { Student, User, Visit, Assessment } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
@@ -135,8 +135,11 @@ const getStudentById = async (id) => {
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
+  // Step 1: Fetch visits and extract schoolId and standard pairs
   const visits = await Visit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId standard');
   const schoolStandardPairs = visits.map((visit) => ({ schoolId: visit.schoolId, standard: visit.standard }));
+
+  // Step 2: Count students grouped by school and standard
   const studentCounts = await Student.aggregate([
     {
       $match: {
@@ -150,6 +153,7 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
       $group: {
         _id: { schoolId: '$schoolId', standard: '$standard' },
         studentCount: { $sum: 1 },
+        students: { $push: '$_id' }, // Collect student IDs for later use
       },
     },
   ]);
@@ -157,19 +161,45 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
   // Step 3: Calculate the total number of unique schools
   const schoolCount = [...new Set(schoolStandardPairs.map((pair) => pair.schoolId))].length;
 
+  // Step 4: Fetch students' assessment counts for completed assessments
+  const studentAssessmentCounts = await Assessment.aggregate([
+    {
+      $match: { status: 'completed' },
+    },
+    {
+      $group: {
+        _id: '$studentId',
+        completedAssessmentCount: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const assessmentCountMap = {};
+  studentAssessmentCounts.forEach((item) => {
+    assessmentCountMap[item._id] = item.completedAssessmentCount;
+  });
+
+  // Assign completed assessment counts to each student group
+  studentCounts.forEach((studentGroup) => {
+    studentGroup.students.forEach((studentId) => {
+      studentGroup.completedAssessments = assessmentCountMap[studentId] || 0;
+    });
+  });
+
+  // Return the result
   return {
     studentCounts,
     schoolCount,
   };
 };
 
+// module.exports = getSchoolIdsAndStudentCount;
+
 // Example usage
 // const trainerId = '6645ec9ac3deb1833d210467'; // Replace with actual trainer ID
 // getSchoolIdsAndStudentCount(trainerId)
 //   .then((result) => {
-//     console.log('School IDs:', result.schoolIds);
-//     console.log('Student Counts:', result.studentCounts);
-//     console.log('Total School Count:', result.schoolCount);
+//     console.log(result);
 //   })
 //   .catch((error) => {
 //     console.error('Error:', error);
