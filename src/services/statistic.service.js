@@ -33,7 +33,6 @@ const getStatistics = async () => {
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
   const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
 
-
   const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed' });
   const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started' });
   const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
@@ -171,10 +170,7 @@ const getSchoolStatistics = async (schoolId) => {
 };
 
 const getFilteredStatistics = async ({ standard, schoolId }) => {
-  const filter = {
-    event: 'login',
-    userId: { $regex: '^STUD' },
-  };
+  const filter = {};
 
   if (standard) {
     filter.standard = standard;
@@ -188,16 +184,20 @@ const getFilteredStatistics = async ({ standard, schoolId }) => {
   const totalCounsellor = await User.countDocuments({ role: 'trainer' });
   const visitsCount = await Visit.countDocuments({ schoolId });
 
-  const totalLoginCount = await Statistic.countDocuments(filter);
+  const totalLoginCount = await Statistic.countDocuments({ event: 'login', userId: { $regex: '^STUD' }, ...filter });
 
-  const uniqueLoginCount = await Statistic.distinct('userId', filter).then((users) => users.length);
+  const uniqueLoginCount = await Statistic.distinct('userId', {
+    event: 'login',
+    userId: { $regex: '^STUD' },
+    ...filter,
+  }).then((users) => users.length);
   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
 
-  // const assessmentCount = await Assessment.countDocuments({ status: 'completed', ...filter });
-  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed', ...filter });
-  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started', ...filter });
-  const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
-  const pendingAssessmentCount = totalStudents - totalassement;
+  const assessmentCompletedCount = await Assessment.countDocuments({ status: 'completed', ...filter });
+  const assessmentStartedCount = await Assessment.countDocuments({ status: 'started', ...filter });
+  const totalAssessment = assessmentCompletedCount + assessmentStartedCount;
+  const pendingAssessmentCount = totalStudents - totalAssessment;
+
   // const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers', ...filter });
   // const uniqueCareerClickCount = await Statistic.distinct('userId', {
   //   event: 'click',
