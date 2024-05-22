@@ -10,3 +10,4 @@ module.exports.visitService = require('./visit.service');
 module.exports.assessmentService = require('./assessment.service');
 module.exports.synopsisService = require('./synopsis.service');
 module.exports.statisticService = require('./statistic.service');
+module.exports.requestServices = require('./request.service');
