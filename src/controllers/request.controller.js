@@ -1,0 +1,36 @@
+const httpStatus = require('http-status');
+const pick = require('../utils/pick');
+const ApiError = require('../utils/ApiError');
+const catchAsync = require('../utils/catchAsync');
+const { requestServices } = require('../services');
+
+const createRequest = catchAsync(async (req, res) => {
+  const teacher = await requestServices.createRequest(req.body);
+  res.status(httpStatus.CREATED).send(teacher);
+});
+
+const queryRequest = catchAsync(async (req, res) => {
+  const filter = (req.query, ['name']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await requestServices.queryRequest(filter, options);
+  res.send(result);
+});
+
+const getRequestById = catchAsync(async (req, res) => {
+  const result = await requestServices.getRequestById(req.params.id);
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Request not found');
+  }
+  res.send(result);
+});
+
+// const updateTeacher = catchAsync(async (req, res) => {
+//   const result = await teacherService.updateTeacherById(req.params.id, req.body);
+//   res.send(result);
+// });
+
+module.exports = {
+  createRequest,
+  queryRequest,
+  getRequestById,
+};

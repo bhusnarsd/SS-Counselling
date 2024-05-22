@@ -8,3 +8,4 @@ module.exports.visitController = require('./visit.controller');
 module.exports.assessmentController = require('./assessment.controller');
 module.exports.synopsisController = require('./synopsis.controller');
 module.exports.statisticController = require('./statistic.controller');
+module.exports.requestController = require('./request.controller');
