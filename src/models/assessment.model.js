@@ -24,6 +24,9 @@ const assessmentSchema = mongoose.Schema(
     studentId: {
       type: String,
     },
+    standard: {
+      type: String,
+    },
     schoolId: {
       type: String,
     },
