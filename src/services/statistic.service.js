@@ -153,7 +153,7 @@ const getSchoolStatistics = async (schoolId) => {
 //   }
 // })();
 
-const getSchoolStatisticsBYStandard = async (schoolId, standard) => {
+const getFilteredStatistics = async (schoolId, standard) => {
   // Convert schoolId to string for consistent comparison
   const schoolIdStr = schoolId.toString();
 
@@ -292,7 +292,7 @@ const getSchoolStatisticsBYStandard = async (schoolId, standard) => {
 // };
 
 module.exports = {
-  // getFilteredStatistics,
+  getFilteredStatistics,
   createStatitic,
   getStatistics,
   getSchoolStatistics,
