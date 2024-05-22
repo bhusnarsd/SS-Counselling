@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const Student = require('./student.model');
+const Visit = require('./visit.model');
 
 const schoolSchema = mongoose.Schema({
   schoolId: {
@@ -60,7 +61,7 @@ const schoolSchema = mongoose.Schema({
 schoolSchema.plugin(toJSON);
 schoolSchema.plugin(paginate);
 
-schoolSchema.statics.paginateWithStudentCount = async function (filter, options) {
+schoolSchema.statics.paginateWithStudentAndVisitCount = async function (filter, options) {
   let sort = '';
   if (options.sortBy) {
     const sortingCriteria = [];
@@ -107,16 +108,17 @@ schoolSchema.statics.paginateWithStudentCount = async function (filter, options)
       results.reverse();
     }
 
-    // Calculate student count for each school
-    const resultsWithStudentCount = await Promise.all(
+    // Calculate student count and visit schedule count for each school
+    const resultsWithStudentAndVisitCount = await Promise.all(
       results.map(async (school) => {
         const studentCount = await Student.countDocuments({ schoolId: school.schoolId });
-        return { ...school.toObject(), studentCount };
+        const visitCount = await Visit.countDocuments({ schoolId: school.schoolId });
+        return { ...school.toObject(), studentCount, visitCount };
       })
     );
 
     const result = {
-      results: resultsWithStudentCount,
+      results: resultsWithStudentAndVisitCount,
       page,
       limit,
       totalPages,
