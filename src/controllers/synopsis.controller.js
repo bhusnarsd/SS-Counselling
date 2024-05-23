@@ -17,7 +17,7 @@ const querySynopsis = catchAsync(async (req, res) => {
 });
 
 const getSynopsisById = catchAsync(async (req, res) => {
-  const result = await synopsisService.getSynopsisById(req.params.id);
+  const result = await synopsisService.getSynopsisById(req.params.studentId);
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Synopsis not found');
   }
