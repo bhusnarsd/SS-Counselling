@@ -162,7 +162,7 @@ const getFilteredStatistics = async (schoolId, standard) => {
 
   // Fetch various counts related to visits and assessments
   const visitsCount = await Visit.countDocuments({ schoolId: schoolIdStr, standard });
-  const pastSessionCount = await Visit.countDocuments({ status: 'completed', schoolId: schoolIdStr , standard });
+  const pastSessionCount = await Visit.countDocuments({ status: 'completed', schoolId: schoolIdStr, standard });
   const assessmentCompletedCount = await Assessment.countDocuments({ status: 'completed', schoolId: schoolIdStr, standard });
   const assessmentStartedCount = await Assessment.countDocuments({ status: 'started', schoolId: schoolIdStr, standard });
   const totalAssessment = assessmentCompletedCount + assessmentStartedCount;
@@ -205,7 +205,6 @@ const getFilteredStatistics = async (schoolId, standard) => {
     overallAverageScore,
   };
 };
-
 
 // const getFilteredStatistics = async ({ standard, schoolId }) => {
 //   const filter = {};
