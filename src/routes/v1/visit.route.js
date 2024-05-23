@@ -9,15 +9,13 @@ router
   .post(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.createSchedule);
 //   auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 // .get(studentvisitControllerController.getAllStudent);
-
+router.route('/get-dashboard-counts').get(visitController.getSchoolIdsAndStudentCount);
 // router.route('/genrate-token').get(studentController.generateToken);
 router
   .route('/:trainerId')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
 
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
-
-router.route('/get-dashboard-counts').get(visitController.getSchoolIdsAndStudentCount);
 //   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
 module.exports = router;
 
