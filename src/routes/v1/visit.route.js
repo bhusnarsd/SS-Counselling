@@ -17,7 +17,7 @@ router
 
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
 
-router.route('/get-dashboard-counts').get(visitController.getVisitsBySchoolId);
+router.route('/get-dashboard-counts').get(visitController.getSchoolIdsAndStudentCount);
 //   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
 module.exports = router;
 
