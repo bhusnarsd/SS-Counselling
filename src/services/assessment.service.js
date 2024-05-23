@@ -11,9 +11,10 @@ const ApiError = require('../utils/ApiError');
 const createAssessment = async (reqBody) => {
   // Try to find an assessment for the given studentId
   let assessment = await Assessment.findOne({ studentId: reqBody.studentId });
-  const school = await Student.findOne({ studentId: reqBody.studentId }).select('schoolId');
+  const school = await Student.findOne({ studentId: reqBody.studentId }).select('schoolId standard');
   // If assessment found, update it with the new data
   reqBody.SchoolId = school.SchoolId;
+  reqBody.standard = school.standard;
   if (assessment) {
     assessment = await Assessment.findOneAndUpdate(
       { studentId: reqBody.studentId },

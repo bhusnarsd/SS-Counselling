@@ -11,6 +11,7 @@ const visitRoute = require('./visit.route');
 const assessmentRoute = require('./assessment.route');
 const statisticRoute = require('./statistics.route');
 const requestRoute = require('./request.route');
+const synopsisRoute = require('./synopsis.route');
 
 const router = express.Router();
 
@@ -54,6 +55,10 @@ const defaultRoutes = [
   {
     path: '/requests',
     route: requestRoute,
+  },
+  {
+    path: '/synopsis',
+    route: synopsisRoute,
   },
 ];
 
