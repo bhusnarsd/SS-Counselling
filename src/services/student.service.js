@@ -110,7 +110,7 @@ const queryStudent = async (filter, options) => {
 
 const getStudentAssessments = async (schoolId, standard) => {
   // Convert schoolId to string for consistent comparison
-  const schoolIdStr = schoolId.toString();
+  const schoolIdStr = schoolId;
 
   // Find students by schoolId and standard
   const students = await Student.find({ schoolId: schoolIdStr, standard });
@@ -134,8 +134,6 @@ const getStudentAssessments = async (schoolId, standard) => {
 
   return response;
 };
-
-module.exports = getStudentAssessments;
 
 const getStudentById = async (id) => {
   return Student.findById(id);
