@@ -43,9 +43,8 @@ const getAllStudent = catchAsync(async (req, res) => {
 });
 
 const getAllStudentBySchooolId = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['firstName', 'lastName', 'schoolId']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page', 'reverse']);
-  const result = await studentService.queryStudent(filter, options);
+  const { studentId, standard } = req.query;
+  const result = await studentService.getStudentAssessments(studentId, standard);
   res.send(result);
 });
 
