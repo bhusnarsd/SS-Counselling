@@ -43,6 +43,31 @@ const getStatistics = async () => {
   };
 };
 
+const getStatistFlterDash = async (SchoolId) => {
+  // Count the total number of students with userId starting with 'STUD'
+  const totalStudents = await Student.countDocuments({ SchoolId });
+  const totalCounsellor = await User.countDocuments({ role: 'trainer' });
+  const visitsPending = await Visit.countDocuments({ status: 'pending', SchoolId });
+  const visitsCompleted = await Visit.countDocuments({ status: 'completed', SchoolId });
+  const toatalSchools = await School.countDocuments();
+  // const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
+  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed', SchoolId });
+  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started', SchoolId });
+  const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
+  const pendingAssessmentCount = totalStudents - totalassement;
+
+  return {
+    totalCounsellor,
+    visitsPending,
+    visitsCompleted,
+    toatalSchools,
+    totalStudents,
+    assessmentCompeletedCount,
+    assessmentStartedCountCount,
+    pendingAssessmentCount,
+  };
+};
+
 const getSchoolStatistics = async (schoolId) => {
   // Convert schoolId to string for consistent comparison
   const schoolIdStr = schoolId.toString();
@@ -161,93 +186,10 @@ const getFilteredStatistics = async (schoolId, standard) => {
   };
 };
 
-// const getFilteredStatistics = async ({ standard, schoolId }) => {
-//   const filter = {};
-
-//   if (standard) {
-//     filter.standard = standard;
-//   }
-
-//   if (schoolId) {
-//     filter.schoolId = schoolId;
-//   }
-
-//   const totalStudents = await Student.countDocuments({ schoolId, standard: standard || { $exists: true } });
-//   const totalCounsellor = await User.countDocuments({ role: 'trainer' });
-//   const visitsCount = await Visit.countDocuments({ schoolId });
-
-//   const totalLoginCount = await Statistic.countDocuments({ event: 'login', userId: { $regex: '^STUD' }, ...filter });
-
-//   const uniqueLoginCount = await Statistic.distinct('userId', {
-//     event: 'login',
-//     userId: { $regex: '^STUD' },
-//     ...filter,
-//   }).then((users) => users.length);
-//   const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
-
-//   const assessmentCompletedCount = await Assessment.countDocuments({ status: 'completed', ...filter });
-//   const assessmentStartedCount = await Assessment.countDocuments({ status: 'started', ...filter });
-//   const totalAssessment = assessmentCompletedCount + assessmentStartedCount;
-//   const pendingAssessmentCount = totalStudents - totalAssessment;
-
-//   // const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers', ...filter });
-//   // const uniqueCareerClickCount = await Statistic.distinct('userId', {
-//   //   event: 'click',
-//   //   elementType: 'careers',
-//   //   ...filter,
-//   // }).then((users) => users.length);
-//   // const averageCareerClicked = totalCareerClicked / totalStudents;
-
-//   // const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges', ...filter });
-//   // const uniqueCollegeClickCount = await Statistic.distinct('userId', {
-//   //   event: 'click',
-//   //   elementType: 'colleges',
-//   //   ...filter,
-//   // }).then((users) => users.length);
-//   // const averageCollegeClicked = totalCollegeClicked / totalStudents;
-
-//   // const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams', ...filter });
-//   // const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams', ...filter }).then(
-//   //   (users) => users.length
-//   // );
-//   // const averageExamClicked = totalExamClicked / totalStudents;
-
-//   // const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships', ...filter });
-//   // const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
-//   //   event: 'click',
-//   //   elementType: 'scholarships',
-//   //   ...filter,
-//   // }).then((users) => users.length);
-//   // const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
-
-//   return {
-//     totalCounsellor,
-//     visitsCount,
-//     totalStudents,
-//     assessmentCompeletedCount,
-//     assessmentStartedCountCount,
-//     pendingAssessmentCount,
-//     totalLoginCount,
-//     uniqueLoginCount,
-//     loginPercentage,
-//     // totalCareerClicked,
-//     // uniqueCareerClickCount,
-//     // averageCareerClicked,
-//     // totalCollegeClicked,
-//     // uniqueCollegeClickCount,
-//     // averageCollegeClicked,
-//     // totalExamClicked,
-//     // uniqueExamClickCount,
-//     // averageExamClicked,
-//     // totalScholarshipClicked,
-//     // uniqueScholarshipClickCount,
-//     // averageScholarshipClicked,
-//   };
-// };
-
 module.exports = {
   getFilteredStatistics,
   createStatitic,
   getStatistics,
   getSchoolStatistics,
+  getStatistFlterDash,
 };
