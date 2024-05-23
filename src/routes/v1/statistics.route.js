@@ -13,6 +13,10 @@ router
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getSchoolStatistics);
 
 router
+  .route('/get-by-school/admin-dashboard')
+  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getSchoolStatistics);
+
+router
   .route('/get-by-filters')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getFilteredStatistics);
 //   .patch(

@@ -14,6 +14,11 @@ const getStatistics = catchAsync(async (req, res) => {
   res.send(statistics);
 });
 
+const getStatistFlterDash = catchAsync(async (req, res) => {
+  const statistics = await statisticService.getStatistFlterDash(req.query.schoolId);
+  res.send(statistics);
+});
+
 const getSchoolStatistics = catchAsync(async (req, res) => {
   const statistics = await statisticService.getSchoolStatistics(req.query.schoolId);
   res.send(statistics);
@@ -29,4 +34,5 @@ module.exports = {
   getStatistics,
   getSchoolStatistics,
   getFilteredStatistics,
+  getStatistFlterDash,
 };
