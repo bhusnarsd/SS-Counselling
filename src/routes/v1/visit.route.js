@@ -16,6 +16,8 @@ router
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
 
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
+
+router.route('/get-dashboard-counts').get(visitController.getVisitsBySchoolId);
 //   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
 module.exports = router;
 
