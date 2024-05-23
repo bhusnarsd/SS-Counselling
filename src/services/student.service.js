@@ -3,7 +3,7 @@ const Jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const { createObjectCsvWriter } = require('csv-writer');
 const path = require('path');
-const { Student, User } = require('../models');
+const { Student, User, Assessment } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const bulkUpload = async (studentArray, csvFilePath = null) => {
@@ -108,6 +108,35 @@ const queryStudent = async (filter, options) => {
   return result;
 };
 
+const getStudentAssessments = async (schoolId, standard) => {
+  // Convert schoolId to string for consistent comparison
+  const schoolIdStr = schoolId.toString();
+
+  // Find students by schoolId and standard
+  const students = await Student.find({ schoolId: schoolIdStr, standard });
+
+  // Extract studentIds from the found students
+  const studentIds = students.map((student) => student.studentId);
+
+  // Find assessments by studentIds
+  const assessments = await Assessment.find({ studentId: { $in: studentIds } });
+  const response = students.map((student) => {
+    const studentAssessment = assessments.find((assessment) => assessment.studentId === student.studentId);
+    return {
+      studentId: student.studentId,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      gender: student.gender,
+      age: student.age,
+      assessmentStatus: studentAssessment ? studentAssessment.status : 'non-started',
+    };
+  });
+
+  return response;
+};
+
+module.exports = getStudentAssessments;
+
 const getStudentById = async (id) => {
   return Student.findById(id);
 };
@@ -193,6 +222,7 @@ async function writeCSV(data) {
 }
 
 module.exports = {
+  getStudentAssessments,
   bulkUpload,
   createStudent,
   queryStudent,
