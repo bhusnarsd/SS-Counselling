@@ -135,6 +135,16 @@ const getStudentAssessments = async (schoolId, standard) => {
   return response;
 };
 
+// (async () => {
+//   const schoolId = 'SCH636454';
+//   const standard = '12'; // Replace with actual school ID
+//   try {
+//     const statistics = await getStudentAssessments(schoolId, standard);
+//     console.log('School Statistics:', statistics);
+//   } catch (error) {
+//     console.error('Error:', error.message);
+//   }
+// })();
 const getStudentById = async (id) => {
   return Student.findById(id);
 };
