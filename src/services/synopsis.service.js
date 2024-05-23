@@ -1,5 +1,5 @@
 // const httpStatus = require('http-status');
-const { Synopsis } = require('../models');
+const { Synopsis, Student } = require('../models');
 // const ApiError = require('../utils/ApiError');
 
 /**
@@ -9,6 +9,7 @@ const { Synopsis } = require('../models');
  */
 const createSynopsis = async (reqBody) => {
   const synopsis = await Synopsis.create(reqBody);
+  // const data = await Student.
   return synopsis;
 };
 
