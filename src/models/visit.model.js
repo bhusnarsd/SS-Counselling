@@ -25,6 +25,10 @@ const visitSchema = new mongoose.Schema(
     content: {
       type: String,
     },
+    status: {
+      type: String,
+      default: 'pending',
+    },
   },
   {
     timestamps: true,
