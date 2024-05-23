@@ -1,5 +1,5 @@
 // const httpStatus = require('http-status');
-const { Synopsis, Student } = require('../models');
+const { Synopsis, Student, Visit } = require('../models');
 // const ApiError = require('../utils/ApiError');
 
 /**
@@ -9,7 +9,17 @@ const { Synopsis, Student } = require('../models');
  */
 const createSynopsis = async (reqBody) => {
   const synopsis = await Synopsis.create(reqBody);
-  // const data = await Student.
+  const { standard, schoolId } = reqBody;
+  const totalStudents = await Student.countDocuments({ standard, schoolId });
+  const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
+  if (totalStudents === totalSynopses) {
+    await Visit.findOneAndUpdate(
+      { schoolId, standard, status: { $ne: 'completed' } },
+      { status: 'completed' },
+      { new: true }
+    );
+  }
+
   return synopsis;
 };
 
