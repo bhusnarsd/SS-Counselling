@@ -23,7 +23,7 @@ const getVisitsBySchoolId = catchAsync(async (req, res) => {
 });
 
 const getSchoolIdsAndStudentCount = catchAsync(async (req, res) => {
-  const { trainerId } = req.params;
+  const { trainerId } = req.query;
   const visit = await visitService.getSchoolIdsAndStudentCount(trainerId);
   res.status(httpStatus.CREATED).send(visit);
 });
