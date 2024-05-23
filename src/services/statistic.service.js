@@ -1,8 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-param-reassign */
-// const httpStatus = require('http-status');
-const { Statistic, Student, Assessment, User, Visit, Synopsis } = require('../models');
-// const ApiError = require('../utils/ApiError');
+const { Statistic, Student, Assessment, User, Visit, Synopsis, School } = require('../models');
 
 /**
  * Create a Statistic
@@ -21,73 +19,30 @@ const createStatitic = async (reqBody) => {
 };
 
 const getStatistics = async () => {
-  const totalLoginCount = await Statistic.countDocuments({ event: 'login', userId: { $regex: '^STUD' } });
-  // Get the distinct count of user IDs starting with 'STUD' that have login events
-  const uniqueLoginCount = await Statistic.distinct('userId', { event: 'login', userId: { $regex: '^STUD' } }).then(
-    (users) => users.length
-  );
   // Count the total number of students with userId starting with 'STUD'
   const totalStudents = await Student.countDocuments();
   const totalCounsellor = await User.countDocuments({ role: 'trainer' });
-  const visitsCount = await Visit.countDocuments();
-  // Calculate login percentage
-  const loginPercentage = (uniqueLoginCount / totalStudents) * 100;
-  const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
-
+  const visitsPending = await Visit.countDocuments({ status: 'pending' });
+  const visitsCompleted = await Visit.countDocuments({ status: 'completed' });
+  const toatalSchools = await School.countDocuments();
+  // const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
   const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed' });
   const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started' });
   const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
   const pendingAssessmentCount = totalStudents - totalassement;
-  // const totalCareerClicked = await Statistic.countDocuments({ event: 'click', elementType: 'careers' });
-  // const uniqueCareerClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'careers' }).then(
-  //   (users) => users.length
-  // );
-  // const averageCareerClicked = totalCareerClicked / totalStudents;
-
-  // const totalCollegeClicked = await Statistic.countDocuments({ event: 'click', elementType: 'colleges' });
-  // const uniqueCollegeClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'colleges' }).then(
-  //   (users) => users.length
-  // );
-  // const averageCollegeClicked = totalCollegeClicked / totalStudents;
-
-  // const totalExamClicked = await Statistic.countDocuments({ event: 'click', elementType: 'exams' });
-  // const uniqueExamClickCount = await Statistic.distinct('userId', { event: 'click', elementType: 'exams' }).then(
-  //   (users) => users.length
-  // );
-  // const averageExamClicked = totalExamClicked / totalStudents;
-
-  // const totalScholarshipClicked = await Statistic.countDocuments({ event: 'click', elementType: 'scholarships' });
-  // const uniqueScholarshipClickCount = await Statistic.distinct('userId', {
-  //   event: 'click',
-  //   elementType: 'scholarships',
-  // }).then((users) => users.length);
-  // const averageScholarshipClicked = totalScholarshipClicked / totalStudents;
 
   return {
     totalCounsellor,
-    visitsCount,
+    visitsPending,
+    visitsCompleted,
+    toatalSchools,
     totalStudents,
-    assessmentCount,
-    totalLoginCount,
-    uniqueLoginCount,
-    loginPercentage,
     assessmentCompeletedCount,
     assessmentStartedCountCount,
     pendingAssessmentCount,
-    // totalCareerClicked,
-    // uniqueCareerClickCount,
-    // averageCareerClicked,
-    // totalCollegeClicked,
-    // uniqueCollegeClickCount,
-    // averageCollegeClicked,
-    // totalExamClicked,
-    // uniqueExamClickCount,
-    // averageExamClicked,
-    // totalScholarshipClicked,
-    // uniqueScholarshipClickCount,
-    // averageScholarshipClicked,
   };
 };
+
 const getSchoolStatistics = async (schoolId) => {
   // Convert schoolId to string for consistent comparison
   const schoolIdStr = schoolId.toString();
