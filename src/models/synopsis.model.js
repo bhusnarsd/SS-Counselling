@@ -9,7 +9,10 @@ const synopsisShema = mongoose.Schema(
     studentId: {
       type: String,
     },
-    trianerId: {
+    trainerId: {
+      type: String,
+    },
+    standard: {
       type: String,
     },
     synopsis: {
