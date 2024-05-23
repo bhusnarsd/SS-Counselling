@@ -26,8 +26,8 @@ const querySynopsis = async (filter, options) => {
   return result;
 };
 
-const getSynopsisById = async (id) => {
-  return Synopsis.findById(id);
+const getSynopsisById = async (studentId) => {
+  return Synopsis.findOne({ studentId });
 };
 // /**
 //  * Update user by id
