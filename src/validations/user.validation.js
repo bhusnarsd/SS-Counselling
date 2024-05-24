@@ -10,7 +10,7 @@ const createUser = {
     lastName: Joi.string(),
     role: Joi.string()
       .required()
-      .valid('user', 'admin', 'superadmin', 'student', 'trainer', 'cluster', 'school', 'department'),
+      .valid('user', 'admin', 'superadmin', 'student', 'trainer', 'cluster', 'school', 'department', 'skillTrainer'),
     asssignedTo: Joi.string().allow('', null),
   }),
 };
