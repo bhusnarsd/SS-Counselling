@@ -10,3 +10,4 @@ module.exports.synopsisController = require('./synopsis.controller');
 module.exports.statisticController = require('./statistic.controller');
 module.exports.requestController = require('./request.controller');
 module.exports.lifeSkillController = require('./lifeSkillTainer.controller');
+module.exports.reqLifeTrainerController = require('./reqLifeTrainer.controller');
