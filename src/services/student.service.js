@@ -129,6 +129,7 @@ const getStudentAssessments = async (schoolId, standard) => {
       gender: student.gender,
       age: student.age,
       assessmentStatus: studentAssessment ? studentAssessment.status : 'non-started',
+      id: student.id,
     };
   });
 
