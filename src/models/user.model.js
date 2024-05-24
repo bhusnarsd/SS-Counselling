@@ -42,7 +42,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin', 'school', 'superadmin', 'student', 'trainer', 'department', 'cluster'],
+      enum: ['user', 'admin', 'school', 'superadmin', 'student', 'trainer', 'department', 'cluster', 'skillTrainer'],
       default: 'user',
     },
     assignedSchools: [
