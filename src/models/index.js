@@ -9,3 +9,4 @@ module.exports.Assessment = require('./assessment.model');
 module.exports.Synopsis = require('./synopsis.model');
 module.exports.Statistic = require('./userStatistics.model');
 module.exports.Request = require('./reqCounsellor.model');
+module.exports.LifeTrainerVisit = require('./lifeSkillTrainer.model');
