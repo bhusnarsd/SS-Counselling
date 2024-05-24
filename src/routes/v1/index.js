@@ -67,7 +67,7 @@ const defaultRoutes = [
     route: skillTrainerRoute,
   },
   {
-    path: './request-life-trainer',
+    path: '/request-life-trainer',
     route: reqLifeTrainerRoute,
   },
 ];
