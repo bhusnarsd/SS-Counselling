@@ -13,6 +13,7 @@ const statisticRoute = require('./statistics.route');
 const requestRoute = require('./request.route');
 const synopsisRoute = require('./synopsis.route');
 const skillTrainerRoute = require('./lifeSkillTrainer.route');
+const reqLifeTrainerRoute = require('./reqLifeTrainer.route');
 
 const router = express.Router();
 
@@ -64,6 +65,10 @@ const defaultRoutes = [
   {
     path: '/skill-trainer',
     route: skillTrainerRoute,
+  },
+  {
+    path: './request-life-trainer',
+    route: reqLifeTrainerRoute,
   },
 ];
 
