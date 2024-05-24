@@ -12,6 +12,7 @@ const assessmentRoute = require('./assessment.route');
 const statisticRoute = require('./statistics.route');
 const requestRoute = require('./request.route');
 const synopsisRoute = require('./synopsis.route');
+const skillTrainerRoute = require('./lifeSkillTrainer.route');
 
 const router = express.Router();
 
@@ -59,6 +60,10 @@ const defaultRoutes = [
   {
     path: '/synopsis',
     route: synopsisRoute,
+  },
+  {
+    path: '/skill-trainer',
+    route: skillTrainerRoute,
   },
 ];
 
