@@ -96,7 +96,7 @@ const getVisitsBySchoolId = async (schoolId) => {
   for (const visit of visits) {
     const { createdAt } = visit;
     // eslint-disable-next-line no-await-in-loop
-    const counselor = await User.findOne({ _id: visit.trainer }).select('firstName lastName mobNumber');
+    const counselor = await User.findOne({ _id: visit.trainer, role: 'skillTrainer' }).select('firstName lastName mobNumber');
     populatedVisits.push({ visit, counselor, createdAt });
   }
 
