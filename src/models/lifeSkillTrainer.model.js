@@ -3,7 +3,7 @@ const { toJSON, paginate } = require('./plugins');
 
 const lifeSkillVisitSchema = new mongoose.Schema(
   {
-    skillTrainer: {
+    trainer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
