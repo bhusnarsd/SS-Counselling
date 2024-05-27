@@ -13,7 +13,7 @@ router
 router.route('/get-dashboard-counts').get(lifeSkillController.getSchoolIdsAndStudentCount);
 
 router
-  .route('/:trainerId')
+  .route('/get')
   .get(
     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department', 'skillTrainer'),
     lifeSkillController.getTrainerVisits
