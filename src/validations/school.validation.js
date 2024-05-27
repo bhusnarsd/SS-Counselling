@@ -16,9 +16,10 @@ const createSchools = {
     blockCode: Joi.string().allow('', null),
     lowestClass: Joi.string().allow('', null),
     highestClass: Joi.string().allow('', null),
+    logitude: Joi.string().allow('', null),
+    latitude: Joi.string().allow('', null),
   }),
 };
-
 const getSchools = {
   query: Joi.object().keys({
     name: Joi.string(),
@@ -84,6 +85,8 @@ const updateSchools = {
       blockCode: Joi.string().allow('', null),
       lowestClass: Joi.string().allow('', null),
       highestClass: Joi.string().allow('', null),
+      logitude: Joi.string().allow('', null),
+      latitude: Joi.string().allow('', null),
     })
     .min(1),
 };

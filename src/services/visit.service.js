@@ -59,10 +59,10 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
 //   return visit; // Return the saved visit
 // };
 
-const getTrainerVisits = async (trainerId) => {
+const getTrainerVisits = async (trainerId, status) => {
   const visits = await Visit.aggregate([
     {
-      $match: { trainer: mongoose.Types.ObjectId(trainerId) },
+      $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
     },
     {
       $lookup: {

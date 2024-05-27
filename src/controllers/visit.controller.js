@@ -11,8 +11,8 @@ const createSchedule = catchAsync(async (req, res) => {
 });
 
 const getTrainerVisits = catchAsync(async (req, res) => {
-  const { trainerId } = req.params;
-  const visit = await visitService.getTrainerVisits(trainerId);
+  const { trainerId, status } = req.query;
+  const visit = await visitService.getTrainerVisits(trainerId, status);
   res.status(httpStatus.CREATED).send(visit);
 });
 
