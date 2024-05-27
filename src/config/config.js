@@ -26,6 +26,10 @@ const envVarsSchema = Joi.object()
     AWS_ACCESS_KEY_ID: Joi.string(),
     AWS_SECRETE_ACCESS_KEY: Joi.string(),
     REGION: Joi.string(),
+    SMS_USERID: Joi.string(),
+    SMS_SECUREKEY: Joi.string(),
+    SMS_SENDERID: Joi.string(),
+    SMS_TEMPLETID: Joi.string(),
   })
   .unknown();
 
@@ -68,5 +72,12 @@ module.exports = {
     accessKey: envVars.AWS_ACCESS_KEY_ID,
     secreteKey: envVars.AWS_SECRETE_ACCESS_KEY,
     region: envVars.REGION,
+  },
+  SMS: {
+    SMS_USERID: envVars.SMS_USERID,
+    SMS_SECUREKEY: envVars.SMS_SECUREKEY,
+    SMS_SENDERID: envVars.SMS_SENDERID,
+    SMS_TEMPLETID: envVars.SMS_TEMPLETID,
+    SMS_USERPASS: envVars.SMS_USERPASS,
   },
 };

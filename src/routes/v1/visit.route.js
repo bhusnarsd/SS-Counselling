@@ -12,7 +12,7 @@ router
 router.route('/get-dashboard-counts').get(visitController.getSchoolIdsAndStudentCount);
 // router.route('/genrate-token').get(studentController.generateToken);
 router
-  .route('/:trainerId')
+  .route('/get')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
 
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
