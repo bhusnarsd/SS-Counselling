@@ -146,33 +146,32 @@ const getStudentById = async (id) => {
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
-  const visits = await Visit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId standard');
-  const schoolStandardPairs = visits.map((visit) => ({ schoolId: visit.schoolId, standard: visit.standard }));
+  // Fetch visits assigned to the trainer
+  const visits = await LifeTrainerVisit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId status');
 
-  const studentCounts = await Student.aggregate([
-    {
-      $match: {
-        $or: schoolStandardPairs.map((pair) => ({
-          schoolId: pair.schoolId,
-          standard: pair.standard,
-        })),
-      },
-    },
-    {
-      $group: {
-        _id: { schoolId: '$schoolId', standard: '$standard' },
-        studentCount: { $sum: 1 },
-      },
-    },
+  // Get unique school IDs
+  const uniqueSchoolIds = [...new Set(visits.map((visit) => visit.schoolId))];
+  const totalSchools = uniqueSchoolIds.length;
+
+  // Count the total number of students in those schools
+  const totalStudents = await Student.countDocuments({ schoolId: { $in: uniqueSchoolIds } });
+
+  // Count visits by status
+  const statusCounts = await LifeTrainerVisit.aggregate([
+    { $match: { trainer: mongoose.Types.ObjectId(trainerId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
   ]);
-  const schoolCount = new Set(schoolStandardPairs.map((pair) => pair.schoolId)).size;
-  const startedSchools = await Synopsis.distinct('schoolId').then((schoolIds) => schoolIds.length);
-  const counsellingCount = await Synopsis.countDocuments();
+
+  // Format status counts into an object
+  const statusCountMap = statusCounts.reduce((acc, curr) => {
+    acc[curr._id] = curr.count;
+    return acc;
+  }, {});
+
   return {
-    studentCounts: studentCounts.reduce((acc, curr) => acc + curr.studentCount, 0),
-    schoolCount,
-    startedSchools,
-    counsellingCount,
+    totalSchools,
+    totalStudents,
+    statusCounts: statusCountMap,
   };
 };
 
