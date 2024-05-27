@@ -60,10 +60,22 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
 // };
 
 const getTrainerVisits = async (trainerId, status) => {
-  const visits = await Visit.aggregate([
-    {
+  const pipeline = [];
+
+  if (status) {
+    // If status is provided, filter by both trainerId and status
+    pipeline.push({
       $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
-    },
+    });
+  } else {
+    // If status is not provided, filter only by trainerId
+    pipeline.push({
+      $match: { trainer: mongoose.Types.ObjectId(trainerId) },
+    });
+  }
+
+  // Add remaining aggregation stages
+  pipeline.push(
     {
       $lookup: {
         from: 'schools',
@@ -84,8 +96,10 @@ const getTrainerVisits = async (trainerId, status) => {
         createdAt: 1,
         school: '$school',
       },
-    },
-  ]);
+    }
+  );
+
+  const visits = await Visit.aggregate(pipeline);
   return visits;
 };
 
