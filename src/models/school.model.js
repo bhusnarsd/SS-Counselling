@@ -55,6 +55,12 @@ const schoolSchema = mongoose.Schema({
     type: Number,
     default: 58,
   },
+  logitude: {
+    type: String,
+  },
+  latitude: {
+    type: String,
+  },
 });
 
 // Add plugins
