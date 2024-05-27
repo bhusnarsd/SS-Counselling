@@ -29,6 +29,10 @@ const visitSchema = new mongoose.Schema(
       type: String,
       default: 'pending',
     },
+    isCLosedVisit: {
+      type: Boolean,
+      defualt: false,
+    },
   },
   {
     timestamps: true,
