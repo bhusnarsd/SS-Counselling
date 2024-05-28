@@ -199,8 +199,8 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
  * @param {Object} updateBody
  * @returns {Promise<Sansthan>}
  */
-const updateStudentById = async (id, updateBody) => {
-  const result = await getStudentById(id);
+const updateStudentById = async (schoolId, standard, trainer, updateBody) => {
+  const result = await Visit({ schoolId, standard, trainer });
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
   }
