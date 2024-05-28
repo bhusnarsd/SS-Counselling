@@ -8,22 +8,38 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('superadmin', 'block_officer'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('superadmin', 'block_officer'), validate(userValidation.getUsers), userController.getUsers);
+  .post(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+    validate(userValidation.createUser),
+    userController.createUser
+  )
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+    validate(userValidation.getUsers),
+    userController.getUsers
+  );
 
 router
   .route('/create-trianer')
-  .post(auth('superadmin', 'block_officer'), validate(userValidation.createTainer), userController.createTrainer);
+  .post(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+    validate(userValidation.createTainer),
+    userController.createTrainer
+  );
 router
   .route('/:userId')
-  .get(auth('superadmin', 'block_officer'), validate(userValidation.getUser), userController.getUser)
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+    validate(userValidation.getUser),
+    userController.getUser
+  )
   .patch(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(userValidation.updateUser),
     userController.updateUser
   )
   .delete(
-    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     validate(userValidation.deleteUser),
     userController.deleteUser
   );
