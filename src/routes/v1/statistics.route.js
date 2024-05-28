@@ -9,6 +9,13 @@ router
   .post(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.createStatistic)
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getStatistics);
 router
+  .route('/get-login-count')
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department', 'skillTrainer'),
+    statisticController.getUserByUsername
+  );
+
+router
   .route('/get-by-school')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), statisticController.getSchoolStatistics);
 
