@@ -73,6 +73,13 @@ const resetPassword = catchAsync(async (req, res) => {
   res.status(200).send({ message: 'Password has been reset' });
 });
 
+const resetPasswordWithUserName = catchAsync(async (req, res) => {
+  const { username, newPassword } = req.body;
+  await authService.resetPasswordWithUserName(username, newPassword);
+  res.status(200).send({ message: 'Password has been reset' });
+});
+
+
 
 const sendVerificationEmail = catchAsync(async (req, res) => {
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
@@ -93,6 +100,7 @@ module.exports = {
   forgotPassword,
   initiatePasswordReset,
   resetPassword,
+  resetPasswordWithUserName,
   sendVerificationEmail,
   verifyEmail,
   // sansthanRegister,
