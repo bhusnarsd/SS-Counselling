@@ -15,6 +15,9 @@ const schoolSchema = mongoose.Schema({
   contact_number: {
     type: String,
   },
+  contactPersonName: {
+    type: String,
+  },
   address: {
     type: String,
   },

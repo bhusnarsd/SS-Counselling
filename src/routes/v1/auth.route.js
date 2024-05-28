@@ -13,6 +13,11 @@ router.post('/refresh-tokens', validate(authValidation.refreshTokens), authContr
 router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
 router.post('/otp-send', validate(authValidation.sendOtp), authController.initiatePasswordReset);
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+router.post(
+  '/reset-password-with-username',
+  validate(authValidation.resetPasswordWithUserName),
+  authController.resetPasswordWithUserName
+);
 router.post('/send-verification-email', auth(), authController.sendVerificationEmail);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
 
