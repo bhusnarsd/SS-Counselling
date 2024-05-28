@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const mongoose = require('mongoose');
-const { Student, User, Visit, Assessment, Synopsis } = require('../models');
+const { Student, User, Visit, Synopsis } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
@@ -199,10 +199,10 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
  * @param {Object} updateBody
  * @returns {Promise<Sansthan>}
  */
-const updateStudentById = async (schoolId, standard, trainer, updateBody) => {
-  const result = await Visit({ schoolId, standard, trainer });
+const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
+  const result = await Visit.findOne({ schoolId, standard, trainer });
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
   }
   Object.assign(result, updateBody);
   await result.save();
@@ -215,6 +215,6 @@ module.exports = {
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,
-  updateStudentById,
+  updateVisitById,
   scheduleVisit,
 };
