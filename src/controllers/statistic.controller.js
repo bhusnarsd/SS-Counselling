@@ -9,6 +9,11 @@ const createStatistic = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(statistic);
 });
 
+const getUserByUsername = catchAsync(async (req, res) => {
+  const statistic = await statisticService.getUserByUsername(req.query.username);
+  res.status(httpStatus.CREATED).send(statistic);
+});
+
 const getStatistics = catchAsync(async (req, res) => {
   const statistics = await statisticService.getStatistics();
   res.send(statistics);
@@ -35,4 +40,5 @@ module.exports = {
   getSchoolStatistics,
   getFilteredStatistics,
   getStatistFlterDash,
+  getUserByUsername,
 };

@@ -18,6 +18,15 @@ const createStatitic = async (reqBody) => {
   return statitic;
 };
 
+/**
+ * Get user by username
+ * @param {string} username
+ * @returns {Promise<User>}
+ */
+const getUserByUsername = async (username) => {
+  const logincounts = await Statistic.countDocuments({ userId: username });
+  return { logincount: logincounts };
+};
 const getStatistics = async () => {
   // Count the total number of students with userId starting with 'STUD'
   const totalStudents = await Student.countDocuments();
@@ -228,4 +237,5 @@ module.exports = {
   getSchoolStatistics,
   getStatistFlterDash,
   assesmentStatusWise,
+  getUserByUsername,
 };

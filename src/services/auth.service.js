@@ -83,7 +83,7 @@ const initiatePasswordReset = async (username) => {
  */
 const resetPasswordWithOtp = async (username, otp, newPassword) => {
   try {
-    const user = await userService.getUserByUsername(username);
+    const user = await userService.getUserByEmail(username);
     const { mobileNumber } = user;
     const isValidOtp = await verifyOtp(mobileNumber, otp);
 
@@ -106,7 +106,7 @@ const resetPasswordWithOtp = async (username, otp, newPassword) => {
 const resetPasswordWithUserName = async (username, newPassword) => {
   try {
     // const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-    const user = await userService.getUserByUsername({ username });
+    const user = await userService.getUserByEmail({ username });
     if (!user) {
       throw new Error();
     }
