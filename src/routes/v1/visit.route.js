@@ -1,13 +1,15 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 const auth = require('../../middlewares/auth');
 const { visitController } = require('../../controllers');
 
 const router = express.Router();
 
+const uploadPath = path.join(__dirname, '../../uploads');
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, uploadPath);
   },
   filename(req, file, cb) {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
