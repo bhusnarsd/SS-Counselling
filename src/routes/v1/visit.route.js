@@ -38,6 +38,10 @@ router
     upload.fields([{ name: 'file' }, { name: 'file1' }, { name: 'file2' }]),
     visitController.updateVisitById
   );
+
+router
+  .route('/add-in-out-time')
+  .patch(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.addInOutTIme);
 module.exports = router;
 
 /**

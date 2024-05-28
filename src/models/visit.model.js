@@ -42,6 +42,18 @@ const visitSchema = new mongoose.Schema(
       type: Boolean,
       defualt: false,
     },
+    inTime: {
+      type: String,
+    },
+    outTime: {
+      type: String,
+    },
+    inDate: {
+      type: String,
+    },
+    outDate: {
+      type: String,
+    },
   },
   {
     timestamps: true,
