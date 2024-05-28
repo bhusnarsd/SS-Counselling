@@ -34,7 +34,7 @@ router
   .patch(
     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
     upload.fields([{ name: 'file' }, { name: 'file1' }, { name: 'file2' }]),
-    visitController.getVisitsBySchoolId
+    visitController.updateVisitById
   );
 module.exports = router;
 
