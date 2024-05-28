@@ -14,18 +14,16 @@ const getTrainerVisits = catchAsync(async (req, res) => {
   const { trainerId, status } = req.query;
   const visit = await visitService.getTrainerVisits(trainerId, status);
   res.status(httpStatus.CREATED).send(visit);
-
 });
 
-const updateFiles = catchAsync(async (req, res) => {
+const updateVisitById = catchAsync(async (req, res) => {
   const { schoolId, standard, trainer } = req.query;
-
-    const updateData = {};
-    if (req.files.file) updateData.file = req.files.file[0].path;
-    if (req.files.file1) updateData.file1 = req.files.file1[0].path;
-    if (req.files.file2) updateData.file2 = req.files.file2[0].path;
-
-  res.status(httpStatus.CREATED).send(visit);
+  const updateData = {};
+  if (req.files.file) updateData.file = req.files.file[0].path;
+  if (req.files.file1) updateData.file1 = req.files.file1[0].path;
+  if (req.files.file2) updateData.file2 = req.files.file2[0].path;
+  const result = await visitService.updateVisitById(schoolId, standard, trainer, updateData);
+  res.status(httpStatus.CREATED).send(result);
 });
 
 const getVisitsBySchoolId = catchAsync(async (req, res) => {
@@ -49,4 +47,5 @@ module.exports = {
   getTrainerVisits,
   getVisitsBySchoolId,
   getSchoolIdsAndStudentCount,
+  updateVisitById,
 };
