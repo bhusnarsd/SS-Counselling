@@ -104,7 +104,7 @@ const resetPasswordWithOtp = async (username, otp, newPassword) => {
  * @returns {Promise}
  */
 const resetPasswordWithUserName = async (username, newPassword) => {
-  try {
+  // try {
     // const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
     const user = await userService.getUserByEmail({ username });
     if (!user) {
@@ -112,9 +112,9 @@ const resetPasswordWithUserName = async (username, newPassword) => {
     }
     await userService.updateUserById(user._id, { password: newPassword });
     // await Token.deleteMany({ user: user._id, type: tokenTypes.RESET_PASSWORD });
-  } catch (error) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
-  }
+  // } catch (error) {
+  //   throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
+  // }
 };
 
 /**
