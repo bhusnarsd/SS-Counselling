@@ -26,6 +26,12 @@ const updateVisitById = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(result);
 });
 
+const addInOutTIme = catchAsync(async (req, res) => {
+  const { schoolId, standard, trainerId } = req.query;
+  const result = await visitService.updateVisitById(schoolId, standard, trainerId, req.body);
+  res.status(httpStatus.CREATED).send(result);
+});
+
 const getVisitsBySchoolId = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
   const visit = await visitService.getVisitsBySchoolId(schoolId);
@@ -48,4 +54,5 @@ module.exports = {
   getVisitsBySchoolId,
   getSchoolIdsAndStudentCount,
   updateVisitById,
+  addInOutTIme,
 };
