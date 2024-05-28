@@ -1,8 +1,21 @@
 const express = require('express');
+const multer = require('multer');
 const auth = require('../../middlewares/auth');
 const { visitController } = require('../../controllers');
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename(req, file, cb) {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 router
   .route('/')
@@ -16,7 +29,13 @@ router
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
 
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
-//   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
+router
+  .route('/update')
+  .patch(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+    upload.fields([{ name: 'file' }, { name: 'file1' }, { name: 'file2' }]),
+    visitController.getVisitsBySchoolId
+  );
 module.exports = router;
 
 /**
