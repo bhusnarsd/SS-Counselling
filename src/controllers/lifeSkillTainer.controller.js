@@ -32,12 +32,12 @@ const getSchoolIdsAndStudentCount = catchAsync(async (req, res) => {
 //   res.send(result);
 // });
 const updateVisitById = catchAsync(async (req, res) => {
-  const { schoolId, standard, trainerId } = req.query;
+  const { schoolId, trainerId } = req.query;
   const updateData = {};
   if (req.files.file) updateData.file = req.files.file[0].path;
   if (req.files.file1) updateData.file1 = req.files.file1[0].path;
   if (req.files.file2) updateData.file2 = req.files.file2[0].path;
-  const result = await lifeSkillTrainer.updateVisitById(schoolId, standard, trainerId, updateData);
+  const result = await lifeSkillTrainer.updateVisitById(schoolId, trainerId, updateData);
   res.status(httpStatus.CREATED).send(result);
 });
 
