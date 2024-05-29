@@ -221,7 +221,7 @@ const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
   }
 
   // Check if the visit already has file or file1 set and we're trying to update them again
-  if ((updateBody.file || updateBody.file1 || updateBody.file2) && (result.file || result.file1 || result.file2)) {
+  if ((updateBody.file || updateBody.file1) && (result.file || result.file1)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file, file1, or file2 set');
   }
 
@@ -233,8 +233,8 @@ const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
   const updatedResult = await LifeTrainerVisit.findOne({ schoolId, trainer });
 
   // Check if all conditions are met to set status to 'completed'
-  const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
-  if (inTime && outTime && inDate && outDate && file && file1 && file2) {
+  const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
+  if (inTime && outTime && inDate && outDate && file && file1) {
     updatedResult.status = 'completed';
     await updatedResult.save();
   }
