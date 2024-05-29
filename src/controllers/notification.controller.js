@@ -17,8 +17,13 @@ const markNotificationAsRead = catchAsync(async (req, res) => {
   res.send(notification);
 });
 
+const deleteNotificationById = catchAsync(async (req, res) => {
+  const notification = await notificationService.deleteNotificationById(req.params.id);
+  res.send(notification);
+});
 module.exports = {
   createNotification,
   getNotifications,
   markNotificationAsRead,
+  deleteNotificationById,
 };
