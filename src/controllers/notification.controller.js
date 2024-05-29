@@ -8,7 +8,7 @@ const createNotification = catchAsync(async (req, res) => {
 });
 
 const getNotifications = catchAsync(async (req, res) => {
-  const notifications = await notificationService.getNotificationsByUserId(req.user._id);
+  const notifications = await notificationService.getNotificationsByUserId(req.query.userId);
   res.send(notifications);
 });
 
