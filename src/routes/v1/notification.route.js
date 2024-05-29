@@ -15,6 +15,6 @@ router
     notificationController.getNotifications
   );
 
-router.route('/:notificationId/read').patch(notificationController.markNotificationAsRead);
+router.route('/:userId/read').patch(notificationController.markNotificationAsRead);
 
 module.exports = router;
