@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const mongoose = require('mongoose');
-const { Student, User, Visit, LifeTrainerVisit, Synopsis } = require('../models');
+const { Student, User, LifeTrainerVisit } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time) => {
@@ -195,22 +195,67 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
  * @param {Object} updateBody
  * @returns {Promise<Sansthan>}
  */
-const updateStudentById = async (id, updateBody) => {
-  const result = await getStudentById(id);
+
+/**
+ * Update visit by schoolId, standard, and trainer
+ * @param {String} schoolId
+ * @param {String} standard
+ * @param {ObjectId} trainer
+ * @param {Object} updateBody
+ * @returns {Promise<Visit>}
+ */
+const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
+  const result = await LifeTrainerVisit.findOne({ schoolId, standard, trainer });
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
   }
+
+  // Check if the visit already has inTime and inDate set and we're trying to update them again
+  if ((updateBody.inTime || updateBody.inDate) && (result.inTime || result.inDate)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
+  }
+
+  // Check if the visit already has outTime and outDate set and we're trying to update them again
+  if ((updateBody.outTime || updateBody.outDate) && (result.outTime || result.outDate)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
+  }
+
+  // Check if the visit already has file or file1 set and we're trying to update them again
+  if ((updateBody.file || updateBody.file1 || updateBody.file2) && (result.file || result.file1 || result.file2)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file, file1, or file2 set');
+  }
+
+  // Update the visit document with new data
   Object.assign(result, updateBody);
   await result.save();
-  return result;
-};
 
+  // Re-fetch the visit document after update
+  const updatedResult = await LifeTrainerVisit.findOne({ schoolId, trainer });
+
+  // Check if all conditions are met to set status to 'completed'
+  const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
+  if (inTime && outTime && inDate && outDate && file && file1 && file2) {
+    updatedResult.status = 'completed';
+    await updatedResult.save();
+  }
+
+  return updatedResult;
+};
+// const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
+//   const result = await LifeTrainerVisit.findOne({ schoolId, standard, trainer });
+//   if (!result) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
+//   }
+//   Object.assign(result, updateBody);
+//   await result.save();
+//   return result;
+// };
 module.exports = {
   queryStudent,
   getStudentById,
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,
-  updateStudentById,
+  updateVisitById,
   scheduleVisit,
 };

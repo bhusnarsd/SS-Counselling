@@ -56,7 +56,7 @@ const getUserByUsename = async (username, oldPassword) => {
   // Compare the provided oldPassword with the hashed password in the database
   const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isPasswordMatch) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Enter Valid Old Password');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Enter Valid Old Password');
   }
   return user;
 };
