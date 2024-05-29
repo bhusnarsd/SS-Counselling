@@ -204,8 +204,8 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
  * @param {Object} updateBody
  * @returns {Promise<Visit>}
  */
-const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
-  const result = await LifeTrainerVisit.findOne({ schoolId, standard, trainer });
+const updateVisitById = async (schoolId, trainer, updateBody) => {
+  const result = await LifeTrainerVisit.findOne({ schoolId, trainer });
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
   }
