@@ -257,20 +257,20 @@ const updateVisitById = async (schoolId, trainer, updateBody) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
   }
 
-  // Check if the visit already has inTime and inDate set and we're trying to update them again
-  if ((result.inTime || result.inDate) && (updateBody.inTime || updateBody.inDate)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
-  }
+  // // Check if the visit already has inTime and inDate set and we're trying to update them again
+  // if ((result.inTime || result.inDate) && (updateBody.inTime || updateBody.inDate)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
+  // }
 
-  // Check if the visit already has outTime and outDate set and we're trying to update them again
-  if ((result.outTime || result.outDate) && (updateBody.outTime || updateBody.outDate)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
-  }
+  // // Check if the visit already has outTime and outDate set and we're trying to update them again
+  // if ((result.outTime || result.outDate) && (updateBody.outTime || updateBody.outDate)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
+  // }
 
-  // Check if the visit already has file or file1 set and we're trying to update them again
-  if ((result.file || result.file1) && (updateBody.file || updateBody.file1)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file or file1 set');
-  }
+  // // Check if the visit already has file or file1 set and we're trying to update them again
+  // if ((result.file || result.file1) && (updateBody.file || updateBody.file1)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file or file1 set');
+  // }
 
   // Update the visit document with new data
   Object.assign(result, updateBody);
