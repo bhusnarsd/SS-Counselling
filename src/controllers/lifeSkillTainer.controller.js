@@ -42,8 +42,8 @@ const updateVisitById = catchAsync(async (req, res) => {
 });
 
 const addInOutTIme = catchAsync(async (req, res) => {
-  const { schoolId, standard, trainerId } = req.query;
-  const result = await lifeSkillTrainer.updateVisitById(schoolId, standard, trainerId, req.body);
+  const { schoolId, trainerId } = req.query;
+  const result = await lifeSkillTrainer.updateVisitById(schoolId, trainerId, req.body);
   res.status(httpStatus.CREATED).send(result);
 });
 
