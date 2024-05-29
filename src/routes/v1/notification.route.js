@@ -15,6 +15,7 @@ router
     notificationController.getNotifications
   );
 
-router.route('/:userId/read').patch(notificationController.markNotificationAsRead);
+router.route('/:userId').patch(notificationController.markNotificationAsRead);
 
+router.route('/delete/:id').delete(notificationController.deleteNotificationById);
 module.exports = router;
