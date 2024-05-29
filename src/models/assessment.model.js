@@ -1,6 +1,49 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
+const aptitudeSchema = new mongoose.Schema({
+  factor_id: Number,
+  factor_name: String,
+  score: Number,
+  isUnderHighRange: Boolean,
+  isUnderLowRange: Boolean,
+  isUnderMidRange: Boolean,
+});
+
+const personalitySchema = new mongoose.Schema({
+  factor_id: Number,
+  factor_name: String,
+  score: Number,
+  isUnderHighRange: Boolean,
+  isUnderLowRange: Boolean,
+  isUnderMidRange: Boolean,
+  dot_position: String,
+});
+
+const interestScoreWiseDataSchema = new mongoose.Schema({
+  factor_id: Number,
+  factor_name: String,
+  score: Number,
+  isUnderHighRange: Boolean,
+  isUnderLowRange: Boolean,
+  isUnderMidRange: Boolean,
+  int_report_message: String,
+});
+
+const interestSchema = new mongoose.Schema({
+  label: [String],
+  values: [Number],
+  scoreWiseData: [interestScoreWiseDataSchema],
+});
+
+const careerFitmentSchema = new mongoose.Schema({
+  career_id: Number,
+  fitment: Number,
+  career_name: String,
+  aptitude_fitment: Number,
+  personality_fitment: Number,
+  interest_fitment: Number,
+});
 const reportSchema = mongoose.Schema(
   {
     long: {
@@ -48,6 +91,10 @@ const assessmentSchema = mongoose.Schema(
       type: reportSchema,
       required: true,
     },
+    aptitude: [aptitudeSchema],
+    personality: [personalitySchema],
+    interest: interestSchema,
+    career_fitments: [careerFitmentSchema],
   },
   {
     timestamps: true,

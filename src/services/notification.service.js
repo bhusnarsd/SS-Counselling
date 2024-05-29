@@ -7,7 +7,7 @@ const createNotification = async (notificationData) => {
 };
 
 const getNotificationsByUserId = async (userId) => {
-  return Notification.find({ userIds: userId });
+  return Notification.find({ userId });
 };
 
 const markAsRead = async (notificationId) => {
