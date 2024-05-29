@@ -13,7 +13,7 @@ const getNotifications = catchAsync(async (req, res) => {
 });
 
 const markNotificationAsRead = catchAsync(async (req, res) => {
-  const notification = await notificationService.markAsRead(req.params.notificationId);
+  const notification = await notificationService.markAsRead(req.params.userId);
   res.send(notification);
 });
 
