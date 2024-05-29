@@ -93,6 +93,7 @@ const getTrainerVisits = async (trainerId, status) => {
         visitDate: 1,
         time: 1,
         standard: 1,
+        status: 1,
         createdAt: 1,
         school: '$school',
       },
