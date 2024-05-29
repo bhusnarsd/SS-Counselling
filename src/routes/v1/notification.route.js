@@ -4,7 +4,16 @@ const { notificationController } = require('../../controllers');
 
 const router = express.Router();
 
-router.route('/').post(notificationController.createNotification).get(notificationController.getNotifications);
+router
+  .route('/')
+  .post(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department', 'skillTrainer'),
+    notificationController.createNotification
+  )
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department', 'skillTrainer'),
+    notificationController.getNotifications
+  );
 
 router.route('/:notificationId/read').patch(notificationController.markNotificationAsRead);
 
