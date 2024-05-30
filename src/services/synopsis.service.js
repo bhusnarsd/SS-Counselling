@@ -13,21 +13,19 @@ const createSynopsis = async (reqBody) => {
   const totalStudents = await Student.countDocuments({ standard, schoolId });
   const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
   if (totalStudents === totalSynopses) {
-    // If a visit is assigned to a trainer for the given school and standard, update the visit status to 'progress'
+    const updatedResult = await Visit.findOne({ schoolId, standard, trainer: synopsis.trianer });
+    const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
+    if (inTime && outTime && inDate && outDate && file && file1) {
+      updatedResult.status = 'completed';
+      await updatedResult.save();
+    }
+  } else {
     await Visit.findOneAndUpdate(
       { schoolId, standard, status: { $ne: 'completed' } },
       { status: 'progress' },
       { new: true }
     );
   }
-  //   {
-  //   // If the number of synopses matches the number of students, update the visit status to 'completed'
-  //   await Visit.findOneAndUpdate(
-  //     { schoolId, standard, status: { $ne: 'completed' } },
-  //     { status: 'completed' },
-  //     { new: true }
-  //   );
-  // } if\
 
   return synopsis;
 };
