@@ -57,6 +57,12 @@ const refreshTokens = {
   }),
 };
 
+const sendOtp = {
+  body: Joi.object().keys({
+    username: Joi.string().required(),
+  }),
+};
+
 const forgotPassword = {
   body: Joi.object().keys({
     username: Joi.string().required(),
@@ -64,10 +70,17 @@ const forgotPassword = {
 };
 
 const resetPassword = {
-  query: Joi.object().keys({
-    token: Joi.string().required(),
-  }),
   body: Joi.object().keys({
+    username: Joi.string().required(),
+    otp: Joi.string().required(),
+    password: Joi.string().required().custom(password),
+  }),
+};
+
+const resetPasswordWithUserName = {
+  body: Joi.object().keys({
+    oldPassword: Joi.string().required(),
+    username: Joi.string().required(),
     password: Joi.string().required().custom(password),
   }),
 };
@@ -82,9 +95,11 @@ module.exports = {
   register,
   login,
   logout,
+  sendOtp,
   refreshTokens,
   forgotPassword,
   resetPassword,
+  resetPasswordWithUserName,
   verifyEmail,
   sansthanRegister,
   sansthanLogin,

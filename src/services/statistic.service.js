@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-param-reassign */
-const { Statistic, Student, Assessment, User, Visit, Synopsis, School } = require('../models');
+const { Statistic, Student, Assessment, User, Visit, Synopsis, School, LifeTrainerVisit } = require('../models');
 
 /**
  * Create a Statistic
@@ -18,11 +18,23 @@ const createStatitic = async (reqBody) => {
   return statitic;
 };
 
+/**
+ * Get user by username
+ * @param {string} username
+ * @returns {Promise<User>}
+ */
+const getUserByUsername = async (username) => {
+  const logincounts = await Statistic.countDocuments({ userId: username });
+  return { logincount: logincounts };
+};
 const getStatistics = async () => {
   // Count the total number of students with userId starting with 'STUD'
   const totalStudents = await Student.countDocuments();
   const totalCounsellor = await User.countDocuments({ role: 'trainer' });
+  const totalLifeSkillTrainer = await User.countDocuments({ role: 'skillTrainer' });
   const visitsPending = await Visit.countDocuments({ status: 'pending' });
+  const visitsPendingTrainer = await LifeTrainerVisit.countDocuments({ status: 'pending' });
+  const visitsCompletedTrainer = await LifeTrainerVisit.countDocuments({ status: 'completed' });
   const visitsCompleted = await Visit.countDocuments({ status: 'completed' });
   const toatalSchools = await School.countDocuments();
   // const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
@@ -33,6 +45,9 @@ const getStatistics = async () => {
 
   return {
     totalCounsellor,
+    totalLifeSkillTrainer,
+    visitsPendingTrainer,
+    visitsCompletedTrainer,
     visitsPending,
     visitsCompleted,
     toatalSchools,
@@ -43,21 +58,27 @@ const getStatistics = async () => {
   };
 };
 
-const getStatistFlterDash = async (SchoolId) => {
+const getStatistFlterDash = async (schoolId) => {
   // Count the total number of students with userId starting with 'STUD'
-  const totalStudents = await Student.countDocuments({ SchoolId });
+  const totalStudents = await Student.countDocuments({ schoolId });
   const totalCounsellor = await User.countDocuments({ role: 'trainer' });
-  const visitsPending = await Visit.countDocuments({ status: 'pending', SchoolId });
-  const visitsCompleted = await Visit.countDocuments({ status: 'completed', SchoolId });
+  const totalLifeSkillTrainer = await User.countDocuments({ role: 'skillTrainer' });
+  const visitsPendingTrainer = await LifeTrainerVisit.countDocuments({ status: 'pending', schoolId });
+  const visitsCompletedTrainer = await LifeTrainerVisit.countDocuments({ status: 'completed', schoolId });
+  const visitsPending = await Visit.countDocuments({ status: 'pending', schoolId });
+  const visitsCompleted = await Visit.countDocuments({ status: 'completed', schoolId });
   const toatalSchools = await School.countDocuments();
   // const assessmentCount = await Assessment.countDocuments({ status: 'completed' });
-  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed', SchoolId });
-  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started', SchoolId });
+  const assessmentCompeletedCount = await Assessment.countDocuments({ status: 'completed', schoolId });
+  const assessmentStartedCountCount = await Assessment.countDocuments({ status: 'started', schoolId });
   const totalassement = assessmentCompeletedCount + assessmentStartedCountCount;
   const pendingAssessmentCount = totalStudents - totalassement;
 
   return {
     totalCounsellor,
+    totalLifeSkillTrainer,
+    visitsPendingTrainer,
+    visitsCompletedTrainer,
     visitsPending,
     visitsCompleted,
     toatalSchools,
@@ -75,6 +96,9 @@ const getSchoolStatistics = async (schoolId) => {
   // Fetch total number of students for the school
   const totalStudents = await Student.countDocuments({ schoolId: schoolIdStr });
 
+  const totalLifeSkillTrainer = await User.countDocuments({ role: 'skillTrainer' });
+  const visitsPendingTrainer = await LifeTrainerVisit.countDocuments({ status: 'pending', schoolId: schoolIdStr });
+  const visitsCompletedTrainer = await LifeTrainerVisit.countDocuments({ status: 'completed', schoolId: schoolIdStr });
   // Fetch various counts related to visits and assessments
   const visitsCount = await Visit.countDocuments({ schoolId: schoolIdStr });
   const pastSessionCount = await Visit.countDocuments({ status: 'completed', schoolId: schoolIdStr });
@@ -111,6 +135,9 @@ const getSchoolStatistics = async (schoolId) => {
   // Return the consolidated statistics
   return {
     totalStudents,
+    totalLifeSkillTrainer,
+    visitsPendingTrainer,
+    visitsCompletedTrainer,
     visitsCount,
     pastSessionCount,
     visitsByStandard,
@@ -186,10 +213,29 @@ const getFilteredStatistics = async (schoolId, standard) => {
   };
 };
 
+/**
+ * Clicable Statistic of assesment all data
+ * @param {Object} reqBody
+ * @returns {Promise<Statistic>}
+ */
+const assesmentStatusWise = async (status, schoolId = null) => {
+  const query = { status };
+  if (schoolId) {
+    query.schoolId = schoolId;
+  }
+  const assessments = await Assessment.find(query).select('studentId');
+  const studentIds = assessments.map((assessment) => assessment.studentId);
+  const students = await Student.find({ studentId: { $in: studentIds } });
+
+  return students;
+};
+
 module.exports = {
   getFilteredStatistics,
   createStatitic,
   getStatistics,
   getSchoolStatistics,
   getStatistFlterDash,
+  assesmentStatusWise,
+  getUserByUsername,
 };

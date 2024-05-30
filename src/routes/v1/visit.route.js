@@ -1,8 +1,23 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const auth = require('../../middlewares/auth');
 const { visitController } = require('../../controllers');
 
 const router = express.Router();
+
+const uploadPath = path.join(__dirname, '../../uploads');
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, uploadPath);
+  },
+  filename(req, file, cb) {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 router
   .route('/')
@@ -12,11 +27,19 @@ router
 router.route('/get-dashboard-counts').get(visitController.getSchoolIdsAndStudentCount);
 // router.route('/genrate-token').get(studentController.generateToken);
 router
-  .route('/:trainerId')
+  .route('/get')
   .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
 
+router.route('/get/android').get(visitController.getTrainerVisits);
+
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
-//   .patch(auth('superadmin', 'block_officer'), studentController.updateStudent);
+router.route('/update').patch(
+  // auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
+  upload.fields([{ name: 'file' }, { name: 'file1' }, { name: 'file2' }]),
+  visitController.updateVisitById
+);
+
+router.route('/add-in-out-time').patch(visitController.addInOutTIme);
 module.exports = router;
 
 /**

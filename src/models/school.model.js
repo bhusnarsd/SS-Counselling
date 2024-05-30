@@ -15,6 +15,9 @@ const schoolSchema = mongoose.Schema({
   contact_number: {
     type: String,
   },
+  contactPersonName: {
+    type: String,
+  },
   address: {
     type: String,
   },
@@ -54,6 +57,12 @@ const schoolSchema = mongoose.Schema({
   tenantId: {
     type: Number,
     default: 58,
+  },
+  longitude: {
+    type: String,
+  },
+  latitude: {
+    type: String,
   },
 });
 
