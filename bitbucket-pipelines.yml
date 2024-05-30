@@ -5,4 +5,4 @@ pipelines:
       - step:
           name: 'Deployments'
           script:
-            - ssh dmf-orissa-stag@35.200.136.5 'cd /home/ubuntu/test-pipeline/DMF && git pull && npm install && pm2 restart dmf-be'
+            - ssh dmf-orissa-stag@35.200.136.5 'cd /home/ubuntu/test-pipeline/backend && git pull && npm install && pm2 restart dmf-be'
