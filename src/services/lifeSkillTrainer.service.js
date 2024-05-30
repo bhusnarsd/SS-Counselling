@@ -138,7 +138,7 @@ const getVisitsBySchoolId = async (schoolId) => {
  * @returns {Promise<QueryResult>}
  */
 const queryStudent = async (filter, options) => {
-  const result = await Student.paginate(filter, options);
+  const result = await LifeTrainerVisit.paginate(filter, options);
   return result;
 };
 
