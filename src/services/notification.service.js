@@ -7,8 +7,9 @@ const createNotification = async (notificationData) => {
 };
 
 const getNotificationsByUserId = async (userId) => {
-  return Notification.find({ userId });
+  return Notification.find({ userId }).sort({ createdAt: -1 });
 };
+
 const getNotificationsById = async (id) => {
   return Notification.findById(id);
 };
