@@ -11,9 +11,25 @@ const createSchedule = catchAsync(async (req, res) => {
 });
 
 const getTrainerVisits = catchAsync(async (req, res) => {
-  const { trainerId } = req.params;
-  const visit = await visitService.getTrainerVisits(trainerId);
+  const { trainerId, status } = req.query;
+  const visit = await visitService.getTrainerVisits(trainerId, status);
   res.status(httpStatus.CREATED).send(visit);
+});
+
+const updateVisitById = catchAsync(async (req, res) => {
+  const { schoolId, standard, trainerId } = req.query;
+  const updateData = {};
+  if (req.files.file) updateData.file = req.files.file[0].path;
+  if (req.files.file1) updateData.file1 = req.files.file1[0].path;
+  if (req.files.file2) updateData.file2 = req.files.file2[0].path;
+  const result = await visitService.updateVisitById(schoolId, standard, trainerId, updateData);
+  res.status(httpStatus.CREATED).send(result);
+});
+
+const addInOutTIme = catchAsync(async (req, res) => {
+  const { schoolId, standard, trainerId } = req.query;
+  const result = await visitService.updateVisitById(schoolId, standard, trainerId, req.body);
+  res.status(httpStatus.CREATED).send(result);
 });
 
 const getVisitsBySchoolId = catchAsync(async (req, res) => {
@@ -37,4 +53,6 @@ module.exports = {
   getTrainerVisits,
   getVisitsBySchoolId,
   getSchoolIdsAndStudentCount,
+  updateVisitById,
+  addInOutTIme,
 };

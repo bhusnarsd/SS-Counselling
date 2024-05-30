@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const mongoose = require('mongoose');
-const { Student, User, Visit, LifeTrainerVisit, Synopsis } = require('../models');
+const { Student, User, LifeTrainerVisit } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time) => {
@@ -57,11 +57,21 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time) => {
 //   return visit; // Return the saved visit
 // };
 
-const getTrainerVisits = async (trainerId) => {
-  const visits = await LifeTrainerVisit.aggregate([
-    {
+const getTrainerVisits = async (trainerId, status) => {
+  const pipeline = [];
+
+  if (status) {
+    // If status is provided, filter by both trainerId and status
+    pipeline.push({
+      $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
+    });
+  } else {
+    // If status is not provided, filter only by trainerId
+    pipeline.push({
       $match: { trainer: mongoose.Types.ObjectId(trainerId) },
-    },
+    });
+  }
+  pipeline.push(
     {
       $lookup: {
         from: 'schools',
@@ -78,11 +88,14 @@ const getTrainerVisits = async (trainerId) => {
         _id: 1,
         visitDate: 1,
         time: 1,
+        standard: 1,
+        status: 1,
         createdAt: 1,
         school: '$school',
       },
-    },
-  ]);
+    }
+  );
+  const visits = await LifeTrainerVisit.aggregate(pipeline);
   return visits;
 };
 
@@ -96,7 +109,9 @@ const getVisitsBySchoolId = async (schoolId) => {
   for (const visit of visits) {
     const { createdAt } = visit;
     // eslint-disable-next-line no-await-in-loop
-    const counselor = await User.findOne({ _id: visit.trainer, role: 'skillTrainer' }).select('firstName lastName mobNumber');
+    const counselor = await User.findOne({ _id: visit.trainer, role: 'skillTrainer' }).select(
+      'firstName lastName mobNumber'
+    );
     populatedVisits.push({ visit, counselor, createdAt });
   }
 
@@ -123,7 +138,7 @@ const getVisitsBySchoolId = async (schoolId) => {
  * @returns {Promise<QueryResult>}
  */
 const queryStudent = async (filter, options) => {
-  const result = await Student.paginate(filter, options);
+  const result = await LifeTrainerVisit.paginate(filter, options);
   return result;
 };
 
@@ -132,33 +147,32 @@ const getStudentById = async (id) => {
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
-  const visits = await Visit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId standard');
-  const schoolStandardPairs = visits.map((visit) => ({ schoolId: visit.schoolId, standard: visit.standard }));
+  // Fetch visits assigned to the trainer
+  const visits = await LifeTrainerVisit.find({ trainer: mongoose.Types.ObjectId(trainerId) }).select('schoolId status');
 
-  const studentCounts = await Student.aggregate([
-    {
-      $match: {
-        $or: schoolStandardPairs.map((pair) => ({
-          schoolId: pair.schoolId,
-          standard: pair.standard,
-        })),
-      },
-    },
-    {
-      $group: {
-        _id: { schoolId: '$schoolId', standard: '$standard' },
-        studentCount: { $sum: 1 },
-      },
-    },
+  // Get unique school IDs
+  const uniqueSchoolIds = [...new Set(visits.map((visit) => visit.schoolId))];
+  const totalSchools = uniqueSchoolIds.length;
+
+  // Count the total number of students in those schools
+  const totalStudents = await Student.countDocuments({ schoolId: { $in: uniqueSchoolIds } });
+
+  // Count visits by status
+  const statusCounts = await LifeTrainerVisit.aggregate([
+    { $match: { trainer: mongoose.Types.ObjectId(trainerId) } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
   ]);
-  const schoolCount = new Set(schoolStandardPairs.map((pair) => pair.schoolId)).size;
-  const startedSchools = await Synopsis.distinct('schoolId').then((schoolIds) => schoolIds.length);
-  const counsellingCount = await Synopsis.countDocuments();
+
+  // Format status counts into an object
+  const statusCountMap = statusCounts.reduce((acc, curr) => {
+    acc[curr._id] = curr.count;
+    return acc;
+  }, {});
+
   return {
-    studentCounts: studentCounts.reduce((acc, curr) => acc + curr.studentCount, 0),
-    schoolCount,
-    startedSchools,
-    counsellingCount,
+    totalSchools,
+    totalStudents,
+    statusCounts: statusCountMap,
   };
 };
 
@@ -182,22 +196,111 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
  * @param {Object} updateBody
  * @returns {Promise<Sansthan>}
  */
-const updateStudentById = async (id, updateBody) => {
-  const result = await getStudentById(id);
+
+/**
+ * Update visit by schoolId, standard, and trainer
+ * @param {String} schoolId
+ * @param {String} standard
+ * @param {ObjectId} trainer
+ * @param {Object} updateBody
+ * @returns {Promise<Visit>}
+ */
+// const updateVisitById = async (schoolId, trainer, updateBody) => {
+//   const result = await LifeTrainerVisit.findOne({ schoolId, trainer });
+//   if (!result) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
+//   }
+
+//   // Check if the visit already has inTime and inDate set and we're trying to update them again
+//   if ((result.inTime || result.inDate)) {
+//     if(updateBody.inTime || updateBody.inDate){
+//       throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
+//     }
+
+//   }
+
+//   // Check if the visit already has outTime and outDate set and we're trying to update them again
+//   if (result.outTime || result.outDate) {
+// if(updateBody.outTime || updateBody.outDate){
+//   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
+// }
+// }
+
+//   // Check if the visit already has file or file1 set and we're trying to update them again
+//   if (result.file || result.file1) {
+//     if(updateBody.file || updateBody.file1)
+// {throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file, file1, or file2 set');
+
+// }
+//   }
+
+//   // Update the visit document with new data
+//   Object.assign(result, updateBody);
+//   await result.save();
+
+//   // Re-fetch the visit document after update
+//   const updatedResult = await LifeTrainerVisit.findOne({ schoolId, trainer });
+
+//   // Check if all conditions are met to set status to 'completed'
+//   const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
+//   if (inTime && outTime && inDate && outDate && file && file1) {
+//     updatedResult.status = 'completed';
+//     await updatedResult.save();
+//   }
+
+//   return updatedResult;
+// };
+const updateVisitById = async (schoolId, trainer, updateBody) => {
+  // Find the visit document by schoolId and trainer
+  const result = await LifeTrainerVisit.findOne({ schoolId, trainer });
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
   }
+
+  // // Check if the visit already has inTime and inDate set and we're trying to update them again
+  // if ((result.inTime || result.inDate) && (updateBody.inTime || updateBody.inDate)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
+  // }
+
+  // // Check if the visit already has outTime and outDate set and we're trying to update them again
+  // if ((result.outTime || result.outDate) && (updateBody.outTime || updateBody.outDate)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
+  // }
+
+  // // Check if the visit already has file or file1 set and we're trying to update them again
+  // if ((result.file || result.file1) && (updateBody.file || updateBody.file1)) {
+  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file or file1 set');
+  // }
+
+  // Update the visit document with new data
   Object.assign(result, updateBody);
   await result.save();
+
+  // Check if all conditions are met to set status to 'completed'
+  const { inTime, outTime, inDate, outDate, file, file1 } = result;
+  if (inTime && outTime && inDate && outDate && file && file1) {
+    result.status = 'completed';
+    await result.save();
+  }
+
   return result;
 };
 
+// const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
+//   const result = await LifeTrainerVisit.findOne({ schoolId, standard, trainer });
+//   if (!result) {
+//     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
+//   }
+//   Object.assign(result, updateBody);
+//   await result.save();
+//   return result;
+// };
 module.exports = {
   queryStudent,
   getStudentById,
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,
-  updateStudentById,
+  updateVisitById,
   scheduleVisit,
 };

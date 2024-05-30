@@ -4,6 +4,7 @@ const userService = require('./user.service');
 const Token = require('../models/token.model');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const { smsAlert, createOtp, generateOTP, verifyOtp } = require('./otp.service');
 
 /**
  * Login with username and password
@@ -52,23 +53,68 @@ const refreshAuth = async (refreshToken) => {
 };
 
 /**
- * Reset password
- * @param {string} resetPasswordToken
+ * Initiate password reset by sending OTP
+ * @param {string} username
+ * @returns {Promise}
+ */
+const initiatePasswordReset = async (username) => {
+  // try {
+  const user = await userService.getUserByEmail(username);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+  }
+  const { mobileNumber } = user;
+  const otp = generateOTP();
+  const message = `Your OTP for password reset is ${otp}. It is valid for 5 minutes. Do not share this OTP with anyone.`;
+
+  await smsAlert.sendOTPMsg(mobileNumber, message);
+  await createOtp(mobileNumber, otp);
+  // } catch (error) {
+  //   throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Could not initiate password reset');
+  // }
+};
+
+/**
+ * Reset password using OTP
+ * @param {string} username
+ * @param {string} otp
  * @param {string} newPassword
  * @returns {Promise}
  */
-const resetPassword = async (resetPasswordToken, newPassword) => {
+const resetPasswordWithOtp = async (username, otp, newPassword) => {
   try {
-    const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
-    const user = await userService.getUserById(resetPasswordTokenDoc.user);
-    if (!user) {
-      throw new Error();
+    const user = await userService.getUserByEmail(username);
+    const { mobileNumber } = user;
+    const isValidOtp = await verifyOtp(mobileNumber, otp);
+
+    if (!isValidOtp) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid OTP');
     }
+
     await userService.updateUserById(user.id, { password: newPassword });
     await Token.deleteMany({ user: user.id, type: tokenTypes.RESET_PASSWORD });
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }
+};
+/**
+ * Reset password
+ * @param {string} resetPasswordToken
+ * @param {string} newPassword
+ * @returns {Promise}
+ */
+const resetPasswordWithUserName = async (username, oldPassword, newPassword) => {
+  // try {
+  // const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
+  const user = await userService.getUserByUsename(username, oldPassword);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Password reset failed');
+  }
+  await userService.updateUserById(user._id, { password: newPassword });
+  // await Token.deleteMany({ user: user._id, type: tokenTypes.RESET_PASSWORD });
+  // } catch (error) {
+  //   throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
+  // }
 };
 
 /**
@@ -94,6 +140,8 @@ module.exports = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
-  resetPassword,
+  initiatePasswordReset,
+  resetPasswordWithOtp,
+  resetPasswordWithUserName,
   verifyEmail,
 };

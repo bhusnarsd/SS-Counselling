@@ -29,6 +29,31 @@ const visitSchema = new mongoose.Schema(
       type: String,
       default: 'pending',
     },
+    file: {
+      type: String,
+    },
+    file1: {
+      type: String,
+    },
+    file2: {
+      type: String,
+    },
+    isCLosedVisit: {
+      type: Boolean,
+      defualt: false,
+    },
+    inTime: {
+      type: String,
+    },
+    outTime: {
+      type: String,
+    },
+    inDate: {
+      type: String,
+    },
+    outDate: {
+      type: String,
+    },
   },
   {
     timestamps: true,

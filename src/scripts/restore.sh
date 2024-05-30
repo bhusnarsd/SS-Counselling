@@ -6,7 +6,6 @@
 
 
 
-
 #!/bin/bash
 
 # Extract the zip file directly into the ../dbs directory
