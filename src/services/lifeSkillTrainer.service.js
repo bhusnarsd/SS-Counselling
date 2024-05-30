@@ -216,7 +216,7 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
 //     if(updateBody.inTime || updateBody.inDate){
 //       throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
 //     }
-  
+
 //   }
 
 //   // Check if the visit already has outTime and outDate set and we're trying to update them again
@@ -225,14 +225,13 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
 //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
 // }
 // }
-    
 
 //   // Check if the visit already has file or file1 set and we're trying to update them again
 //   if (result.file || result.file1) {
 //     if(updateBody.file || updateBody.file1)
 // {throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file, file1, or file2 set');
 
-// }    
+// }
 //   }
 
 //   // Update the visit document with new data
