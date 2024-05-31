@@ -13,8 +13,14 @@ const sendNotification = async (deviceToken, title, body) => {
     },
     token: deviceToken,
   };
-  // Send the notification using the Firebase Admin SDK
-  await admin.messaging().send(message);
+
+  try {
+    // Send the notification using the Firebase Admin SDK
+    await admin.messaging().send(message);
+  } catch (error) {
+    console.error('Error sending notification:', error);
+    throw new Error('Failed to send notification');
+  }
 };
 
 const createSchedule = catchAsync(async (req, res) => {
