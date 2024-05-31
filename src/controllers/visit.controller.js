@@ -27,6 +27,7 @@ const sendNotification = async (deviceToken, title, body) => {
 const createSchedule = catchAsync(async (req, res) => {
   const { trainer, schoolId, visitDate, time, standard } = req.body;
   const { deviceToken } = req.user;
+  console.log(deviceToken);
   const visit = await visitService.scheduleVisit(trainer, schoolId, visitDate, time, standard);
   if(deviceToken){
     const body = `You have assined visit for${schoolId} date ${visitDate}`;
