@@ -35,7 +35,6 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
   }
   trainer.visits.push(visit._id);
   await trainer.save();
-
   return visit; // Return the saved visit
 };
 

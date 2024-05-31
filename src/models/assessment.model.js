@@ -63,7 +63,6 @@ const reportSchema = mongoose.Schema(
     },
     short: {
       type: String,
-
     },
     preview: {
       type: String,

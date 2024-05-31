@@ -17,8 +17,8 @@ const loginUserWithEmailAndPassword = async (username, password, deviceToken) =>
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect username or password');
   }
-  if(deviceToken){
-    Object.assign(user, {deviceToken});
+  if (deviceToken) {
+    Object.assign(user, { deviceToken });
     await user.save();
   }
 

@@ -4,9 +4,23 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { visitService } = require('../services');
 
+const sendNotification = (deviceToken, title, body) => {
+  const message = {
+    notification: {
+      title,
+      body,
+    },
+    token: deviceToken,
+  };
+};
+
 const createSchedule = catchAsync(async (req, res) => {
   const { trainer, schoolId, visitDate, time, standard } = req.body;
+  const { deviceToken } = req.user;
   const visit = await visitService.scheduleVisit(trainer, schoolId, visitDate, time, standard);
+  const body = `You have assined visit for${schoolId} date ${visitDate}`;
+  const title = 'Visits';
+  await sendNotification(deviceToken, title, body);
   res.status(httpStatus.CREATED).send(visit);
 });
 
