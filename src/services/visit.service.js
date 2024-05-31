@@ -2,6 +2,19 @@ const httpStatus = require('http-status');
 const mongoose = require('mongoose');
 const { Student, User, Visit, Synopsis } = require('../models');
 const ApiError = require('../utils/ApiError');
+const admin = require('../utils/firebase');
+
+const sendNotification = async (deviceToken, title, body) => {
+  const message = {
+    notification: {
+      title,
+      body,
+    },
+    token: deviceToken,
+  };
+   const data = await admin.messaging().send(message);
+};
+
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
   // Check for duplicate visit
@@ -35,6 +48,12 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
   }
   trainer.visits.push(visit._id);
   await trainer.save();
+  const { deviceToken } = trainer;
+  if (deviceToken) {
+    const body = `You have assined visit for${schoolId} date ${visitDate}`;
+    const title = 'Visits';
+    await sendNotification(deviceToken, title, body);
+  }
   return visit; // Return the saved visit
 };
 
