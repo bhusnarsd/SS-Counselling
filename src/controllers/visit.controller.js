@@ -26,7 +26,7 @@ const sendNotification = async (deviceToken, title, body) => {
 
 const createSchedule = catchAsync(async (req, res) => {
   const { trainer, schoolId, visitDate, time, standard } = req.body;
-  const { deviceToken } = req.user;
+  const deviceToken  = 'f7fYjae7TE2Fp0j0z-mQMm:APA91bGVMqfC5ML-595vLgtHopoxToaFNUG5KrxcGyj7_c78acEODlMGwsxqbaUfaTKUOj8GoCSUTuwaObKbi2aCXjt_-ZBpNFHn_g7rNrTaqBGs8C0q_cllT_Gw7ovAspuq1-iodhEY';
   console.log(deviceToken);
   const visit = await visitService.scheduleVisit(trainer, schoolId, visitDate, time, standard);
   if(deviceToken){
