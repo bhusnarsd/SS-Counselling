@@ -12,9 +12,8 @@ const sendNotification = async (deviceToken, title, body) => {
     },
     token: deviceToken,
   };
-   const data = await admin.messaging().send(message);
+  const data = await admin.messaging().send(message);
 };
-
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
   // Check for duplicate visit
@@ -250,10 +249,10 @@ const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
 
   // Check if all conditions are met to set status to 'completed'
   const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
-  const totalStudents = await Student.countDocuments({ standard, schoolId });
-  const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
+  // const totalStudents = await Student.countDocuments({ standard, schoolId });
+  // const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
 
-  if (inTime && outTime && inDate && outDate && file && file1 && totalStudents === totalSynopses) {
+  if (inTime && outTime && inDate && outDate && file && file1) {
     updatedResult.status = 'completed';
     await updatedResult.save();
   }
