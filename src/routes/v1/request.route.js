@@ -10,9 +10,11 @@ router
   .route('/')
   .post(auth('superadmin', 'school', 'department'), requestController.createRequest)
   .get(auth('superadmin', 'school', 'department'), requestController.queryRequest);
-router.route('/:id').get(auth('superadmin', 'school', 'department'), requestController.getRequestById);
-//   .patch(
-//     auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-//     requestController.updateTeacher
-//   );
+router
+  .route('/:id')
+  .get(auth('superadmin', 'school', 'department'), requestController.getRequestById)
+  .delete(
+    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    requestController.deleteRequestById
+  );
 module.exports = router;

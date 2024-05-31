@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-param-reassign */
 const Jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
@@ -104,8 +105,41 @@ const generateToken = async (studentId) => {
  * @returns {Promise<QueryResult>}
  */
 const queryStudent = async (filter, options) => {
-  const result = await Student.paginateWithStudentStatus(filter, options);
-  return result;
+  // Fetch paginated students
+  const students = await Student.paginate(filter, options);
+
+  // Retrieve student IDs from the paginated results
+  const studentIds = students.results.map(student => student.studentId);
+
+  // Fetch assessment statuses for these students
+  const assessments = await Assessment.find({ studentId: { $in: studentIds } });
+
+  // Create a mapping of studentId to assessment statuses
+  const assessmentMap = assessments.reduce((map, assessment) => {
+    if (!map[assessment.studentId]) {
+      map[assessment.studentId] = [];
+    }
+    map[assessment.studentId].push(assessment.status);
+    return map;
+  }, {});
+
+  // Attach assessment statuses to the corresponding students in the results array
+  const results = students.results.map(student => {
+    const studentAssessments = assessmentMap[student.studentId] || [];
+    return {
+      ...student.toObject(),
+      assessments: studentAssessments[0] || 'not_started'
+    };
+  });
+
+  // Create a new object to match the original structure without the `docs` array
+  const response = {
+    ...students,
+    results,
+    docs: undefined,
+  };
+
+  return response;
 };
 
 const getStudentAssessments = async (schoolId, standard) => {

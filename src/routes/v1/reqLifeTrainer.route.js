@@ -10,9 +10,11 @@ router
   .route('/')
   .post(auth('superadmin', 'school', 'department'), reqLifeTrainerController.createRequest)
   .get(auth('superadmin', 'school', 'department'), reqLifeTrainerController.queryRequest);
-router.route('/:id').get(auth('superadmin', 'school', 'department'), reqLifeTrainerController.getRequestById);
-//   .patch(
-//     auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-//     requestController.updateTeacher
-//   );
+router
+  .route('/:id')
+  .get(auth('superadmin', 'school', 'department'), reqLifeTrainerController.getRequestById)
+  .delete(
+    auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
+    reqLifeTrainerController.deleteRequestById
+  );
 module.exports = router;

@@ -1,6 +1,6 @@
-// const httpStatus = require('http-status');
+const httpStatus = require('http-status');
 const { Request } = require('../models');
-// const ApiError = require('../utils/ApiError');
+const ApiError = require('../utils/ApiError');
 
 /**
  * Create a Teacher
@@ -57,9 +57,23 @@ const getRequestById = async (id) => {
 //   return result;
 // };
 
+/**
+ * Delete user by id
+ * @param {ObjectId} userId
+ * @returns {Promise<User>}
+ */
+const deleteRequestById = async (id) => {
+  const request = await getRequestById(id);
+  if (!request) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Request not found');
+  }
+  await request.remove();
+  return request;
+};
 module.exports = {
   createRequest,
   //   updateTeacherById,
+  deleteRequestById,
   getRequestById,
   queryRequest,
 };

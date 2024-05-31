@@ -23,6 +23,10 @@ const getRequestById = catchAsync(async (req, res) => {
   }
   res.send(result);
 });
+const deleteRequestById = catchAsync(async (req, res) => {
+  const result = await requestServices.deleteRequestById(req.params.id);
+  res.send(result);
+});
 
 // const updateTeacher = catchAsync(async (req, res) => {
 //   const result = await teacherService.updateTeacherById(req.params.id, req.body);
@@ -33,4 +37,5 @@ module.exports = {
   createRequest,
   queryRequest,
   getRequestById,
+  deleteRequestById,
 };
