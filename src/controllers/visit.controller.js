@@ -16,7 +16,8 @@ const sendNotification = async (deviceToken, title, body) => {
 
   try {
     // Send the notification using the Firebase Admin SDK
-    await admin.messaging().send(message);
+   const data = await admin.messaging().send(message);
+    console.log(data);
   } catch (error) {
     console.error('Error sending notification:', error);
     throw new Error('Failed to send notification');
