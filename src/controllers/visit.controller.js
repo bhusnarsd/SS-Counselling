@@ -3,8 +3,9 @@ const httpStatus = require('http-status');
 // const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { visitService } = require('../services');
+const admin = require('../utils/firebase');
 
-const sendNotification = (deviceToken, title, body) => {
+const sendNotification = async (deviceToken, title, body) => {
   const message = {
     notification: {
       title,
@@ -12,6 +13,8 @@ const sendNotification = (deviceToken, title, body) => {
     },
     token: deviceToken,
   };
+  // Send the notification using the Firebase Admin SDK
+  await admin.messaging().send(message);
 };
 
 const createSchedule = catchAsync(async (req, res) => {
