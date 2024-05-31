@@ -43,6 +43,10 @@ const getSchoolIdsAndStudentCount = catchAsync(async (req, res) => {
   const visit = await visitService.getSchoolIdsAndStudentCount(trainerId);
   res.status(httpStatus.CREATED).send(visit);
 });
+const getVisitById = catchAsync(async (req, res) => {
+  const visit = await visitService.getVisitById(req.params.id);
+  res.status(httpStatus.CREATED).send(visit);
+});
 // const updateTeacher = catchAsync(async (req, res) => {
 //   const result = await teacherService.updateTeacherById(req.params.id, req.body);
 //   res.send(result);
@@ -55,4 +59,5 @@ module.exports = {
   getSchoolIdsAndStudentCount,
   updateVisitById,
   addInOutTIme,
+  getVisitById,
 };

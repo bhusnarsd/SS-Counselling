@@ -159,8 +159,8 @@ const queryStudent = async (filter, options) => {
   return result;
 };
 
-const getStudentById = async (id) => {
-  return Student.findById(id);
+const getVisitById = async (id) => {
+  return LifeTrainerVisit.findById(id);
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
@@ -314,7 +314,7 @@ const updateVisitById = async (schoolId, trainer, updateBody) => {
 // };
 module.exports = {
   queryStudent,
-  getStudentById,
+  getVisitById,
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,

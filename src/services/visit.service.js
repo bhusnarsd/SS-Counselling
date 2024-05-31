@@ -12,7 +12,7 @@ const sendNotification = async (deviceToken, title, body) => {
     },
     token: deviceToken,
   };
-  const data = await admin.messaging().send(message);
+  await admin.messaging().send(message);
 };
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
@@ -162,8 +162,8 @@ const queryStudent = async (filter, options) => {
   return result;
 };
 
-const getStudentById = async (id) => {
-  return Student.findById(id);
+const getVisitById = async (id) => {
+  return Visit.findById(id);
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
@@ -271,7 +271,7 @@ const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
 
 module.exports = {
   queryStudent,
-  getStudentById,
+  getVisitById,
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,

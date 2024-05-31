@@ -47,6 +47,10 @@ const addInOutTIme = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(result);
 });
 
+const getVisitById = catchAsync(async (req, res) => {
+  const visit = await lifeSkillTrainer.getVisitById(req.params.id);
+  res.status(httpStatus.CREATED).send(visit);
+});
 module.exports = {
   createSchedule,
   getTrainerVisits,
@@ -54,4 +58,5 @@ module.exports = {
   getSchoolIdsAndStudentCount,
   updateVisitById,
   addInOutTIme,
+  getVisitById,
 };
