@@ -40,6 +40,7 @@ router.route('/update').patch(
 );
 
 router.route('/add-in-out-time').patch(visitController.addInOutTIme);
+router.route('/delete/:id').delete(visitController.deleteVisit);
 module.exports = router;
 
 /**
