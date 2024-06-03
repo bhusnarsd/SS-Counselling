@@ -2,6 +2,18 @@ const httpStatus = require('http-status');
 const mongoose = require('mongoose');
 const { Student, User, Visit, Synopsis } = require('../models');
 const ApiError = require('../utils/ApiError');
+const admin = require('../utils/firebase');
+
+const sendNotification = async (deviceToken, title, body) => {
+  const message = {
+    notification: {
+      title,
+      body,
+    },
+    token: deviceToken,
+  };
+  await admin.messaging().send(message);
+};
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
   // Check for duplicate visit
@@ -35,6 +47,12 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
   }
   trainer.visits.push(visit._id);
   await trainer.save();
+  const { deviceToken } = trainer;
+  if (deviceToken) {
+    const body = `You have assined visit for${schoolId} date ${visitDate}`;
+    const title = 'Visits';
+    await sendNotification(deviceToken, title, body);
+  }
   return visit; // Return the saved visit
 };
 
@@ -113,8 +131,8 @@ const queryStudent = async (filter, options) => {
   return result;
 };
 
-const getStudentById = async (id) => {
-  return Student.findById(id);
+const getVisitById = async (id) => {
+  return Visit.findById(id);
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
@@ -200,10 +218,10 @@ const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
 
   // Check if all conditions are met to set status to 'completed'
   const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
-  const totalStudents = await Student.countDocuments({ standard, schoolId });
-  const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
+  // const totalStudents = await Student.countDocuments({ standard, schoolId });
+  // const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
 
-  if (inTime && outTime && inDate && outDate && file && file1 && totalStudents === totalSynopses) {
+  if (inTime && outTime && inDate && outDate && file && file1) {
     updatedResult.status = 'completed';
     await updatedResult.save();
   }
@@ -244,7 +262,7 @@ const deleteVisit = async (visitId) => {
 
 module.exports = {
   queryStudent,
-  getStudentById,
+  getVisitById,
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,

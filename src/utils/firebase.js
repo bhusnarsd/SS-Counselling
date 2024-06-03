@@ -6,3 +6,5 @@ const serviceAccount = require('./dmf-sundargarh-firebase-adminsdk-47vh2-af39fa5
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
+
+module.exports = admin;
