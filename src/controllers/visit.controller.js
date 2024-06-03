@@ -31,7 +31,6 @@ const addInOutTIme = catchAsync(async (req, res) => {
   const result = await visitService.updateVisitById(schoolId, standard, trainerId, req.body);
   res.status(httpStatus.CREATED).send(result);
 });
-patch
 const getVisitsBySchoolId = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
   const visit = await visitService.getVisitsBySchoolId(schoolId);
