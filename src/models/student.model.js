@@ -39,6 +39,9 @@ const studentShema = mongoose.Schema(
     address: {
       type: String,
     },
+    city: {
+      type: String,
+    },
     age: {
       type: Number,
     },
