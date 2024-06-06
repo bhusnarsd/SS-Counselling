@@ -136,9 +136,10 @@ const getVisitById = async (id) => {
 };
 
 const getTrainerDetails = async (studentId) => {
-  const student = await Student.findOne({ studentId }).select('standard, schoolId');
-  const trainer = await Student.findOne({ schoolId: student.schoolId, standard: student.standard });
-  return trainer;
+  const student = await Student.findOne({ studentId });
+  const visitData = await Visit.findOne({ schoolId: student.schoolId, standard: student.standard });
+  const tarinerDetails = await User.findOne({ _id: visitData.trainer });
+  return { tarinerDetails, visitData };
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
