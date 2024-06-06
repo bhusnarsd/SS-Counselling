@@ -135,8 +135,10 @@ const getVisitById = async (id) => {
   return Visit.findById(id);
 };
 
-const getTrainerDetails = async (schoolId, standard) => {
-  return Visit.findOne({ schoolId, standard });
+const getTrainerDetails = async (studentId) => {
+  const student = await Student.findOne({ studentId }).select('standard, schoolId');
+  const trainer = await Student.findOne({ schoolId: student.schoolId, standard: student.standard });
+  return trainer;
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
