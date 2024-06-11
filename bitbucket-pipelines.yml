@@ -1,0 +1,8 @@
+
+image: node:20.10.0
+pipelines:
+  default:
+      - step:
+          name: 'Deployments'
+          script:
+            - ssh dmf-orissa-stag@35.200.136.5 'cd /home/ubuntu/test-pipeline/backend && git pull && npm install && pm2 restart dmf-be'
