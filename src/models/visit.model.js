@@ -16,6 +16,9 @@ const visitSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    cluster: {
+      type: String,
+    },
     time: {
       type: String,
     },
@@ -29,6 +32,7 @@ const visitSchema = new mongoose.Schema(
       type: String,
       default: 'pending',
     },
+    // files: [{ type: String }],
     file: {
       type: String,
     },
@@ -52,6 +56,9 @@ const visitSchema = new mongoose.Schema(
       type: String,
     },
     outDate: {
+      type: String,
+    },
+    theme: {
       type: String,
     },
   },

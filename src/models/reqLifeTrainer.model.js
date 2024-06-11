@@ -14,8 +14,15 @@ const requestLifeTainerSchema = new mongoose.Schema(
     time: {
       type: String,
     },
+    cluster: {
+      type: String,
+    },
     schoolName: {
       type: String,
+    },
+    createdDate: {
+      type: Date,
+      default: Date.now,
     },
   },
   {

@@ -1,7 +1,19 @@
 const httpStatus = require('http-status');
 const mongoose = require('mongoose');
-const { Student, User, Visit, Synopsis } = require('../models');
+const { Student, User, Visit, School } = require('../models');
 const ApiError = require('../utils/ApiError');
+const admin = require('../utils/firebase');
+
+const sendNotification = async (deviceToken, title, body) => {
+  const message = {
+    notification: {
+      title,
+      body,
+    },
+    token: deviceToken,
+  };
+  await admin.messaging().send(message);
+};
 
 const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
   // Check for duplicate visit
@@ -16,6 +28,12 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
   if (existingVisit) {
     throw new ApiError(httpStatus.CONFLICT, 'Visit scheduled already found');
   }
+  const school = await School.find({ schoolId }).select('cluster');
+  // Create new visit
+  let cluster = '';
+  if (school) {
+    cluster = school.cluster;
+  }
 
   // Create new visit
   const visit = new Visit({
@@ -23,6 +41,7 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
     schoolId,
     visitDate,
     time,
+    cluster,
     standard,
   });
   await visit.save();
@@ -35,29 +54,59 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => 
   }
   trainer.visits.push(visit._id);
   await trainer.save();
-
+  const { deviceToken } = trainer;
+  if (deviceToken) {
+    const body = `You have assined visit for${schoolId} date ${visitDate}`;
+    const title = 'Visits';
+    await sendNotification(deviceToken, title, body);
+  }
   return visit; // Return the saved visit
 };
 
-// const scheduleVisit = async (trainerId, schoolId, visitDate, time, standard) => {
-//   const visit = new Visit({
-//     trainer: trainerId,
-//     schoolId,
-//     visitDate,
-//     time,
-//     standard,
-//   });
-//   await visit.save();
-//   // Update trainer's visits
-//   const trainer = await User.findById(trainerId);
-//   if (!trainer) {
-//     throw new Error('Trainer not found');
-//   }
-//   trainer.visits.push(visit._id);
-//   await trainer.save();
+const getTrainerVisitsAndroid = async (trainerId, status) => {
+  const pipeline = [];
 
-//   return visit; // Return the saved visit
-// };
+  if (status) {
+    // If status is provided, filter by both trainerId and status
+    pipeline.push({
+      $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
+    });
+  } else {
+    // If status is not provided, filter only by trainerId
+    pipeline.push({
+      $match: { trainer: mongoose.Types.ObjectId(trainerId) },
+    });
+  }
+
+  // Add remaining aggregation stages
+  pipeline.push(
+    {
+      $lookup: {
+        from: 'schools',
+        localField: 'schoolId',
+        foreignField: 'schoolId',
+        as: 'school',
+      },
+    },
+    {
+      $unwind: '$school',
+    },
+    {
+      $project: {
+        _id: 1,
+        visitDate: 1,
+        time: 1,
+        standard: 1,
+        status: 1,
+        createdAt: 1,
+        school: '$school',
+      },
+    }
+  );
+
+  const visits = await Visit.aggregate(pipeline);
+  return visits;
+};
 
 const getTrainerVisits = async (trainerId, status) => {
   const pipeline = [];
@@ -117,19 +166,8 @@ const getVisitsBySchoolId = async (schoolId) => {
     const counselor = await User.findOne({ _id: visit.trainer }).select('firstName lastName mobNumber');
     populatedVisits.push({ visit, counselor, createdAt });
   }
-
   return populatedVisits;
 };
-
-// const trainerId = "6645ec9ac3deb1833d210467";
-// getTrainerVisits(trainerId)
-//   .then(async(result) => {
-
-//     console.log('Trainer visits:', result);
-//   })
-//   .catch((error) => {
-//     console.error('Error getting trainer visits:', error);
-//   });
 
 /**
  * Query for sansthan
@@ -145,8 +183,21 @@ const queryStudent = async (filter, options) => {
   return result;
 };
 
-const getStudentById = async (id) => {
-  return Student.findById(id);
+const getVisitById = async (id) => {
+  return Visit.findById(id);
+};
+
+const getTrainerDetails = async (studentId) => {
+  const student = await Student.findOne({ studentId });
+  if (!student) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'student not found');
+  }
+  const visitData = await Visit.findOne({ schoolId: student.schoolId, standard: student.standard });
+  if (!visitData) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
+  }
+  const tarinerDetails = await User.findOne({ _id: visitData.trainer });
+  return { tarinerDetails, visitData };
 };
 
 const getSchoolIdsAndStudentCount = async (trainerId) => {
@@ -170,29 +221,18 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
     },
   ]);
   const schoolCount = new Set(schoolStandardPairs.map((pair) => pair.schoolId)).size;
-  const startedSchools = await Synopsis.distinct('schoolId').then((schoolIds) => schoolIds.length);
-  const counsellingCount = await Synopsis.countDocuments();
+  // const startedSchools = await Synopsis.distinct('schoolId').then((schoolIds) => schoolIds.length);
+  // const counsellingCount = await Synopsis.countDocuments();
+
+  const upcommingAssingedSchool = await Visit.countDocuments({ trainer: trainerId, status: 'pending' });
+  const completedVisitCount = await Visit.countDocuments({ trainer: trainerId, status: 'completed' });
   return {
     studentCounts: studentCounts.reduce((acc, curr) => acc + curr.studentCount, 0),
     schoolCount,
-    startedSchools,
-    counsellingCount,
+    upcommingAssingedSchool,
+    completedVisitCount,
   };
 };
-
-// module.exports = getSchoolIdsAndStudentCount;
-
-// Example usage
-// const trainerId = '6645ec9ac3deb1833d210467'; // Replace with actual trainer ID
-// getSchoolIdsAndStudentCount(trainerId)
-//   .then((result) => {
-//     console.log(result);
-//   })
-//   .catch((error) => {
-//     console.error('Error:', error);
-//   });
-
-// module.exports = getSchoolIdsAndStudentCount;
 
 /**
  * Update visit by schoolId, standard, and trainer
@@ -202,62 +242,87 @@ const getSchoolIdsAndStudentCount = async (trainerId) => {
  * @param {Object} updateBody
  * @returns {Promise<Visit>}
  */
-const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
+const updateVisitById = async (schoolId, standard, trainer, req) => {
   const result = await Visit.findOne({ schoolId, standard, trainer });
+  // console.log(schoolId, standard, trainerId )
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
   }
 
-  // // Check if the visit already has inTime and inDate set and we're trying to update them again
-  // if ((updateBody.inTime || updateBody.inDate) && (result.inTime || result.inDate)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has inTime or inDate set');
-  // }
+  // Check if inTime is already set and updateData contains inTime
+  if (req.body.inTime && result.inTime) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'inTime already set');
+  }
 
-  // // Check if the visit already has outTime and outDate set and we're trying to update them again
-  // if ((updateBody.outTime || updateBody.outDate) && (result.outTime || result.outDate)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has outTime or outDate set');
+  // Check if outTime is already set and updateData contains outTime
+  if (req.body.outTime && result.outTime) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'outTime already set');
+  }
+  // Update the visit document with new file URLs
+  // eslint-disable-next-line prettier/prettier
+  // for (const key in updateData) {
+  //   result[key] = updateData[key];
   // }
-
-  // // Check if the visit already has file or file1 set and we're trying to update them again
-  // if ((updateBody.file || updateBody.file1) && (result.file || result.file1)) {
-  //   throw new ApiError(httpStatus.BAD_REQUEST, 'Visit already has file, file1, or file2 set');
-  // }
-
-  // Update the visit document with new data
-  Object.assign(result, updateBody);
+  // await result.save();
+  // Update the visit document with new file URLs
+  if (req.updateData) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(req.updateData)) {
+      result[key] = value;
+    }
+  }
+  if (req.body) {
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const key in req.body) {
+      result[key] = req.body[key];
+    }
+  }
   await result.save();
 
   // Re-fetch the visit document after update
   const updatedResult = await Visit.findOne({ schoolId, standard, trainer });
 
   // Check if all conditions are met to set status to 'completed'
-  const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
-  const totalStudents = await Student.countDocuments({ standard, schoolId });
-  const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
-
-  if (inTime && outTime && inDate && outDate && file && file1 && totalStudents === totalSynopses) {
+  const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
+  if (inTime && outTime && inDate && outDate && file && file1 && file2) {
     updatedResult.status = 'completed';
     await updatedResult.save();
   }
 
   return updatedResult;
 };
-// const updateVisitById = async (schoolId, standard, trainer, updateBody) => {
-//   const result = await Visit.findOne({ schoolId, standard, trainer });
-//   if (!result) {
-//     throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
-//   }
-//   Object.assign(result, updateBody);
-//   await result.save();
-//   return result;
-// };
+
+const deleteVisit = async (visitId) => {
+  // Find the visit by ID
+  const visit = await Visit.findById(visitId);
+  if (!visit) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Visit not found');
+  }
+
+  // Remove the visit from the trainer's visits array
+  const trainer = await User.findById(visit.trainer);
+  if (!trainer) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Trainer not found');
+  }
+
+  trainer.visits.pull(visitId);
+  await trainer.save();
+
+  // Delete the visit
+  await visit.remove();
+
+  return visit; // Return the deleted visit
+};
 
 module.exports = {
   queryStudent,
-  getStudentById,
+  getVisitById,
   getSchoolIdsAndStudentCount,
   getTrainerVisits,
   getVisitsBySchoolId,
   updateVisitById,
   scheduleVisit,
+  deleteVisit,
+  getTrainerDetails,
+  getTrainerVisitsAndroid,
 };

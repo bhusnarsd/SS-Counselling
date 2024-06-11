@@ -8,11 +8,13 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('superadmin', 'school', 'department'), requestController.createRequest)
-  .get(auth('superadmin', 'school', 'department'), requestController.queryRequest);
-router.route('/:id').get(auth('superadmin', 'school', 'department'), requestController.getRequestById);
-//   .patch(
-//     auth('superadmin', 'district_officer', 'division_officer', 'state_officer', 'block_officer'),
-//     requestController.updateTeacher
-//   );
+  .post(auth('superadmin', 'school', 'cluster', 'department'), requestController.createRequest)
+  .get(auth('superadmin', 'school', 'cluster', 'department'), requestController.queryRequest);
+router
+  .route('/:id')
+  .get(auth('superadmin', 'school', 'cluster', 'department'), requestController.getRequestById)
+  .delete(
+    auth('superadmin', 'district_officer', 'cluster', 'division_officer', 'state_officer', 'block_officer'),
+    requestController.deleteRequestById
+  );
 module.exports = router;
