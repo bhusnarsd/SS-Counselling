@@ -58,6 +58,9 @@ const visitSchema = new mongoose.Schema(
     outDate: {
       type: String,
     },
+    theme: {
+      type: String,
+    },
   },
   {
     timestamps: true,

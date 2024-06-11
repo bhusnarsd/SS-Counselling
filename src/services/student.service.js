@@ -25,6 +25,7 @@ const bulkUpload = async (studentArray, csvFilePath = null) => {
       if (schoolFound) {
         dups.push(student);
       } else {
+        const school = await School.findOne({schoolId: student.schoolId}).select('name');
         // eslint-disable-next-line no-inner-declarations
         function generateStudentIds() {
           const randomNumber = Math.floor(Math.random() * 900000) + 100000;
@@ -33,6 +34,7 @@ const bulkUpload = async (studentArray, csvFilePath = null) => {
         const studentId = generateStudentIds();
         student.studentId = studentId;
         student.password = 'admin@123';
+        student.schoolName = school.name
         let record = new Student(student);
         record = await record.save();
         if (record) {
