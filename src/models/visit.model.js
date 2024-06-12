@@ -33,6 +33,15 @@ const visitSchema = new mongoose.Schema(
       default: 'pending',
     },
     // files: [{ type: String }],
+    artifact: {
+      type: String,
+    },
+    artifact1: {
+      type: String,
+    },
+    artifact2: {
+      type: String,
+    },
     file: {
       type: String,
     },

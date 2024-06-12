@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "dmf-orissa",
+  "private_key_id": "f9210fba23a5d4b086b2ffe4a9d614a7c04d5f46",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0nYG1UdNAqx71\nBklxQ0fuBI56Nw/xE7qiThdOMKoxaFP4akrdfrWXEcWoCZ/XI0Sg6jhsnxpp2T4z\nhgX9Yl2akSl8y8Pur+L7k8Xu+a6T225BdB8ISvgsg3dVjpyYUoKC4Z9BQ62zEQtT\na8d44jWVELuyOI5240bEzh2EwhXF9yHJ0KCKBFFxKQTLGBIjJc0luHyg7GjyZvaF\nsx340/wKJXw8PMxqmE3AyK3clmlZNj/MW+ilAmzcfZG1xpkKPJ9DWQFrWq3RUbH4\nybIyP3vV3migXURkBuACjS5QxtHIwSknELpx7UZqYAhYlopXM6jSX4VPdzcUGzEy\nO5i7AvzZAgMBAAECggEAGNYByeDxvNZAYFltdu2AB3BJS+/6DrXzojGSeIDY87NQ\nvKZCcNkQIlu3bhxosN4w0onH7tPP/4HNJlZFyOp3oZ4Cx54uF/UdWr0eviDySx2k\n4yDodYJNmbK4PE5rJRz6GleTx8HahvbkiPjsnyhH+Ef/7163ObeV+dENSRNL3YKb\ncc/2L2CSvRqcwfoIOaYjIzu32hVIpxXRk+fQtukSST1cNw7kMGaB5foW2MOkeFPf\nD1oaiUcG7wqO8KUo7jJdaNeEZMFWhfmNVGNL47PMd7hjt/x42yc977oK20OSpSPj\n/LcadSgjlrr3RV/KW1c714s8fJWpvW8l1mzqi8Gw8wKBgQDhYVqHx9HcNALoFb/9\njLiz0nDxdsin1fsg/KmEiuPhn1wyzYoIBy4juunCUU9aqjy0Ol9JnoXnx3/XFNVv\n96YVkm/8MBfpa81PFgcgRgSukL7U7K1yVnCFEMTrH2WUnZFit7RaVZX1sS9lTXq7\nv868P9sjgMLlPDlGX2K/LUZIpwKBgQDNJz3FL0vzNbcWQedSe0SmB4H0pVK7pEKR\ndMDNgLFSmi3qYAhRSx79kPdqsFvNVXWFjRPDDvH3vF7lYVwAii2h1gCkyoe3rOz6\nLwUhIed/eM8zaP1aSjlmY4BPRrEgg5uALTBNONl+SsZY0y7KY10zn/Jb+Fq5Vkh1\njC6UGR++fwKBgQCEdKaz7eeUNq0OoNm4tZ9Hb4IZJuo+WS/B7zvhPY835mRVJx7c\nIPwo24zOOuMcMbiDY1rk9VlVIpYrXX8i0rS1MN7Ho6wp7sU2mYeOnBfcUA0XLhGx\nhMOUMIrKdCVK9l+fWL+R54K+ZmeobaSX+t4RHKY5c08XUhGHHj/2gzEvOQKBgDnO\n2+4LVMh0k2G3Mlqgl4h9RxZL25M6RvO7xXRi1hSjk1qestlNZK8owT8T8NpcQWBf\nj3kAZhhbwRW7qHQSe6dFqSrGUxXjqWcaBsT+S8A0p5Yh+HoPvjrmwMoV7mVuEEw+\n74RjB445vchbwayP8TxRzrYxtkbRVFujI6Dhr3s7AoGBAL6Y7rs3rstmVkaxzp89\n8p6PesqnJeRKqhRDiuI2lMyzp4IbvI3401T0OYxOi3c2WdoFt/VGMnz2Amh1v0Rv\nySmI+0mOvgKgDUlDFzsCSBONFIZ3uDvZHmJBmp1PrM7cFjkc1YWC41GUiHD8fMYH\njZNcB6cvkCy3/u7Q5uNvjdRk\n-----END PRIVATE KEY-----\n",
+  "client_email": "dmf-orissa-bucket-access@dmf-orissa.iam.gserviceaccount.com",
+  "client_id": "100616916020220985754",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dmf-orissa-bucket-access%40dmf-orissa.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
