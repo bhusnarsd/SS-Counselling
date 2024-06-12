@@ -147,34 +147,6 @@ const queryStudent = async (filter, options) => {
   return response;
 };
 
-// const getStudentAssessments = async (schoolId, standard) => {
-//   // Convert schoolId to string for consistent comparison
-//   const schoolIdStr = schoolId;
-
-//   // Find students by schoolId and standard
-//   const students = await Student.find({ schoolId: schoolIdStr, standard });
-
-//   // Extract studentIds from the found students
-//   const studentIds = students.map((student) => student.studentId);
-
-//   // Find assessments by studentIds
-//   const message = await Message.find({ sender: { $in: studentIds }, status: 'unread' });
-//   const assessments = await Assessment.find({ studentId: { $in: studentIds } });
-//   const response = students.map((student) => {
-//     const studentAssessment = assessments.find((assessment) => assessment.studentId === student.studentId);
-//     return {
-//       studentId: student.studentId,
-//       firstName: student.firstName,
-//       lastName: student.lastName,
-//       gender: student.gender,
-//       age: student.age,
-//       assessmentStatus: studentAssessment ? studentAssessment.status : 'non-started',
-//       id: student.id,
-//     };
-//   });
-
-//   return response;
-// };
 
 const getStudentAssessments = async (schoolId, standard) => {
   // Convert schoolId to string for consistent comparison
@@ -210,16 +182,6 @@ const getStudentAssessments = async (schoolId, standard) => {
 
   return response;
 };
-// (async () => {
-//   const schoolId = 'SCH636454';
-//   const standard = '12'; // Replace with actual school ID
-//   try {
-//     const statistics = await getStudentAssessments(schoolId, standard);
-//     console.log('School Statistics:', statistics);
-//   } catch (error) {
-//     console.error('Error:', error.message);
-//   }
-// })();
 const getStudentById = async (id) => {
   return Student.findById(id);
 };
