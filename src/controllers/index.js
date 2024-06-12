@@ -12,3 +12,5 @@ module.exports.requestController = require('./request.controller');
 module.exports.lifeSkillController = require('./lifeSkillTainer.controller');
 module.exports.reqLifeTrainerController = require('./reqLifeTrainer.controller');
 module.exports.notificationController = require('./notification.controller');
+module.exports.clusterController = require('./cluster.controller');
+module.exports.newsletterController = require('./newsletter.controller');

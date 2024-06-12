@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 // const pick = require('../utils/pick');
-// const ApiError = require('../utils/ApiError');
+const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { visitService } = require('../services');
 
@@ -16,22 +16,27 @@ const getTrainerVisits = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(visit);
 });
 
+const getTrainerVisitsAndroid = catchAsync(async (req, res) => {
+  const { trainerId, status } = req.query;
+  const visit = await visitService.getTrainerVisitsAndroid(trainerId, status);
+  res.status(httpStatus.CREATED).send(visit);
+});
+
 const updateVisitById = catchAsync(async (req, res) => {
   const { schoolId, standard, trainerId } = req.query;
-  const updateData = {};
-  if (req.files.file) updateData.file = req.files.file[0].path;
-  if (req.files.file1) updateData.file1 = req.files.file1[0].path;
-  if (req.files.file2) updateData.file2 = req.files.file2[0].path;
-  const result = await visitService.updateVisitById(schoolId, standard, trainerId, updateData);
+  // eslint-disable-next-line prettier/prettier
+  // const updateData = req.fileUrls.map(url => ({
+  //   url,
+  // }));
+  const result = await visitService.updateVisitById(schoolId, standard, trainerId, req);
   res.status(httpStatus.CREATED).send(result);
 });
 
 const addInOutTIme = catchAsync(async (req, res) => {
   const { schoolId, standard, trainerId } = req.query;
-  const result = await visitService.updateVisitById(schoolId, standard, trainerId, req.body);
+  const result = await visitService.updateVisitById(schoolId, standard, trainerId, req);
   res.status(httpStatus.CREATED).send(result);
 });
-
 const getVisitsBySchoolId = catchAsync(async (req, res) => {
   const { schoolId } = req.params;
   const visit = await visitService.getVisitsBySchoolId(schoolId);
@@ -47,6 +52,21 @@ const getVisitById = catchAsync(async (req, res) => {
   const visit = await visitService.getVisitById(req.params.id);
   res.status(httpStatus.CREATED).send(visit);
 });
+
+const getTrainerDetails = catchAsync(async (req, res) => {
+  const { studentId } = req.query;
+  const visit = await visitService.getTrainerDetails(studentId);
+  if (!visit) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Counsellor not found');
+  }
+  res.status(httpStatus.CREATED).send(visit);
+});
+
+const deleteVisit = catchAsync(async (req, res) => {
+  const result = await visitService.deleteVisit(req.params.id);
+  res.send(result);
+});
+
 // const updateTeacher = catchAsync(async (req, res) => {
 //   const result = await teacherService.updateTeacherById(req.params.id, req.body);
 //   res.send(result);
@@ -58,6 +78,9 @@ module.exports = {
   getVisitsBySchoolId,
   getSchoolIdsAndStudentCount,
   updateVisitById,
+  deleteVisit,
   addInOutTIme,
   getVisitById,
+  getTrainerDetails,
+  getTrainerVisitsAndroid,
 };

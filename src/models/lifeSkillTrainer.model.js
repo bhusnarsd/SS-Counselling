@@ -16,6 +16,9 @@ const lifeSkillVisitSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    cluster: {
+      type: String,
+    },
     time: {
       type: String,
     },
@@ -23,15 +26,7 @@ const lifeSkillVisitSchema = new mongoose.Schema(
       type: String,
       default: 'pending',
     },
-    file: {
-      type: String,
-    },
-    file1: {
-      type: String,
-    },
-    file2: {
-      type: String,
-    },
+    files: [{ type: String }],
     isCLosedVisit: {
       type: Boolean,
       defualt: false,
@@ -46,6 +41,9 @@ const lifeSkillVisitSchema = new mongoose.Schema(
       type: String,
     },
     outDate: {
+      type: String,
+    },
+    theme: {
       type: String,
     },
   },

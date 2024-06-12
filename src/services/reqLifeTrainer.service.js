@@ -1,13 +1,36 @@
 const httpStatus = require('http-status');
-const { ReqLifeTrainer } = require('../models');
+const { ReqLifeTrainer, School } = require('../models');
 const ApiError = require('../utils/ApiError');
 
+const queryRequest = async (filter, options) => {
+  const limit = parseInt(options.limit, 10) || 10;
+  const page = parseInt(options.page, 10) || 1;
+  const skip = (page - 1) * limit;
+  const sortBy = options.sortBy || '';
+
+  const [results, total] = await Promise.all([
+    ReqLifeTrainer.find(filter).sort(sortBy).skip(skip).limit(limit).exec(),
+    ReqLifeTrainer.countDocuments(filter),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return {
+    results,
+    total,
+    limit,
+    page,
+    totalPages,
+  };
+};
 /**
  * Create a Teacher
  * @param {Object} reqBody
  * @returns {Promise<Request>}
  */
 const createRequest = async (reqBody) => {
+  const school = await School.findOne({ schoolId: reqBody.schoolId }).select('cluster');
+  reqBody.cluster = school.cluster;
   return ReqLifeTrainer.create(reqBody);
 };
 
@@ -20,10 +43,10 @@ const createRequest = async (reqBody) => {
  * @param {number} [options.page] - Current page (default = 1)
  * @returns {Promise<QueryResult>}
  */
-const queryRequest = async (filter, options) => {
-  const result = await ReqLifeTrainer.paginate(filter, options);
-  return result;
-};
+// const queryRequest = async (filter, options) => {
+//   const result = await ReqLifeTrainer.queryRequestS(filter, options);
+//   return result;
+// };
 
 const getRequestById = async (id) => {
   return ReqLifeTrainer.findById(id);

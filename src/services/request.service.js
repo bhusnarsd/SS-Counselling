@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Request } = require('../models');
+const { Request, School } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -8,6 +8,8 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<Request>}
  */
 const createRequest = async (reqBody) => {
+  const school = await School.findOne({ schoolId: reqBody.schoolId }).select('cluster');
+  reqBody.cluster = school.cluster;
   return Request.create(reqBody);
 };
 
@@ -70,6 +72,7 @@ const deleteRequestById = async (id) => {
   await request.remove();
   return request;
 };
+// upload()
 module.exports = {
   createRequest,
   //   updateTeacherById,

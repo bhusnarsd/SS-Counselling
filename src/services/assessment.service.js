@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 const httpStatus = require('http-status');
-const { Assessment, Student } = require('../models');
+const { Assessment, Student, School } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -14,8 +14,16 @@ const createAssessment = async (reqBody) => {
   let assessment = await Assessment.findOne({ studentId: reqBody.studentId });
   const school = await Student.findOne({ studentId: reqBody.studentId }).select('schoolId standard');
   // If assessment found, update it with the new data
+  const schoolData = await School.find({ schoolId: school.SchoolId }).select('cluster');
+  // Create new visit
+  let cluster = '';
+  if (school) {
+    cluster = schoolData.cluster;
+  }
   reqBody.SchoolId = school.SchoolId;
   reqBody.standard = school.standard;
+  reqBody.cluster = cluster;
+  // reqBody.cluster =
   if (assessment) {
     assessment = await Assessment.findOneAndUpdate(
       { studentId: reqBody.studentId },
@@ -49,51 +57,56 @@ const getAssessmentById = async (id) => {
 };
 
 // const getHighlights = async (studentId) => {
-//   const reports = await Assessment.findOne({ studentId });
+//   const report = await Assessment.findOne({ studentId });
+
+//   if (!report) {
+//     throw new Error('No report found for the given studentId');
+//   }
 
 //   // Calculate Aptitude counts
-//   const aptitudeCounts = reports.reduce((acc, report) => {
-//     report.aptitude.forEach((apt) => {
-//       if (acc[apt.factor_name]) {
-//         acc[apt.factor_name]++;
-//       } else {
-//         acc[apt.factor_name] = 1;
-//       }
-//     });
-//     return acc;
-//   }, {});
+//   const aptitudeCounts = report.appitude
+//     ? report.appitude.reduce((acc, apt) => {
+//         if (acc[apt.factor_name]) {
+//           acc[apt.factor_name]++;
+//         } else {
+//           acc[apt.factor_name] = 1;
+//         }
+//         return acc;
+//       }, {})
+//     : {};
 
 //   // Calculate Personality counts
-//   const personalityCounts = reports.reduce((acc, report) => {
-//     report.personality.forEach((pers) => {
-//       if (acc[pers.factor_name]) {
-//         acc[pers.factor_name]++;
-//       } else {
-//         acc[pers.factor_name] = 1;
-//       }
-//     });
-//     return acc;
-//   }, {});
+//   const personalityCounts = report.personality
+//     ? report.personality.reduce((acc, pers) => {
+//         if (acc[pers.factor_name]) {
+//           acc[pers.factor_name]++;
+//         } else {
+//           acc[pers.factor_name] = 1;
+//         }
+//         return acc;
+//       }, {})
+//     : {};
 
 //   // Calculate Interest counts
-//   const interestCounts = reports.reduce((acc, report) => {
-//     report.interest.scoreWiseData.forEach((int) => {
-//       if (acc[int.factor_name]) {
-//         acc[int.factor_name]++;
-//       } else {
-//         acc[int.factor_name] = 1;
-//       }
-//     });
-//     return acc;
-//   }, {});
+//   const interestCounts =
+//     report.interest && report.interest.scoreWiseData
+//       ? report.interest.scoreWiseData.reduce((acc, int) => {
+//           if (acc[int.factor_name]) {
+//             acc[int.factor_name]++;
+//           } else {
+//             acc[int.factor_name] = 1;
+//           }
+//           return acc;
+//         }, {})
+//       : {};
 
 //   // Get Top 4 Career Cluster Fitments
-//   const careerClusterFitments = reports.reduce((acc, report) => {
-//     report.career_fitments.forEach((career) => {
-//       acc.push({ career_name: career.career_name, fitment: career.fitment });
-//     });
-//     return acc;
-//   }, []);
+//   const careerClusterFitments = report.career_fitments
+//     ? report.career_fitments.map((career) => ({
+//         career_name: career.career_name,
+//         fitment: career.fitment,
+//       }))
+//     : [];
 
 //   careerClusterFitments.sort((a, b) => b.fitment - a.fitment);
 //   const top4CareerClusterFitments = careerClusterFitments.slice(0, 4);
@@ -115,40 +128,28 @@ const getHighlights = async (studentId) => {
 
   // Calculate Aptitude counts
   const aptitudeCounts = report.appitude
-    ? report.appitude.reduce((acc, apt) => {
-        if (acc[apt.factor_name]) {
-          acc[apt.factor_name]++;
-        } else {
-          acc[apt.factor_name] = 1;
-        }
-        return acc;
-      }, {})
-    : {};
+    ? report.appitude.map((apt) => ({
+        factor_name: apt.factor_name,
+        factor_score: apt.score,
+      }))
+    : [];
 
   // Calculate Personality counts
   const personalityCounts = report.personality
-    ? report.personality.reduce((acc, pers) => {
-        if (acc[pers.factor_name]) {
-          acc[pers.factor_name]++;
-        } else {
-          acc[pers.factor_name] = 1;
-        }
-        return acc;
-      }, {})
-    : {};
+    ? report.personality.map((pers) => ({
+        factor_name: pers.factor_name,
+        factor_score: pers.score,
+      }))
+    : [];
 
   // Calculate Interest counts
   const interestCounts =
     report.interest && report.interest.scoreWiseData
-      ? report.interest.scoreWiseData.reduce((acc, int) => {
-          if (acc[int.factor_name]) {
-            acc[int.factor_name]++;
-          } else {
-            acc[int.factor_name] = 1;
-          }
-          return acc;
-        }, {})
-      : {};
+      ? report.interest.scoreWiseData.map((int) => ({
+          factor_name: int.factor_name,
+          factor_score: int.score,
+        }))
+      : [];
 
   // Get Top 4 Career Cluster Fitments
   const careerClusterFitments = report.career_fitments
@@ -170,7 +171,7 @@ const getHighlights = async (studentId) => {
 };
 
 // const studentId = "STUD741187";
-// getHighlights(studentId)
+// getHighlightsTest(studentId)
 //   .then(result => {
 //     console.log('Highlights:', result);
 //   })

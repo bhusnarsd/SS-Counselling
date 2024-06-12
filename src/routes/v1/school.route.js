@@ -30,7 +30,7 @@ router
   .post(auth('superadmin', 'school', 'department'), validate(schoolValidation.createSchools), schoolController.createSchool)
   .get(
     // auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
-    validate(schoolValidation.getSchools),
+    // validate(schoolValidation.getSchools),
     schoolController.getSchools
   );
 
@@ -58,7 +58,7 @@ router
   .get(auth('superadmin', 'school', 'department'), schoolController.getSchoolstatsBySchoolID);
 router
   .route('/get-school/by-schoolid/:schoolId')
-  .get(auth('superadmin', 'school', 'department'), schoolController.getSchoolBySchoolID);
+  .get(auth('superadmin', 'school', 'cluster', 'department'), schoolController.getSchoolBySchoolID);
 router
   .route('/:schoolId')
   .get(

@@ -51,7 +51,15 @@ const getAllStudentBySchooolId = catchAsync(async (req, res) => {
 const getStudentById = catchAsync(async (req, res) => {
   const result = await studentService.getStudentById(req.params.studentId);
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Teacher not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
+  }
+  res.send(result);
+});
+
+const getStudentId = catchAsync(async (req, res) => {
+  const result = await studentService.getStudentId(req.params.studentId);
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Student not found');
   }
   res.send(result);
 });
@@ -86,6 +94,10 @@ const updateStudent = catchAsync(async (req, res) => {
   const result = await studentService.updateStudentById(req.params.studentId, req.body);
   res.send(result);
 });
+const updateStudentByID = catchAsync(async (req, res) => {
+  const result = await studentService.updateStudent(req.params.studentId, req.body);
+  res.send(result);
+});
 
 const deleteStudentById = catchAsync(async (req, res) => {
   const student = await studentService.deleteStudentById(req.params.studentId);
@@ -102,4 +114,6 @@ module.exports = {
   deleteStudentById,
   generateCSVOfStudent,
   getAllStudentBySchooolId,
+  getStudentId,
+  updateStudentByID,
 };
