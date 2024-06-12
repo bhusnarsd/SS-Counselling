@@ -26,7 +26,24 @@ const lifeSkillVisitSchema = new mongoose.Schema(
       type: String,
       default: 'pending',
     },
-    files: [{ type: String }],
+    artifact: {
+      type: String,
+    },
+    artifact1: {
+      type: String,
+    },
+    artifact2: {
+      type: String,
+    },
+    file: {
+      type: String,
+    },
+    file1: {
+      type: String,
+    },
+    file2: {
+      type: String,
+    },
     isCLosedVisit: {
       type: Boolean,
       defualt: false,

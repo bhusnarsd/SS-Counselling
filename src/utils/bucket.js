@@ -18,6 +18,9 @@ const upload = multer({
   storage: storageMulter,
   limits: { fileSize: 15 * 1024 * 1024 },
 }).fields([
+  { name: 'artifact', maxCount: 1 },
+  { name: 'artifact1', maxCount: 1 },
+  { name: 'artifact2', maxCount: 1 },
   { name: 'file', maxCount: 1 },
   { name: 'file1', maxCount: 1 },
   { name: 'file2', maxCount: 1 },
