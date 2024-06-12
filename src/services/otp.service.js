@@ -1,77 +1,108 @@
 /* eslint-disable class-methods-use-this */
 // const httpStatus = require('http-status');
 const axios = require('axios');
-const crypto = require('crypto');
 const { Otp } = require('../models');
+// const config = require('../config/config');
 // const ApiError = require('../utils/ApiError');
-const config = require('../config/config');
 
-// class SMSAlert {
-//   constructor() {
-//     this.userID = config.SMS.SMS_USERID;
-//     this.userPwd = '4DgN#F3n8ztVSK';
-//     this.secureKey = config.SMS.SMS_SECUREKEY;
-//     this.senderID = config.SMS.SMS_SENDERID;
-//     this.templateID = config.SMS.SMS_TEMPLETID;
+// const sendSMS = async (phoneNumber, otp) => {
+//   const url = 'https://vodafone-sms-api-url'; // Replace with Vodafone SMS API URL
+//   const data = {
+//     apiKey: process.env.VODAFONE_API_KEY,
+//     senderId: process.env.VODAFONE_SENDER_ID,
+//     message: `Dear User, Your OTP to reset password at the portal is ${otp} -Eduspark`,
+//     to: phoneNumber,
+//   };
+//   try {
+//     const response = await axios.post(url, data);
+//     return response.data;
+//   } catch (error) {
+//     throw error;
 //   }
+// };
 
-class SMSAlert {
-  constructor() {
-    this.userID = config.SMS.SMS_USERID;
-    this.userPwd = '4DgN#F3n8ztVSK';
-    this.secureKey = config.SMS.SMS_SECUREKEY;
-    this.senderID = config.SMS.SMS_SENDERID;
-    this.templateID = config.SMS.SMS_TEMPLETID;
-  }
+// Function to send SMS
+// const sendSMS = async (phoneNumber, otp) => {
 
-  validateMobileNumber(mobileNo) {
-    // Ensure the mobile number is a valid format (e.g., E.164 format with country code)
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    return phoneRegex.test(mobileNo);
-  }
+// //   const { userId, senderId, url } = config.SMS;
+// // console.log( userId, senderId, url)
+//   try {
+//     const response = await axios.get(`https://103.229.250.200/smpp/sendsms?username=vibgyorerp&password=erJ*N(69b&from=VIBSMS&to=${phoneNumber}&text=Dear Teacher ${otp} is your OTP for verification on Knoggles -VIBGYOR`);
+//     // (url, {
+//     //   params: {
+//     //     username: userId,
+//     //     password: 'erJ*N(69b',
+//     //     from: senderId,
+//     //     to: phoneNumber,
+//     //     text: `Dear Teacher ${otp} is your OTP for verification on Knoggles -VIBGYOR`,
+//     //   },
+//     // });
+// console.log(response.data)
+//     return response.data;
+//   } catch (error) {
+//     console.error('Error sending SMS:', error.response ? error.response.data : error.message);
+//     throw new Error('Failed to send SMS');
+//   }
+// };
 
-  async sendOTPMsg(mobileNo, message) {
-    if (!this.validateMobileNumber(mobileNo)) {
-      throw new Error('Invalid mobile number format');
-    }
-
-    const smsservicetype = 'otpmsg';
-    const encryptedPassword = this.encryptedPassword(this.userPwd);
-    const key = this.hashGenerator(this.userID, this.senderID, message, this.secureKey);
-
-    const query = `username=${encodeURIComponent(this.userID)}&password=${encodeURIComponent(
-      encryptedPassword
-    )}&smsservicetype=${encodeURIComponent(smsservicetype)}&content=${encodeURIComponent(
-      message
-    )}&mobileno=${encodeURIComponent(mobileNo)}&senderid=${encodeURIComponent(this.senderID)}&key=${encodeURIComponent(
-      key
-    )}&templateid=${encodeURIComponent(this.templateID)}`;
-
-    const response = await axios.post('https://msdgweb.mgov.gov.in/esms/sendsmsrequestDLT', query, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    console.log(response.data);
+const sendSMS = async (phoneNumber, otp) => {
+  try {
+    const url = `https://103.229.250.200/smpp/sendsms?username=vibgyorerp&password=erJ*N(69b&from=VIBSMS&to=${phoneNumber}&text=Dear Teacher ${otp} is your OTP for verification on Knoggles -VIBGYOR`;
+    const response = await axios.get(url);
+    console.log('SMS sent successfully:', response.data);
     return response.data;
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Error response from SMS service:', error.response.data);
+      console.error('Status code:', error.response.status);
+      console.error('Headers:', error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('No response received from SMS service:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error setting up SMS request:', error.message);
+    }
+    throw new Error('Failed to send SMS');
   }
+};
 
-  encryptedPassword(password) {
-    const encPwd = Buffer.from(password, 'utf-8');
-    const sha1 = crypto.createHash('sha1');
-    const pp = sha1.update(encPwd).digest();
-    return pp.toString('hex');
-  }
+// Example usage
+// const phoneNumber = '9823525745';
+// const otp = '12189';
 
-  hashGenerator(username, senderID, message, secureKey) {
-    const data = `${username}${senderID}${message}${secureKey}`;
-    const genKey = Buffer.from(data, 'utf-8');
-    const sha512 = crypto.createHash('sha512');
-    const secKey = sha512.update(genKey).digest();
-    return secKey.toString('hex');
-  }
-}
+// sendSMS(phoneNumber, otp)
+//   .then(result => {
+//     console.log('SMS sent successfully:', result);
+//   })
+//   .catch(error => {
+//     console.error('Error sending SMS:', error.message);
+//   });
+
+// const sendSMS = async (phoneNumber, otp) => {
+//   try {
+//   let smsSend = await axios.get(`https://103.229.250.200/smpp/sendsms?username=vibgyorerp&password=erJ*N(69b&from=VIBSMS&to=${phoneNumber}&text=Dear Teacher ${otp} is your OTP for verification on Knoggles -VIBGYOR`);
+//   console.log(smsSend)
+//   return smsSend;
+//   } catch (error) {
+//     console.error('Error sending SMS:', error);
+//     throw new Error('Failed to send SMS');
+//   }
+// };
+
+// // Example usage
+// const phoneNumber = 9823525745;
+// const otp = '12189';
+
+// sendSMS(phoneNumber, otp)
+//   .then(result => {
+//     console.log('SMS sent successfully:', result);
+//   })
+//   .catch(error => {
+//     console.error('Error sending SMS:', error.message);
+//   });
 
 const createOtp = async (mobNumber, otp) => {
   const otpDoc = {
@@ -103,17 +134,8 @@ const verifyOtp = async (mobNumber, otp) => {
   return true;
 };
 
-// const smsAlert = new SMSAlert();
-
-const smsAlert = new SMSAlert();
-// const mobileNumber = '+917798940629'; // Example number in E.164 format
-
-// smsAlert.sendOTPMsg(mobileNumber, 'Your OTP is 123456')
-//   .then(response => console.log('OTP sent successfully:', response))
-//   .catch(error => console.error('Error sending OTP:', error.message));
-
 module.exports = {
-  smsAlert,
+  sendSMS,
   createOtp,
   generateOTP,
   verifyOtp,

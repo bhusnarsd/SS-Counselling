@@ -17,8 +17,15 @@ const requestSchema = new mongoose.Schema(
     standard: {
       type: String,
     },
+    cluster: {
+      type: String,
+    },
     schoolName: {
       type: String,
+    },
+    createdDate: {
+      type: Date,
+      default: Date.now,
     },
   },
   {

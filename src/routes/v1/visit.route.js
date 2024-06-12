@@ -1,45 +1,59 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
+// const multer = require('multer');
+// const path = require('path');
 const auth = require('../../middlewares/auth');
 const { visitController } = require('../../controllers');
+const { upload, uploadFilesMiddleware } = require('../../utils/bucket');
 
 const router = express.Router();
 
-const uploadPath = path.join(__dirname, '../../uploads');
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, uploadPath);
-  },
-  filename(req, file, cb) {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${uniqueSuffix}-${file.originalname}`);
-  },
-});
+// const uploadPath = path.join(__dirname, '../../uploads');
+// const storage = multer.diskStorage({
+//   destination(req, file, cb) {
+//     cb(null, uploadPath);
+//   },
+//   filename(req, file, cb) {
+//     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+//     cb(null, `${uniqueSuffix}-${file.originalname}`);
+//   },
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
 
 router
   .route('/')
-  .post(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.createSchedule);
+  .post(
+    auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
+    visitController.createSchedule
+  );
 //   auth('admin', 'school', 'superadmin', 'student', 'trainer', 'block_officer'),
 // .get(studentvisitControllerController.getAllStudent);
 router.route('/get-dashboard-counts').get(visitController.getSchoolIdsAndStudentCount);
 // router.route('/genrate-token').get(studentController.generateToken);
+
+router.route('/get-trainer-details').get(visitController.getTrainerDetails);
+
 router
   .route('/get')
-  .get(auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'), visitController.getTrainerVisits);
+  .get(
+    auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
+    visitController.getTrainerVisits
+  );
 
-router.route('/get/android').get(visitController.getTrainerVisits);
+router.route('/get/android').get(visitController.getTrainerVisitsAndroid);
 
 router.route('/get-trainer-details/:schoolId').get(visitController.getVisitsBySchoolId);
 router.route('/update').patch(
   // auth('admin', 'school', 'superadmin', 'student', 'trainer', 'department'),
-  upload.fields([{ name: 'file' }, { name: 'file1' }, { name: 'file2' }]),
+  upload,
+  // upload.array('files', 3),
+  uploadFilesMiddleware,
   visitController.updateVisitById
 );
 
 router.route('/add-in-out-time').patch(visitController.addInOutTIme);
+router.route('/delete/:id').delete(visitController.deleteVisit);
+router.route('/get-by/:id').get(visitController.getVisitById);
 module.exports = router;
 
 /**
@@ -47,6 +61,60 @@ module.exports = router;
  * tags:
  *   name: Visit
  *   description: APIs for managing sansthan data
+ */
+
+/**
+ * @swagger
+ * /visit/update:
+ *   patch:
+ *     summary: Upload multiple files
+ *     description: Upload multiple files to Google Cloud Storage and save their URLs to the database
+ *     tags: [Visit]
+ *     parameters:
+ *       - in: query
+ *         name: standard
+ *         schema:
+ *           type: string
+ *         description: Standard of the school
+ *       - in: query
+ *         name: schoolId
+ *         schema:
+ *           type: string
+ *         description: ID of the school
+ *       - in: query
+ *         name: trainerId
+ *         schema:
+ *           type: string
+ *         description: ID of the trainer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Successful upload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 fileUrls:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     example: https://storage.googleapis.com/bucket-name/file-name.jpg
+ *       400:
+ *         description: No files uploaded
+ *       500:
+ *         description: Error uploading files or saving URLs to the database
  */
 
 /**

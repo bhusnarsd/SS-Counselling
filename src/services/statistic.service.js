@@ -99,6 +99,8 @@ const getSchoolStatistics = async (schoolId) => {
   const totalLifeSkillTrainer = await User.countDocuments({ role: 'skillTrainer' });
   const visitsPendingTrainer = await LifeTrainerVisit.countDocuments({ status: 'pending', schoolId: schoolIdStr });
   const visitsCompletedTrainer = await LifeTrainerVisit.countDocuments({ status: 'completed', schoolId: schoolIdStr });
+  const visitsPending = await Visit.countDocuments({ status: 'pending', schoolId });
+  const visitsCompleted = await Visit.countDocuments({ status: 'completed', schoolId });
   // Fetch various counts related to visits and assessments
   const visitsCount = await Visit.countDocuments({ schoolId: schoolIdStr });
   const pastSessionCount = await Visit.countDocuments({ status: 'completed', schoolId: schoolIdStr });
@@ -111,7 +113,7 @@ const getSchoolStatistics = async (schoolId) => {
   const assessments = await Assessment.find({ schoolId: schoolIdStr, status: 'completed' });
   let totalStudentScore = 0;
   assessments.forEach((assessment) => {
-    for (const [key, value] of assessment.score.entries()) {
+    for (const [value] of assessment.score.entries()) {
       totalStudentScore += value;
     }
   });
@@ -138,6 +140,8 @@ const getSchoolStatistics = async (schoolId) => {
     totalLifeSkillTrainer,
     visitsPendingTrainer,
     visitsCompletedTrainer,
+    visitsPending,
+    visitsCompleted,
     visitsCount,
     pastSessionCount,
     visitsByStandard,
@@ -148,17 +152,6 @@ const getSchoolStatistics = async (schoolId) => {
     overallAverageScore,
   };
 };
-
-// Example usage
-// (async () => {
-//   const schoolId = 'SCH660028'; // Replace with actual school ID
-//   try {
-//     const statistics = await getSchoolStatistics(schoolId);
-//     console.log('School Statistics:', statistics);
-//   } catch (error) {
-//     console.error('Error:', error.message);
-//   }
-// })();
 
 const getFilteredStatistics = async (schoolId, standard) => {
   // Convert schoolId to string for consistent comparison
@@ -179,7 +172,7 @@ const getFilteredStatistics = async (schoolId, standard) => {
   const assessments = await Assessment.find({ schoolId: schoolIdStr, status: 'completed', standard });
   let totalStudentScore = 0;
   assessments.forEach((assessment) => {
-    for (const [key, value] of assessment.score.entries()) {
+    for (const [value] of assessment.score.entries()) {
       totalStudentScore += value;
     }
   });

@@ -60,15 +60,12 @@ const reportSchema = mongoose.Schema(
   {
     long: {
       type: String,
-      required: true,
     },
     short: {
       type: String,
-      required: true,
     },
     preview: {
       type: String,
-      required: true,
     },
   },
   { _id: false }
@@ -85,23 +82,22 @@ const assessmentSchema = mongoose.Schema(
     schoolId: {
       type: String,
     },
+    cluster: {
+      type: String,
+    },
     score: {
       type: Map,
       of: Number,
-      required: true,
     },
     status: {
       type: String,
       enum: ['not_started', 'started', 'completed'],
-      required: true,
     },
     isReportGenerated: {
       type: Boolean,
-      required: true,
     },
     reports: {
       type: reportSchema,
-      required: true,
     },
     appitude: [aptitudeSchema],
     personality: [personalitySchema],

@@ -10,22 +10,19 @@ const { Synopsis, Student, Visit } = require('../models');
 const createSynopsis = async (reqBody) => {
   const synopsis = await Synopsis.create(reqBody);
   const { standard, schoolId } = reqBody;
-  const totalStudents = await Student.countDocuments({ standard, schoolId });
-  const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
-  if (totalStudents === totalSynopses) {
-    const updatedResult = await Visit.findOne({ schoolId, standard, trainer: synopsis.trianer });
-    const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
-    if (inTime && outTime && inDate && outDate && file && file1) {
-      updatedResult.status = 'completed';
-      await updatedResult.save();
-    }
-  } else {
-    await Visit.findOneAndUpdate(
-      { schoolId, standard, status: { $ne: 'completed' } },
-      { status: 'progress' },
-      { new: true }
-    );
-  }
+  // const totalStudents = await Student.countDocuments({ standard, schoolId });
+  // const totalSynopses = await Synopsis.countDocuments({ standard, schoolId });
+  // if (totalStudents === totalSynopses) {
+  //   const updatedResult = await Visit.findOne({ schoolId, standard, trainer: synopsis.trianer });
+  //   const { inTime, outTime, inDate, outDate, file, file1 } = updatedResult;
+  //   if (inTime && outTime && inDate && outDate && file && file1) {
+  //     updatedResult.status = 'completed';
+  //     await updatedResult.save();
+  //   }
+  // }
+
+  await Visit.findOneAndUpdate({ schoolId, standard, status: { $ne: 'completed' } }, { status: 'progress' }, { new: true });
+  // }
 
   return synopsis;
 };

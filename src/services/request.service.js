@@ -1,6 +1,6 @@
-// const httpStatus = require('http-status');
-const { Request } = require('../models');
-// const ApiError = require('../utils/ApiError');
+const httpStatus = require('http-status');
+const { Request, School } = require('../models');
+const ApiError = require('../utils/ApiError');
 
 /**
  * Create a Teacher
@@ -8,6 +8,8 @@ const { Request } = require('../models');
  * @returns {Promise<Request>}
  */
 const createRequest = async (reqBody) => {
+  const school = await School.findOne({ schoolId: reqBody.schoolId }).select('cluster');
+  reqBody.cluster = school.cluster;
   return Request.create(reqBody);
 };
 
@@ -57,9 +59,24 @@ const getRequestById = async (id) => {
 //   return result;
 // };
 
+/**
+ * Delete user by id
+ * @param {ObjectId} userId
+ * @returns {Promise<User>}
+ */
+const deleteRequestById = async (id) => {
+  const request = await getRequestById(id);
+  if (!request) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Request not found');
+  }
+  await request.remove();
+  return request;
+};
+// upload()
 module.exports = {
   createRequest,
   //   updateTeacherById,
+  deleteRequestById,
   getRequestById,
   queryRequest,
 };
