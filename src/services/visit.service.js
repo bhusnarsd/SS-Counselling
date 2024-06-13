@@ -280,16 +280,16 @@ const updateVisitById = async (schoolId, standard, trainer, req) => {
   await result.save();
 
   // Re-fetch the visit document after update
-  const updatedResult = await Visit.findOne({ schoolId, standard, trainer });
+  // const updatedResult = await Visit.findOne({ schoolId, standard, trainer });
 
-  // Check if all conditions are met to set status to 'completed'
-  const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
-  if (inTime && outTime && inDate && outDate && file && file1 && file2) {
-    updatedResult.status = 'completed';
-    await updatedResult.save();
-  }
+  // // Check if all conditions are met to set status to 'completed'
+  // const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
+  // if (inTime && outTime && inDate && outDate && file && file1 && file2) {
+  //   updatedResult.status = 'completed';
+  //   await updatedResult.save();
+  // }
 
-  return updatedResult;
+  return result;
 };
 
 const deleteVisit = async (visitId) => {
