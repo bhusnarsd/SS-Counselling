@@ -59,20 +59,63 @@ const scheduleVisit = async (trainerId, schoolId, visitDate, time) => {
   return visit; // Return the saved visit
 };
 
+// const getTrainerVisits = async (trainerId, status) => {
+//   const pipeline = [];
+
+//   if (status) {
+//     // If status is provided, filter by both trainerId and status
+//     pipeline.push({
+//       $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
+//     });
+//   } else {
+//     // If status is not provided, filter only by trainerId
+//     pipeline.push({
+//       $match: { trainer: mongoose.Types.ObjectId(trainerId) },
+//     });
+//   }
+//   pipeline.push(
+//     {
+//       $lookup: {
+//         from: 'schools',
+//         localField: 'schoolId',
+//         foreignField: 'schoolId',
+//         as: 'school',
+//       },
+//     },
+//     {
+//       $unwind: '$school',
+//     },
+//     {
+//       $project: {
+//         _id: 1,
+//         visitDate: 1,
+//         time: 1,
+//         standard: 1,
+//         status: 1,
+//         createdAt: 1,
+//         school: '$school',
+//       },
+//     }
+//   );
+//   const visits = await LifeTrainerVisit.aggregate(pipeline);
+//   return visits;
+// };
+
 const getTrainerVisits = async (trainerId, status) => {
   const pipeline = [];
 
+  // Match stage: filter by trainerId and optionally by status
+  const matchStage = {
+    $match: { trainer: mongoose.Types.ObjectId(trainerId) },
+  };
+
   if (status) {
-    // If status is provided, filter by both trainerId and status
-    pipeline.push({
-      $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
-    });
-  } else {
-    // If status is not provided, filter only by trainerId
-    pipeline.push({
-      $match: { trainer: mongoose.Types.ObjectId(trainerId) },
-    });
+    matchStage.$match.status = status;
   }
+
+  pipeline.push(matchStage);
+
+  // Add remaining aggregation stages
   pipeline.push(
     {
       $lookup: {
@@ -83,20 +126,40 @@ const getTrainerVisits = async (trainerId, status) => {
       },
     },
     {
-      $unwind: '$school',
+      $unwind: {
+        path: '$school',
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $project: {
         _id: 1,
+        trainer: 1,
+        schoolId: 1,
         visitDate: 1,
+        cluster: 1,
         time: 1,
         standard: 1,
+        content: 1,
         status: 1,
-        createdAt: 1,
+        artifact: 1,
+        artifact1: 1,
+        artifact2: 1,
+        file: 1,
+        file1: 1,
+        file2: 1,
+        isCLosedVisit: 1,
+        inTime: 1,
+        outTime: 1,
+        inDate: 1,
+        outDate: 1,
+        theme: 1,
         school: '$school',
+        createdAt: 1,
       },
     }
   );
+
   const visits = await LifeTrainerVisit.aggregate(pipeline);
   return visits;
 };
