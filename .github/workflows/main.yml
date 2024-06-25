@@ -34,7 +34,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan $DO_SERVER >> ~/.ssh/known_hosts
           ssh -o StrictHostKeyChecking=no ${DO_USER}@${DO_SERVER} << 'EOF'
-            cd ~/home/SS-Counselling
+            cd /home/SS-Counselling
             git stash
             git pull origin main
             npm install
