@@ -21,7 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-
       - name: Deploy to DigitalOcean Droplet
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -30,9 +29,11 @@ jobs:
         run: |
           echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ssh_key
           chmod 600 ssh_key
+          eval $(ssh-agent -s)
+          ssh-add ssh_key
           mkdir -p ~/.ssh
           ssh-keyscan $DO_SERVER >> ~/.ssh/known_hosts
-          ssh -o StrictHostKeyChecking=no -i ssh_key ${DO_USER}@${DO_SERVER} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${DO_USER}@${DO_SERVER} << 'EOF'
             cd ~/home/SS-Counselling
             git stash
             git pull origin main
