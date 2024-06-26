@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"createdAt":{"$numberInt":"1"}},"name":"createdAt_1","background":true,"expireAfterSeconds":{"$numberInt":"120"}}],"uuid":"c1e19dad0d2444ea8ee19d3ae2a2f7ac","collectionName":"otps","type":"collection"}
