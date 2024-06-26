@@ -2,6 +2,42 @@ const httpStatus = require('http-status');
 const { Career } = require('../models');
 const ApiError = require('../utils/ApiError');
 
+const bulkUpload = async (careerArray, csvFilePath = null) => {
+    let modifiedCareersArray = careerArray;
+    if (csvFilePath) {
+      modifiedCareersArray = { Careers: csvFilePath };
+    }
+    if (!modifiedCareersArray.Careers || !modifiedCareersArray.Careers.length)
+      return { error: true, message: 'missing array' };
+  
+    const records = [];
+    const dups = [];
+  
+    await Promise.all(
+      modifiedCareersArray.Careers.map(async (career) => {
+        const schoolFound = await Career.findOne({ ID: career.ID});
+        if (schoolFound) {
+          dups.push(career);
+        } else {
+          let record = new Career(career);
+          record = await record.save();
+          if (record) {
+            records.push(career);
+          }
+        }
+      })
+    );
+  
+    const duplicates = {
+      totalDuplicates: dups.length ? dups.length : 0,
+      data: dups.length ? dups : [],
+    };
+    const nonduplicates = {
+      totalNonDuplicates: records.length ? records.length : 0,
+      data: records.length ? records : [],
+    };
+    return { nonduplicates, duplicates };
+  };
 /**
  * Create a career
  * @param {Object} userBody
@@ -66,6 +102,7 @@ const deleteCareerById = async (careerId) => {
 };
 
 module.exports = {
+  bulkUpload,
   createCareer,
   queryCareer,
   getCareerById,
