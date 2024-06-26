@@ -42,7 +42,7 @@ router
   );
 
 router
-  .route('/:userId')
+  .route('/:careerId')
   .get(
     auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
     validate(careerValidation.getCareerById),
