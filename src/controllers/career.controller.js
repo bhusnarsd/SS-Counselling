@@ -1,8 +1,25 @@
 const httpStatus = require('http-status');
 const pick = require('../utils/pick');
+const { join } = require('path');
+const csv = require('csvtojson');
+const path = require('path');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { careerService } = require('../services');
+
+const staticFolder = join(__dirname, '../');
+const uploadsFolder = join(staticFolder, 'uploads');
+
+const bulkUploadFile = catchAsync(async (req, res) => {
+  if (req.file) {
+    const csvFilePath = join(uploadsFolder, req.file.filename);
+    const csvJsonArray = await csv().fromFile(csvFilePath);
+    const career = await careerService.bulkUpload(null, csvJsonArray);
+    res.status(httpStatus.CREATED).send(career);
+  } else {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Missing file');
+  }
+});
 
 const createCareer = catchAsync(async (req, res) => {
   const career = await careerService.createCareer(req.body);
@@ -36,6 +53,7 @@ const deleteCareer = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+    bulkUploadFile,
   createCareer,
   getCareers,
   getCareer,

@@ -1,11 +1,33 @@
 const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const { careerValidation } = require('../../validations');
 const {careerController } = require('../../controllers');
-
+// const path = require('../../uploads');
+// /home/oem/new work/ss-counselling/backend/src/uploads
 const router = express.Router();
 
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, '../../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+  const uploads = multer({ storage });
+  
+  router.route('/bulkupload').post(uploads.single('file'), careerController.bulkUploadFile);
+  
 router
   .route('/')
   .post(

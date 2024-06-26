@@ -14,7 +14,6 @@ const careerShema = mongoose.Schema(
     },
     ID: {
       type: String,
-      unique: true,
     },
     locale: {
       type: String,

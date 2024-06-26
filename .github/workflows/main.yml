@@ -38,5 +38,5 @@ jobs:
             git stash
             git pull origin main
             npm install
-             pm2 reload all || pm2 start src/index.js --name "my-app"
+            pm2 restart all --update-env --env development || pm2 start src/index.js --name "my-app" --env development
           EOF
