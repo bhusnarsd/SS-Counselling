@@ -111,17 +111,16 @@ const getTrainerVisitsAndroid = async (trainerId, status) => {
 const getTrainerVisits = async (trainerId, status) => {
   const pipeline = [];
 
+  // Match stage: filter by trainerId and optionally by status
+  const matchStage = {
+    $match: { trainer: mongoose.Types.ObjectId(trainerId) }
+  };
+
   if (status) {
-    // If status is provided, filter by both trainerId and status
-    pipeline.push({
-      $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
-    });
-  } else {
-    // If status is not provided, filter only by trainerId
-    pipeline.push({
-      $match: { trainer: mongoose.Types.ObjectId(trainerId) },
-    });
+    matchStage.$match.status = status;
   }
+
+  pipeline.push(matchStage);
 
   // Add remaining aggregation stages
   pipeline.push(
@@ -134,17 +133,36 @@ const getTrainerVisits = async (trainerId, status) => {
       },
     },
     {
-      $unwind: '$school',
+      $unwind: {
+        path: '$school',
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $project: {
         _id: 1,
+        trainer: 1,
+        schoolId: 1,
         visitDate: 1,
+        cluster: 1,
         time: 1,
         standard: 1,
+        content: 1,
         status: 1,
-        createdAt: 1,
+        artifact: 1,
+        artifact1: 1,
+        artifact2: 1,
+        file: 1,
+        file1: 1,
+        file2: 1,
+        isCLosedVisit: 1,
+        inTime: 1,
+        outTime: 1,
+        inDate: 1,
+        outDate: 1,
+        theme: 1,
         school: '$school',
+        createdAt: 1,
       },
     }
   );
@@ -152,6 +170,51 @@ const getTrainerVisits = async (trainerId, status) => {
   const visits = await Visit.aggregate(pipeline);
   return visits;
 };
+
+// const getTrainerVisits = async (trainerId, status) => {
+//   const pipeline = [];
+
+//   if (status) {
+//     // If status is provided, filter by both trainerId and status
+//     pipeline.push({
+//       $match: { trainer: mongoose.Types.ObjectId(trainerId), status },
+//     });
+//   } else {
+//     // If status is not provided, filter only by trainerId
+//     pipeline.push({
+//       $match: { trainer: mongoose.Types.ObjectId(trainerId) },
+//     });
+//   }
+
+//   // Add remaining aggregation stages
+//   pipeline.push(
+//     {
+//       $lookup: {
+//         from: 'schools',
+//         localField: 'schoolId',
+//         foreignField: 'schoolId',
+//         as: 'school',
+//       },
+//     },
+//     {
+//       $unwind: '$school',
+//     },
+//     {
+//       $project: {
+//         _id: 1,
+//         visitDate: 1,
+//         time: 1,
+//         standard: 1,
+//         status: 1,
+//         createdAt: 1,
+
+//       },
+//     }
+//   );
+
+//   const visits = await Visit.aggregate(pipeline);
+//   return visits;
+// };
 
 const getVisitsBySchoolId = async (schoolId) => {
   const visits = await Visit.find({ schoolId });
@@ -280,16 +343,16 @@ const updateVisitById = async (schoolId, standard, trainer, req) => {
   await result.save();
 
   // Re-fetch the visit document after update
-  const updatedResult = await Visit.findOne({ schoolId, standard, trainer });
+  // const updatedResult = await Visit.findOne({ schoolId, standard, trainer });
 
-  // Check if all conditions are met to set status to 'completed'
-  const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
-  if (inTime && outTime && inDate && outDate && file && file1 && file2) {
-    updatedResult.status = 'completed';
-    await updatedResult.save();
-  }
+  // // Check if all conditions are met to set status to 'completed'
+  // const { inTime, outTime, inDate, outDate, file, file1, file2 } = updatedResult;
+  // if (inTime && outTime && inDate && outDate && file && file1 && file2) {
+  //   updatedResult.status = 'completed';
+  //   await updatedResult.save();
+  // }
 
-  return updatedResult;
+  return result;
 };
 
 const deleteVisit = async (visitId) => {
