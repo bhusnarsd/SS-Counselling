@@ -1,47 +1,40 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-const userValidation = require('../../validations/user.validation');
-const userController = require('../../controllers/user.controller');
+const { careerValidation } = require('../../validations');
+const {careerController } = require('../../controllers');
 
 const router = express.Router();
 
 router
   .route('/')
   .post(
-    // auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
-    validate(userValidation.createUser),
-    userController.createUser
+    auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
+    validate(careerValidation.createCareer),
+    careerController.createCareer
   )
   .get(
     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'cluster', 'department'),
-    validate(userValidation.getUsers),
-    userController.getUsers
+    validate(careerValidation.getCareers),
+    careerController.getCareers
   );
 
-router
-  .route('/create-trianer')
-  .post(
-    auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
-    validate(userValidation.createTainer),
-    userController.createTrainer
-  );
 router
   .route('/:userId')
   .get(
     auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
-    validate(userValidation.getUser),
-    userController.getUser
+    validate(careerValidation.getCareerById),
+    careerController.getCareer
   )
   .patch(
     auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
-    validate(userValidation.updateUser),
-    userController.updateUser
+    validate(careerValidation.updateCareer),
+    careerController.updateCareer
   )
   .delete(
     auth('admin', 'school', 'superadmin', 'student', 'cluster', 'trainer', 'department'),
-    validate(userValidation.deleteUser),
-    userController.deleteUser
+    validate(careerValidation.deleteCareer),
+    careerController.deleteCareer
   );
 
 module.exports = router;

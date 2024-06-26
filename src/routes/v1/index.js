@@ -17,6 +17,7 @@ const reqLifeTrainerRoute = require('./reqLifeTrainer.route');
 const notificationRoute = require('./notification.route');
 const clusterRoute = require('./cluster.route');
 const newsletterRoute = require('./newsletter.route');
+const careerRoute = require('./career.route');
 
 const router = express.Router();
 
@@ -85,6 +86,10 @@ const defaultRoutes = [
     path: '/news-letter',
     route: newsletterRoute,
   },
+  {
+    path: '/career',
+    route: careerRoute,
+  }
 ];
 
 const devRoutes = [

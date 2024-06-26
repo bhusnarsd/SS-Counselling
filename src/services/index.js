@@ -17,3 +17,4 @@ module.exports.otpService = require('./otp.service');
 module.exports.notificationService = require('./notification.service');
 module.exports.clusterService = require('./cluster.service');
 module.exports.newsLetterService = require('./newsletter.service');
+module.exports.careerService = require('./career.service');
