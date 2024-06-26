@@ -18,8 +18,16 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Deploy to DigitalOcean Droplet
         env:
@@ -35,8 +43,8 @@ jobs:
           ssh-keyscan $DO_SERVER >> ~/.ssh/known_hosts
           ssh -o StrictHostKeyChecking=no ${DO_USER}@${DO_SERVER} << 'EOF'
             cd /home/SS-Counselling
-            git stash
-            git pull origin main
-            npm install
-            pm2 restart all  || pm2 start src/index.js --name "my-app"
+            rm -rf node_modules
+            npm ci
+            npm install cross-env --save-dev
+            pm2 restart all || pm2 start src/index.js --name "my-app"
           EOF
