@@ -7,22 +7,125 @@ const bulkUpload = async (careerArray, csvFilePath = null) => {
     if (csvFilePath) {
       modifiedCareersArray = { Careers: csvFilePath };
     }
-    if (!modifiedCareersArray.Careers || !modifiedCareersArray.Careers.length)
+    if (!modifiedCareersArray.Careers || !modifiedCareersArray.Careers.length) {
       return { error: true, message: 'missing array' };
+    }
   
     const records = [];
     const dups = [];
   
     await Promise.all(
       modifiedCareersArray.Careers.map(async (college) => {
-        const schoolFound = await College.findOne({ ID: college.type_id});
+        const schoolFound = await College.findOne({ id: college.id });
         if (schoolFound) {
           dups.push(college);
         } else {
-          let record = new College(college);
+          const formattedCollege = {
+            weblink: college.weblink || "",
+            notes: college.notes || "",
+            approved_by: [],
+            affiliated_by: [],
+            accreditation: college.accreditation || "",
+            levels: [],
+            faculties: [],
+            specializations: [],
+            super_specializations: [],
+            types: [],
+            programs: [],
+            award_in: [],
+            type: college.type || "",
+            read_count: parseInt(college.read_count) || 0,
+            link: college.link || "",
+            name: college.name,
+            type_id: parseInt(college.type_id),
+            city_id: parseInt(college.city_id),
+            city_name: college.city_name,
+            state_name: college.state_name,
+            state_id: parseInt(college.state_id),
+            country_id: parseInt(college.country_id),
+            country_name: college.country_name,
+            ranking: [],
+            id: college.id
+          };
+  
+          // Handle approved_by
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('approved_by/') && college[key]) {
+              formattedCollege.approved_by.push(college[key]);
+            }
+          });
+  
+          // Handle affiliated_by
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('affiliated_by/') && college[key]) {
+              formattedCollege.affiliated_by.push(college[key]);
+            }
+          });
+  
+          // Handle levels
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('levels/') && college[key]) {
+              formattedCollege.levels.push(college[key]);
+            }
+          });
+  
+          // Handle faculties
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('faculties/') && college[key]) {
+              formattedCollege.faculties.push(college[key]);
+            }
+          });
+  
+          // Handle specializations
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('specializations/') && college[key]) {
+              formattedCollege.specializations.push(college[key]);
+            }
+          });
+  
+          // Handle super_specializations
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('super_specializations/') && college[key]) {
+              formattedCollege.super_specializations.push(college[key]);
+            }
+          });
+  
+          // Handle types
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('types/') && college[key]) {
+              formattedCollege.types.push(college[key]);
+            }
+          });
+  
+          // Handle programs
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('programs/') && college[key]) {
+              formattedCollege.programs.push(college[key]);
+            }
+          });
+  
+          // Handle award_in
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('award_in/') && college[key]) {
+              formattedCollege.award_in.push(college[key]);
+            }
+          });
+  
+          // Handle ranking
+          Object.keys(college).forEach(key => {
+            if (key.startsWith('ranking/') && college[key]) {
+              const [_, index, subKey] = key.split('/');
+              if (!formattedCollege.ranking[index]) {
+                formattedCollege.ranking[index] = {};
+              }
+              formattedCollege.ranking[index][subKey] = college[key];
+            }
+          });
+  
+          let record = new College(formattedCollege);
           record = await record.save();
           if (record) {
-            records.push(college);
+            records.push(formattedCollege);
           }
         }
       })
@@ -38,6 +141,8 @@ const bulkUpload = async (careerArray, csvFilePath = null) => {
     };
     return { nonduplicates, duplicates };
   };
+  
+
 /**
  * Create a College
  * @param {Object} userBody
