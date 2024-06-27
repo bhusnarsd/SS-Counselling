@@ -38,7 +38,7 @@ router
   .get(
     auth('admin', 'school', 'superadmin', 'student', 'trainer', 'cluster', 'department'),
     validate(collegeValidation.getColleges),
-    collegeController.getCollege
+    collegeController.getColleges
   );
 
 router
