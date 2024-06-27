@@ -1,42 +1,42 @@
-name: CI/CD Pipeline
+# name: CI/CD Pipeline
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22'
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '22'
 
-      - name: Install dependencies
-        run: npm install
+#       - name: Install dependencies
+#         run: npm install
 
-      - name: Deploy to DigitalOcean Droplet
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DO_SERVER: 64.227.178.34
-          DO_USER: root
-        run: |
-          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ssh_key
-          chmod 600 ssh_key
-          eval $(ssh-agent -s)
-          ssh-add ssh_key
-          mkdir -p ~/.ssh
-          ssh-keyscan $DO_SERVER >> ~/.ssh/known_hosts
-          ssh -o StrictHostKeyChecking=no ${DO_USER}@${DO_SERVER} << 'EOF'
-            cd /home/SS-Counselling
-            git stash
-            git pull origin main
-            npm install
-            pm2 restart all --update-env --env development || pm2 start src/index.js --name "my-app" --env development
-          EOF
+#       - name: Deploy to DigitalOcean Droplet
+#         env:
+#           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#           DO_SERVER: 64.227.178.34
+#           DO_USER: root
+#         run: |
+#           echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ssh_key
+#           chmod 600 ssh_key
+#           eval $(ssh-agent -s)
+#           ssh-add ssh_key
+#           mkdir -p ~/.ssh
+#           ssh-keyscan $DO_SERVER >> ~/.ssh/known_hosts
+#           ssh -o StrictHostKeyChecking=no ${DO_USER}@${DO_SERVER} << 'EOF'
+#             cd /home/SS-Counselling
+#             git stash
+#             git pull origin main
+#             npm install
+#             pm2 restart all --update-env --env development || pm2 start src/index.js --name "my-app" --env development
+#           EOF

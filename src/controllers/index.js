@@ -15,3 +15,4 @@ module.exports.notificationController = require('./notification.controller');
 module.exports.clusterController = require('./cluster.controller');
 module.exports.newsletterController = require('./newsletter.controller');
 module.exports.careerController = require('./career.controller');
+module.exports.collegeController = require('./college.controller');
