@@ -28,7 +28,7 @@ const createCollege = catchAsync(async (req, res) => {
 
 
 const getColleges = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['name', 'ID', 'CollegeName', 'clusterName', 'locale']);
+  const filter = pick(req.query, ['name', 'type', 'CollegeName', 'faculties', 'locale']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await collegeService.queryCollege(filter, options);
   res.send(result);
