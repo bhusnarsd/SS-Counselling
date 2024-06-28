@@ -36,6 +36,8 @@ const collegeShema = new mongoose.Schema({
     timestamps: true,
   
 });
+collegeShema.index({ name: 'text', description: 'text' });
+
 // add plugin that converts mongoose to json
 collegeShema.plugin(toJSON);
 collegeShema.plugin(paginate);

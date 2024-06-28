@@ -16,3 +16,4 @@ module.exports.Notification = require('./notification.model');
 module.exports.NewsLetter = require('./newsletter.model');
 module.exports.Career = require('./career.model');
 module.exports.College = require('./college.model');
+module.exports.Scholarship = require('./scholarship.model');

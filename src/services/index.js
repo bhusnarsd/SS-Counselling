@@ -19,3 +19,4 @@ module.exports.clusterService = require('./cluster.service');
 module.exports.newsLetterService = require('./newsletter.service');
 module.exports.careerService = require('./career.service');
 module.exports.collegeService = require('./college.service');
+module.exports.schollershiopService = require('./scholarship.service');

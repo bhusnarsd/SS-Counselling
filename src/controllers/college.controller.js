@@ -22,14 +22,14 @@ const bulkUploadFile = catchAsync(async (req, res) => {
 });
 
 const createCollege = catchAsync(async (req, res) => {
-  const career = await collegeService.createCollege(req.body);
+  const College = await collegeService.createCollege(req.body);
   res.status(httpStatus.CREATED).send(College);
 });
 
 
 const getColleges = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'type', 'CollegeName', 'faculties', 'locale']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const options = pick(req.query, ['search','sortBy', 'limit', 'page']);
   const result = await collegeService.queryCollege(filter, options);
   res.send(result);
 });
@@ -53,7 +53,7 @@ const deleteCollege = catchAsync(async (req, res) => {
 });
 
 module.exports = {
-    bulkUploadFile,
+  bulkUploadFile,
   createCollege,
   getColleges,
   getCollege,

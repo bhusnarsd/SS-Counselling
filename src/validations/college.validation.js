@@ -39,6 +39,7 @@ const getColleges = {
     type: Joi.string().optional(),
     city_name: Joi.string().optional(),
     state_name: Joi.string().optional(),
+    search: Joi.string().optional(),
     country_name: Joi.string().optional(),
     sortBy: Joi.string().optional(),
     limit: Joi.number().integer().optional(),
