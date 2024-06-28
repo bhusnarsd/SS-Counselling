@@ -79,15 +79,24 @@ const bulkUpload = async (scholarshipArray, csvFilePath = null) => {
                 });
 
                 // Handle careers
-                Object.keys(scholarship).forEach(key => {
-                    if (key.startsWith('careers/') && scholarship[key]) {
-                        formattedScholarship.careers.push({
-                            id: scholarship[key + '/id'],
-                            name: scholarship[key + '/name'],
-                            type_id: parseInt(scholarship[key + '/type_id']) || 1
-                        });
-                    }
-                });
+            // Handle careers
+Object.keys(scholarship).forEach(key => {
+    if (key.startsWith('careers/') && scholarship[key]) {
+        const [, index, subKey] = key.split('/');
+        const careerIndex = parseInt(index); // Convert index to integer
+        if (!formattedScholarship.careers[careerIndex]) {
+            formattedScholarship.careers[careerIndex] = {}; // Initialize career object if not exists
+        }
+        if (subKey === 'id') {
+            formattedScholarship.careers[careerIndex].id = scholarship[key]; // Set career id
+        } else if (subKey === 'name') {
+            formattedScholarship.careers[careerIndex].name = scholarship[key]; // Set career name
+        } else if (subKey === 'type_id') {
+            formattedScholarship.careers[careerIndex].type_id = parseInt(scholarship[key]) || 1; // Parse and set type_id
+        }
+    }
+});
+
 
                 // Handle notification_type
                 Object.keys(scholarship).forEach(key => {
