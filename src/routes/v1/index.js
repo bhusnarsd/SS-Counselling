@@ -19,6 +19,7 @@ const clusterRoute = require('./cluster.route');
 const newsletterRoute = require('./newsletter.route');
 const careerRoute = require('./career.route');
 const collegeRoute = require('./college.route');
+const scholarshipRoute = require('./scholarship.route');
 
 const router = express.Router();
 
@@ -94,6 +95,10 @@ const defaultRoutes = [
   {
     path: '/college',
     route: collegeRoute,
+  },
+  {
+    path: '/scholarship',
+    route: scholarshipRoute,
   }
 ];
 
