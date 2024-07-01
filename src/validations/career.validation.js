@@ -16,7 +16,7 @@ const createCareer = {
 // Define a schema for getting Careers (with pagination)
 const getCareers = {
   query: Joi.object().keys({
-    name: Joi.string().trim(),
+    name: Joi.string(),
     locale: Joi.string().trim(),
     search: Joi.string().trim(),
     careerName: Joi.string().trim(),

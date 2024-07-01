@@ -20,6 +20,8 @@ const newsletterRoute = require('./newsletter.route');
 const careerRoute = require('./career.route');
 const collegeRoute = require('./college.route');
 const scholarshipRoute = require('./scholarship.route');
+const questionRoute = require('./question.route');
+const userAnswerRoute = require('./userAnswer.route');
 
 const router = express.Router();
 
@@ -99,6 +101,14 @@ const defaultRoutes = [
   {
     path: '/scholarship',
     route: scholarshipRoute,
+  },
+  {
+    path: '/question',
+    route: questionRoute,
+  },
+  {
+    path: '/user-answer',
+    route: userAnswerRoute,
   }
 ];
 

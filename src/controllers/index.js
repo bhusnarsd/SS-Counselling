@@ -17,3 +17,5 @@ module.exports.newsletterController = require('./newsletter.controller');
 module.exports.careerController = require('./career.controller');
 module.exports.collegeController = require('./college.controller');
 module.exports.schollershiopController = require('./scholarship.controller');
+module.exports.questionController = require('./question.controller');
+module.exports.userAnswerController = require('./userAnswer.controller');
