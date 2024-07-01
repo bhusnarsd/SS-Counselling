@@ -17,3 +17,6 @@ module.exports.NewsLetter = require('./newsletter.model');
 module.exports.Career = require('./career.model');
 module.exports.College = require('./college.model');
 module.exports.Scholarship = require('./scholarship.model');
+module.exports.UserAnswer = require('./userAnswer.model');
+module.exports.Report = require('./report.model');
+module.exports.Question = require('./quetions.model');

@@ -20,3 +20,5 @@ module.exports.newsLetterService = require('./newsletter.service');
 module.exports.careerService = require('./career.service');
 module.exports.collegeService = require('./college.service');
 module.exports.schollershiopService = require('./scholarship.service');
+module.exports.questionService = require('./question.service');
+module.exports.userAnswerService = require('./userAnswer.service');
