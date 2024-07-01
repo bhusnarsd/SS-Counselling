@@ -18,6 +18,7 @@ const getCareers = {
   query: Joi.object().keys({
     name: Joi.string().trim(),
     locale: Joi.string().trim(),
+    search: Joi.string().trim(),
     careerName: Joi.string().trim(),
     clusterName: Joi.string().trim(),
     sortBy: Joi.string(),
