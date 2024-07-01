@@ -10,7 +10,6 @@ const bulkUpload = async (scholarshipArray, csvFilePath = null) => {
     if (!modifiedScholarshipArray.Scholarships || !modifiedScholarshipArray.Scholarships.length) {
         return { error: true, message: 'missing array' };
     }
-
     const records = [];
     const dups = [];
 
@@ -78,8 +77,6 @@ const bulkUpload = async (scholarshipArray, csvFilePath = null) => {
                     }
                 });
 
-                // Handle careers
-            // Handle careers
 Object.keys(scholarship).forEach(key => {
     if (key.startsWith('careers/') && scholarship[key]) {
         const [, index, subKey] = key.split('/');
@@ -96,8 +93,6 @@ Object.keys(scholarship).forEach(key => {
         }
     }
 });
-
-
                 // Handle notification_type
                 Object.keys(scholarship).forEach(key => {
                     if (key.startsWith('notification_type/') && scholarship[key]) {
@@ -113,7 +108,6 @@ Object.keys(scholarship).forEach(key => {
             }
         })
     );
-
     const duplicates = {
         totalDuplicates: dups.length ? dups.length : 0,
         data: dups.length ? dups : [],
